@@ -3,25 +3,107 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --font-inter: "Inter", system-ui, sans-serif;
+  --font-jetbrains-mono: "JetBrains Mono", monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ─── Base resets ─────────────────────────────────────── */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter);
+  background-color: #0a0e1a;
+  color: #f1f5f9;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+/* ─── Scrollbar ───────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #111827;
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* ─── Selection ───────────────────────────────────────── */
+::selection {
+  background: #10b98130;
+  color: #f1f5f9;
+}
+
+/* ─── Typography ──────────────────────────────────────── */
+.font-mono {
+  font-family: var(--font-jetbrains-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─── Chart container ─────────────────────────────────── */
+.tv-lightweight-charts {
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+/* ─── Background patterns ─────────────────────────────── */
+.bg-navy-850 {
+  background-color: #0d1221;
+}
+.bg-navy-750 {
+  background-color: #141d2e;
+}
+
+/* ─── Animations ──────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.4s ease-out;
+}
+
+/* ─── Shimmer skeleton ────────────────────────────────── */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #1e293b 25%,
+    #273549 50%,
+    #1e293b 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 0.5rem;
+}
+
+/* ─── Report section spacing ──────────────────────────── */
+.report-section {
+  scroll-margin-top: 7rem;
 }
