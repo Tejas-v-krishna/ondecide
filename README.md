@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# OnDecide — AI-Powered Investment Research Platform
 
-## Getting Started
+OnDecide is an AI-driven investment research platform that replicates the daily workflow of a professional investment research analyst. It synthesizes real-time market data, financial models, news sentiment, and qualitative judgment to deliver a reasoned buy/hold/avoid recommendation in plain, accessible language.
 
-First, run the development server:
+---
 
+## 🌟 Features
+
+- **Live AI Research Pipeline:** Watch the LangGraph-powered AI assemble a full research report in real-time, fetching financials, news, and analyzing historical patterns.
+- **Plain Language Breakdown:** Progressive disclosure via glossary tooltips ensures both beginners and professionals understand the *why* behind the data.
+- **Multi-Asset Support:** Full research reports for both traditional stocks (e.g., AAPL, MSFT) and major cryptocurrencies (e.g., BTC, ETH, SOL).
+- **Comprehensive Scorecards:** Visual breakdowns of company health including Technical Signals (RSI, SMA), Financial Health matrices, and Recharts-powered radar charts.
+- **Real-Time Market Data:** Interactive price charts powered by TradingView's `lightweight-charts`.
+- **Saved Watchlists:** Save and track your favorite research reports securely.
+
+---
+
+## 🏗 Architecture & Tech Stack
+
+- **Framework:** [Next.js 14](https://nextjs.org/) (App Router, Server-Sent Events)
+- **AI / Agentic Flow:** [LangGraph.js](https://langchain-ai.github.io/langgraphjs/) + Google Gemini (1.5/3.5 Flash)
+- **Authentication:** [Clerk](https://clerk.com/)
+- **Database:** [Supabase](https://supabase.com/) (PostgreSQL + RLS)
+- **Market Data:** [Finnhub API](https://finnhub.io/)
+- **News / Web Search:** [Tavily](https://tavily.com/)
+- **Styling:** Tailwind CSS + Custom dark mode aesthetic
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the repository
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/Tejas-v-krishna/ondecide.git
+cd ondecide
 ```
 
+### 2. Install dependencies
+```bash
+npm install
+```
+
+### 3. Environment Setup
+Copy the example environment file:
+```bash
+cp .env.example .env.local
+```
+
+You will need to fill in `.env.local` with your own API keys:
+- **Clerk:** Set up a project on [Clerk](https://clerk.com) to get `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY`.
+- **Supabase:** Set up a project on [Supabase](https://supabase.com) to get `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
+- **Finnhub:** Get a free API key at [Finnhub](https://finnhub.io).
+- **Tavily:** Get a search API key at [Tavily](https://tavily.com).
+- **Google Gemini:** Get an AI API key from [Google AI Studio](https://aistudio.google.com/).
+
+### 4. Database Setup
+Run the SQL script provided in `supabase/schema.sql` within your Supabase project's SQL editor to set up the `watchlist` table and Row Level Security (RLS) policies.
+
+### 5. Run the Development Server
+```bash
+npm run dev
+```
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🧠 How the AI Pipeline Works
 
-## Learn More
+When a user searches for a ticker, a POST request is sent to `/api/research`, triggering a LangGraph StateGraph that streams Server-Sent Events (SSE) back to the client. The pipeline involves:
 
-To learn more about Next.js, take a look at the following resources:
+1. **Resolve:** Identifies the asset type (Stock vs Crypto).
+2. **Financials & News (Parallel):** Fetches real-time market metrics, quotes, and recent headlines.
+3. **Qualitative Analysis:** Gemini synthesizes management strength, economic moats, and news sentiment.
+4. **Historical Pattern:** Gemini compares current conditions to historical market parallels.
+5. **Synthesis:** Assembles all data into a cohesive structured JSON report.
+6. **Decision:** Issues a final Invest / Hold / Avoid verdict with a detailed confidence breakdown.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📜 License
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT License. See `LICENSE` for more information.
