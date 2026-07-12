@@ -8,21 +8,21 @@ const VERDICT_CONFIG = {
   Invest: {
     color: "text-emerald-400",
     bg: "bg-emerald-400/10 border-emerald-500",
-    glow: "shadow-glow",
+    glow: "",
     icon: "📈",
     desc: "Conditions appear favourable for this investment",
   },
   Hold: {
     color: "text-amber-400",
     bg: "bg-amber-400/10 border-amber-500",
-    glow: "shadow-glow-amber",
+    glow: "-amber",
     icon: "⏸",
     desc: "Mixed signals — monitor and revisit",
   },
   Avoid: {
     color: "text-rose-400",
     bg: "bg-rose-400/10 border-rose-500",
-    glow: "shadow-glow-rose",
+    glow: "-rose",
     icon: "⛔",
     desc: "Risk outweighs potential reward at this time",
   },
@@ -51,24 +51,24 @@ export function DecisionSection({ data }: DecisionProps) {
 
           {/* Reasoning */}
           <div>
-            <h2 className="text-xl font-bold text-slate-100 mb-1">The Decision</h2>
-            <p className="text-sm text-slate-500 mb-3">{config.desc}</p>
-            <p className="text-slate-200 leading-relaxed">{data.reasoning}</p>
+            <h2 className="font-serif text-xl font-bold text-white mb-1">The Decision</h2>
+            <p className="text-sm text-zinc-500 mb-3">{config.desc}</p>
+            <p className="text-zinc-100 leading-relaxed">{data.reasoning}</p>
           </div>
         </div>
       </div>
 
       {/* Confidence breakdown */}
-      <div className="px-6 py-5 border-t border-slate-800/50">
-        <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">How this call was weighted</h3>
+      <div className="px-6 py-5 border-t border-zinc-800/60/50">
+        <h3 className="font-serif text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-4">How this call was weighted</h3>
         <div className="space-y-3">
           {factors.map((factor) => (
             <div key={factor.label}>
               <div className="flex items-center justify-between mb-1">
-                <span className="text-sm text-slate-300">{factor.label}</span>
-                <span className="text-sm font-mono text-slate-300">{factor.value}%</span>
+                <span className="text-sm text-zinc-300">{factor.label}</span>
+                <span className="text-sm font-sans text-zinc-300">{factor.value}%</span>
               </div>
-              <div className="h-2 bg-navy-900 rounded-full overflow-hidden">
+              <div className="h-2 bg-black rounded-full overflow-hidden">
                 <div
                   className="h-full rounded-full transition-all duration-700"
                   style={{ width: `${factor.value}%`, backgroundColor: factor.color }}
@@ -81,13 +81,13 @@ export function DecisionSection({ data }: DecisionProps) {
 
       {/* Key tailwinds & risks */}
       {(data.keyTailwinds.length > 0 || data.keyRisks.length > 0) && (
-        <div className="px-6 py-5 border-t border-slate-800/50 grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div className="px-6 py-5 border-t border-zinc-800/60/50 grid grid-cols-1 sm:grid-cols-2 gap-5">
           {data.keyTailwinds.length > 0 && (
             <div>
-              <h3 className="text-sm font-semibold text-emerald-500 uppercase tracking-wider mb-3">Tailwinds</h3>
+              <h3 className="font-serif text-sm font-semibold text-emerald-500 uppercase tracking-wider mb-3">Tailwinds</h3>
               <ul className="space-y-2">
                 {data.keyTailwinds.map((t, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
+                  <li key={i} className="flex items-start gap-2 text-sm text-zinc-300">
                     <span className="text-emerald-500 flex-shrink-0 mt-0.5">+</span>
                     {t}
                   </li>
@@ -97,10 +97,10 @@ export function DecisionSection({ data }: DecisionProps) {
           )}
           {data.keyRisks.length > 0 && (
             <div>
-              <h3 className="text-sm font-semibold text-rose-500 uppercase tracking-wider mb-3">Key Risks</h3>
+              <h3 className="font-serif text-sm font-semibold text-rose-500 uppercase tracking-wider mb-3">Key Risks</h3>
               <ul className="space-y-2">
                 {data.keyRisks.map((r, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
+                  <li key={i} className="flex items-start gap-2 text-sm text-zinc-300">
                     <span className="text-rose-500 flex-shrink-0 mt-0.5">—</span>
                     {r}
                   </li>
@@ -112,10 +112,10 @@ export function DecisionSection({ data }: DecisionProps) {
       )}
 
       {/* Disclaimer */}
-      <div className="px-6 py-4 border-t border-slate-800/50 bg-navy-900/50">
+      <div className="px-6 py-4 border-t border-zinc-800/60/50 bg-black/50">
         <div className="flex items-start gap-2">
-          <span className="text-slate-600 flex-shrink-0 mt-0.5">ℹ</span>
-          <p className="text-xs text-slate-500 leading-relaxed">{data.disclaimer}</p>
+          <span className="text-zinc-600 flex-shrink-0 mt-0.5">ℹ</span>
+          <p className="text-xs text-zinc-500 leading-relaxed">{data.disclaimer}</p>
         </div>
       </div>
     </div>

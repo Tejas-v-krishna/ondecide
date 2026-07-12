@@ -25,7 +25,7 @@ export function ReportNav() {
   };
 
   return (
-    <nav className="sticky top-16 z-30 -mx-4 sm:-mx-6 px-4 sm:px-6 py-2 border-b border-slate-800 bg-navy-900/80 backdrop-blur-sm overflow-x-auto">
+    <nav className="sticky top-16 z-30 -mx-4 sm:-mx-6 px-4 sm:px-6 py-2 border-b border-zinc-800/60 bg-black/80 backdrop-blur-sm overflow-x-auto">
       <div className="flex gap-1 min-w-max">
         {SECTIONS.map((section) => (
           <button
@@ -33,8 +33,8 @@ export function ReportNav() {
             onClick={() => scrollTo(section.id)}
             className={`px-3 py-1.5 text-sm rounded-lg whitespace-nowrap transition-colors ${
               active === section.id
-                ? "text-emerald-400 bg-emerald-400/10"
-                : "text-slate-500 hover:text-slate-300"
+                ? "text-white bg-white/10"
+                : "text-zinc-500 hover:text-zinc-300"
             }`}
           >
             {section.label}

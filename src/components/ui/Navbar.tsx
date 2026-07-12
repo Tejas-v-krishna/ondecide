@@ -1,61 +1,367 @@
+"use client";
+
+import React from "react";
 import Link from "next/link";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { SearchBar } from "./SearchBar";
+import { MenuIcon, XIcon, Play } from "lucide-react";
+import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuList,
+  NavigationMenuItem,
+  NavigationMenuTrigger,
+  NavigationMenuLink,
+} from "@/components/ui/navigation-menu";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+
+interface MenuItem {
+  title: string;
+  href: string;
+}
+
+interface MenuSection {
+  label: string;
+  items: MenuItem[];
+}
+
+interface MegaMenuConfig {
+  trigger: string;
+  sections: MenuSection[];
+  graphic: {
+    title: string;
+    description: string;
+    tag?: string;
+  };
+}
+
+const PRODUCT_MENU: MegaMenuConfig = {
+  trigger: "Product",
+  sections: [
+    {
+      label: "Platform",
+      items: [
+        { title: "Explore Assets", href: "/explore" },
+        { title: "Portfolio Tracker", href: "/portfolio" },
+        { title: "Watchlist Analyzer", href: "/watchlist" },
+        { title: "Live Market Data", href: "/explore" },
+        { title: "Glossary Hub", href: "/glossary" },
+        { title: "Agent Synthesizer", href: "/agents" },
+      ],
+    },
+    {
+      label: "Skills",
+      items: [
+        { title: "Pull Financial Ratios", href: "/agents" },
+        { title: "Read News Sentiment", href: "/agents" },
+        { title: "Analyze Technical Signals", href: "/agents" },
+        { title: "Qualitative Synthesis", href: "/agents" },
+        { title: "Historical Pattern Search", href: "/agents" },
+        { title: "Form Thesis", href: "/agents" },
+      ],
+    },
+  ],
+  graphic: {
+    tag: "AI Agents",
+    title: "Introducing AI Investment Agents",
+    description: "How OnDecide synthesizes research-grade reports in under 60 seconds.",
+  },
+};
+
+const SOLUTIONS_MENU: MegaMenuConfig = {
+  trigger: "Solutions",
+  sections: [
+    {
+      label: "Audiences",
+      items: [
+        { title: "Retail Traders", href: "/solutions" },
+        { title: "Family Offices", href: "/solutions" },
+        { title: "Wealth Advisors", href: "/solutions" },
+        { title: "Hedge Funds", href: "/solutions" },
+        { title: "Quantitative Analysts", href: "/solutions" },
+      ],
+    },
+    {
+      label: "Use Cases",
+      items: [
+        { title: "Equity Screening", href: "/explore" },
+        { title: "Portfolio Modeling", href: "/portfolio" },
+        { title: "Technical Analysis", href: "/explore" },
+        { title: "Macro Indicators", href: "/explore" },
+        { title: "Due Diligence", href: "/solutions" },
+      ],
+    },
+  ],
+  graphic: {
+    tag: "Thesis",
+    title: "Instant Thesis Generator",
+    description: "Build conviction on any trade using real-time agent chains.",
+  },
+};
+
+const RESOURCES_MENU: MegaMenuConfig = {
+  trigger: "Resources",
+  sections: [
+    {
+      label: "Learn",
+      items: [
+        { title: "Platform Guide", href: "/resources" },
+        { title: "Financial Glossary", href: "/glossary" },
+        { title: "Research Methodology", href: "/resources" },
+        { title: "FAQ", href: "/resources" },
+        { title: "Video Tutorials", href: "/resources" },
+      ],
+    },
+    {
+      label: "Updates & Security",
+      items: [
+        { title: "Changelog", href: "/resources" },
+        { title: "API Partners", href: "/resources" },
+        { title: "Trust Center", href: "/legal" },
+        { title: "Security Protocols", href: "/legal" },
+        { title: "Contact Support", href: "/about" },
+      ],
+    },
+  ],
+  graphic: {
+    tag: "Knowledge Base",
+    title: "Financial Knowledge Hub",
+    description: "Demystifying quantitative metrics and institutional-grade indicators.",
+  },
+};
+
+const COMPANY_MENU: MegaMenuConfig = {
+  trigger: "Company",
+  sections: [
+    {
+      label: "Company",
+      items: [
+        { title: "About Us", href: "/about" },
+        { title: "Careers", href: "/about" },
+        { title: "Press Kit", href: "/about" },
+        { title: "Meet the Team", href: "/about" },
+        { title: "Contact", href: "/about" },
+      ],
+    },
+    {
+      label: "Trust",
+      items: [
+        { title: "Privacy Policy", href: "/legal" },
+        { title: "Terms of Service", href: "/legal" },
+        { title: "Security Disclaimers", href: "/legal" },
+        { title: "Data Partners", href: "/about" },
+      ],
+    },
+  ],
+  graphic: {
+    tag: "Design",
+    title: "True-Black Design System",
+    description: "Read more about our minimal, high-aesthetic design philosophy.",
+  },
+};
 
 export function Navbar() {
   return (
-    <nav className="sticky top-0 z-40 border-b border-slate-800 bg-navy-900/90 backdrop-blur-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center gap-4">
-        {/* Logo */}
+    <nav className="sticky top-4 z-50 mx-auto h-16 w-full max-w-5xl border border-zinc-800 bg-black/80 backdrop-blur-md px-6 rounded-lg flex items-center justify-between">
+      {/* Left: Logo */}
+      <div className="flex items-center gap-6">
         <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center">
-            <span className="text-white text-xs font-bold">O</span>
+          <div className="w-7 h-7 bg-white flex items-center justify-center">
+            <span className="text-black text-xs font-bold font-sans">O</span>
           </div>
-          <span className="text-slate-100 font-bold text-lg tracking-tight">
-            On<span className="text-emerald-400">Decide</span>
+          <span className="text-white font-serif text-xl tracking-tight">
+            OnDecide
           </span>
         </Link>
 
-        {/* Search — hidden on mobile */}
-        <div className="hidden md:block flex-1 max-w-xl ml-4">
-          <SearchBar />
-        </div>
+        {/* Center: Desktop Navigation */}
+        <DesktopMenu />
+      </div>
 
-        <div className="ml-auto flex items-center gap-3">
+      {/* Middle: Desktop Search */}
+      <div className="hidden md:block flex-1 max-w-xs mx-4">
+        <SearchBar />
+      </div>
+
+      {/* Right: Auth / Buttons */}
+      <div className="flex items-center gap-3">
+        <SignedIn>
+          <UserButton afterSignOutUrl="/" />
+        </SignedIn>
+        <SignedOut>
           <Link
-            href="/explore"
-            className="hidden sm:inline-flex text-sm text-slate-400 hover:text-slate-200 transition-colors px-3 py-1.5"
+            href="/sign-in"
+            className="text-sm text-zinc-400 hover:text-white transition-colors px-3 py-1.5 font-sans"
           >
-            Explore
+            Log in
           </Link>
-          <SignedIn>
-            <Link
-              href="/watchlist"
-              className="hidden sm:inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-200 transition-colors px-3 py-1.5"
-            >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-              </svg>
-              Watchlist
-            </Link>
-            <UserButton afterSignOutUrl="/" />
-          </SignedIn>
-          <SignedOut>
-            <Link
-              href="/sign-in"
-              className="text-sm text-slate-400 hover:text-slate-200 transition-colors px-3 py-1.5"
-            >
-              Sign in
-            </Link>
-            <Link
-              href="/sign-up"
-              className="text-sm bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-1.5 rounded-lg transition-colors font-medium"
-            >
+          <Link href="/sign-up" className="hidden sm:block">
+            <Button variant="default" className="bg-white hover:bg-zinc-200 text-black px-4 py-1.5 h-auto text-sm font-medium rounded">
               Get started
-            </Link>
-          </SignedOut>
-        </div>
+            </Button>
+          </Link>
+        </SignedOut>
+
+        {/* Mobile Navigation Trigger */}
+        <MobileNav />
       </div>
     </nav>
+  );
+}
+
+function DesktopMenu() {
+  const menus = [PRODUCT_MENU, SOLUTIONS_MENU, RESOURCES_MENU, COMPANY_MENU];
+
+  return (
+    <NavigationMenu className="hidden lg:block">
+      <NavigationMenuList className="gap-2">
+        {menus.map((menu) => (
+          <NavigationMenuItem key={menu.trigger}>
+            <NavigationMenuTrigger className="px-3 py-1.5 text-sm hover:text-white transition-colors">
+              {menu.trigger}
+            </NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <div className="grid w-[800px] grid-cols-[1.2fr_1.2fr_1fr] bg-black border border-zinc-800 rounded-lg p-6">
+                {/* Left Columns */}
+                {menu.sections.map((section) => (
+                  <div key={section.label} className="space-y-4">
+                    <span className="text-2xs text-zinc-500 font-sans tracking-wider uppercase block">
+                      {section.label}
+                    </span>
+                    <ul className="space-y-2">
+                      {section.items.map((item) => (
+                        <li key={item.title}>
+                          <Link href={item.href} passHref legacyBehavior>
+                            <NavigationMenuLink className="text-sm text-zinc-400 hover:text-white transition-colors py-1 block w-full text-left">
+                              {item.title}
+                            </NavigationMenuLink>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+
+                {/* Right Visual Card */}
+                <div className="relative group/card bg-zinc-950 border border-zinc-800 rounded-md p-4 overflow-hidden flex flex-col justify-end min-h-[180px]">
+                  {/* Subtle decorative mesh */}
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.03),transparent)] pointer-events-none" />
+                  
+                  {/* Play icon overlay */}
+                  <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center group-hover/card:bg-white group-hover/card:border-white transition-all">
+                    <Play className="w-3.5 h-3.5 text-zinc-400 fill-zinc-400 group-hover/card:text-black group-hover/card:fill-black transition-colors ml-0.5" />
+                  </div>
+
+                  <div className="space-y-1 relative z-10">
+                    {menu.graphic.tag && (
+                      <span className="text-2xs text-zinc-500 font-sans tracking-wider uppercase block">
+                        {menu.graphic.tag}
+                      </span>
+                    )}
+                    <h4 className="text-sm font-serif text-white leading-tight">
+                      {menu.graphic.title}
+                    </h4>
+                    <p className="text-xs text-zinc-400 leading-normal line-clamp-2">
+                      {menu.graphic.description}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+        ))}
+      </NavigationMenuList>
+    </NavigationMenu>
+  );
+}
+
+function MobileNav() {
+  const menus = [PRODUCT_MENU, SOLUTIONS_MENU, RESOURCES_MENU, COMPANY_MENU];
+
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button size="icon" variant="ghost" className="rounded-full lg:hidden text-zinc-400 hover:text-white">
+          <MenuIcon className="size-5" />
+        </Button>
+      </SheetTrigger>
+      <SheetContent
+        className="bg-black/95 border-l border-zinc-800 w-full max-w-sm gap-0 backdrop-blur-lg flex flex-col h-full"
+        showClose={false}
+      >
+        <div className="flex h-16 items-center justify-between border-b border-zinc-800 px-6">
+          <span className="text-white font-serif text-xl tracking-tight">OnDecide</span>
+          <SheetClose asChild>
+            <Button size="icon" variant="ghost" className="rounded-full text-zinc-400 hover:text-white">
+              <XIcon className="size-5" />
+              <span className="sr-only">Close</span>
+            </Button>
+          </SheetClose>
+        </div>
+
+        <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
+          {/* Quick Search */}
+          <div className="w-full">
+            <SearchBar />
+          </div>
+
+          <Accordion type="single" collapsible className="w-full">
+            {menus.map((menu) => (
+              <AccordionItem key={menu.trigger} value={menu.trigger} className="border-zinc-800">
+                <AccordionTrigger className="font-sans text-white text-base hover:no-underline py-3">
+                  {menu.trigger}
+                </AccordionTrigger>
+                <AccordionContent className="space-y-4 pt-2">
+                  {menu.sections.map((section) => (
+                    <div key={section.label} className="space-y-2">
+                      <span className="text-2xs text-zinc-500 font-sans tracking-wider uppercase block">
+                        {section.label}
+                      </span>
+                      <ul className="grid gap-2">
+                        {section.items.map((item) => (
+                          <li key={item.title}>
+                            <SheetClose asChild>
+                              <Link
+                                href={item.href}
+                                className="text-sm text-zinc-400 hover:text-white transition-colors py-1.5 block"
+                              >
+                                {item.title}
+                              </Link>
+                            </SheetClose>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+
+          {/* Simple flat links */}
+          <div className="flex flex-col gap-4 pt-4 border-t border-zinc-800">
+            <SignedOut>
+              <SheetClose asChild>
+                <Link href="/sign-in" className="text-zinc-400 hover:text-white text-sm font-sans transition-colors py-2 block">
+                  Log In
+                </Link>
+              </SheetClose>
+              <SheetClose asChild>
+                <Link href="/sign-up" className="inline-flex justify-center bg-white hover:bg-zinc-200 text-black px-4 py-2 text-sm font-medium rounded transition-colors w-full">
+                  Get Started
+                </Link>
+              </SheetClose>
+            </SignedOut>
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
   );
 }

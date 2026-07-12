@@ -2,7 +2,7 @@
 // OnDecide — TypeScript type definitions
 // ============================================================
 
-export type AssetType = "stock" | "crypto";
+export type AssetType = "stock" | "crypto" | "etf" | "mutual_fund" | "bond";
 
 export type Recommendation = "Invest" | "Hold" | "Avoid";
 
@@ -283,6 +283,34 @@ export interface Decision {
   disclaimer: string;
 }
 
+// ─── Pro Analyst Features ───────────────────────────────────
+
+export interface PeerMetrics {
+  ticker: string;
+  peTTM?: number | null;
+  pb?: number | null;
+  pfcfTTM?: number | null;
+  epsGrowth3Y?: number | null;
+}
+
+export interface CompetitorMatrix {
+  peers: PeerMetrics[];
+  summary: string;
+}
+
+export interface InsiderSentiment {
+  trend: "Buying" | "Selling" | "Neutral" | "No Data";
+  netBuyingScore: number; // e.g., positive for net buying, negative for net selling
+  summary: string;
+}
+
+export interface EarningsCallAnalysis {
+  managementTone: "Optimistic" | "Neutral" | "Defensive" | "No Data";
+  keyRisks: string[];
+  forwardGuidance: string;
+  summary: string;
+}
+
 // ─── Full Research Report ───────────────────────────────────
 
 export interface ResearchReport {
@@ -298,6 +326,9 @@ export interface ResearchReport {
   segmentBreakdown?: SegmentBreakdown;
   qualitativeRead: QualitativeRead;
   historicalPattern: HistoricalPattern;
+  competitorMatrix?: CompetitorMatrix;
+  insiderSentiment?: InsiderSentiment;
+  earningsCallAnalysis?: EarningsCallAnalysis;
   decision: Decision;
 }
 

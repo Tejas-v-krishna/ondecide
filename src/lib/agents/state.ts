@@ -10,6 +10,7 @@ import type {
   FinnhubEarnings,
   TavilySearchResponse,
   ResearchReport,
+  PeerMetrics,
 } from "@/types";
 
 // LangGraph state definition — carries all data through the pipeline
@@ -31,10 +32,14 @@ export const ResearchState = Annotation.Root({
   priceTarget: Annotation<FinnhubPriceTarget | null>,
   earnings: Annotation<FinnhubEarnings[]>,
   peers: Annotation<string[]>,
+  peerMetrics: Annotation<PeerMetrics[]>,
+  insiderSentimentData: Annotation<{ data: Array<{ mspr: number; change: number; }> } | null>,
+  etfProfile: Annotation<TavilySearchResponse | null>,
 
   // After news (parallel)
   newsResults: Annotation<TavilySearchResponse | null>,
   analystCommentaryResults: Annotation<TavilySearchResponse | null>,
+  earningsCallResults: Annotation<TavilySearchResponse | null>,
 
   // After qualitative
   qualitativeAnalysis: Annotation<string>,

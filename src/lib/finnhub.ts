@@ -10,7 +10,11 @@ import {
 } from "@/types";
 
 const BASE = "https://finnhub.io/api/v1";
-const API_KEY = process.env.FINNHUB_API_KEY!;
+const API_KEY = process.env.FINNHUB_API_KEY;
+
+if (typeof window === "undefined" && !API_KEY) {
+  console.warn("FINNHUB_API_KEY is missing. API calls will fail.");
+}
 
 // Simple in-memory cache with TTL
 const cache = new Map<string, { data: unknown; expiresAt: number }>();
@@ -30,7 +34,7 @@ function cached<T>(key: string, fetcher: () => Promise<T>): Promise<T> {
 
 async function finnhubFetch<T>(path: string, params: Record<string, string | number> = {}): Promise<T> {
   const url = new URL(`${BASE}${path}`);
-  url.searchParams.set("token", API_KEY);
+  url.searchParams.set("token", API_KEY || "");
   for (const [k, v] of Object.entries(params)) {
     url.searchParams.set(k, String(v));
   }
@@ -119,6 +123,41 @@ export async function searchSymbol(
   query: string
 ): Promise<{ count: number; result: { description: string; displaySymbol: string; symbol: string; type: string }[] }> {
   return finnhubFetch("/search", { q: query });
+}
+
+export interface FinnhubInsiderSentiment {
+  data: {
+    symbol: string;
+    year: number;
+    month: number;
+    change: number; // Share change
+    mspr: number; // Monthly share purchase ratio
+  }[];
+  symbol: string;
+}
+
+export async function getInsiderSentiment(symbol: string): Promise<FinnhubInsiderSentiment> {
+  const toDate = new Date();
+  const fromDate = new Date();
+  fromDate.setMonth(toDate.getMonth() - 6); // Look back 6 months
+
+  return cached(`insider:${symbol}`, () =>
+    finnhubFetch<FinnhubInsiderSentiment>("/stock/insider-sentiment", {
+      symbol,
+      from: fromDate.toISOString().split("T")[0],
+      to: toDate.toISOString().split("T")[0],
+    })
+  );
+}
+
+export async function getPeerMetricsSafe(symbol: string): Promise<FinnhubMetrics | null> {
+  // Gracefully fetch metrics for a peer, returning null on error
+  try {
+    const res = await finnhubFetch<FinnhubMetrics>("/stock/metric", { symbol, metric: "all" });
+    return res;
+  } catch {
+    return null;
+  }
 }
 
 /** Helper: format Unix timestamp to YYYY-MM-DD */

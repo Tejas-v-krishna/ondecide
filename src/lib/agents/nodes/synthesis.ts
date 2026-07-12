@@ -14,6 +14,10 @@ import type {
   NewsAnalysis,
   FinancialHealth,
   CandleDataPoint,
+  InsiderSentiment,
+  EarningsCallAnalysis,
+  CompetitorMatrix,
+  PeerMetrics,
 } from "@/types";
 
 // ─── Parse qualitative analysis text ───────────────────────
@@ -200,16 +204,35 @@ function computeTechnicalSignal(
 async function generateDescription(
   companyName: string,
   sector: string,
-  profile: NonNullable<ResearchStateType["profile"]>
+  profile: ResearchStateType["profile"],
+  assetType: string,
+  etfProfile?: ResearchStateType["etfProfile"]
 ): Promise<string> {
+  const isFund = assetType === "etf" || assetType === "mutual_fund";
+  const isBond = assetType === "bond";
+
+  const extraContext = (isFund || isBond) && etfProfile
+    ? etfProfile.results.map((r) => `- ${r.title}: ${r.content.slice(0, 300)}`).join("\n")
+    : "";
+    
   const response = await geminiModel.invoke([
-    new SystemMessage("You write clear, jargon-free company descriptions for first-time investors."),
+    new SystemMessage("You write clear, jargon-free company and asset descriptions for first-time investors."),
     new HumanMessage(
-      `Write a 2-3 sentence plain-language description of ${companyName} (sector: ${sector}). 
+      isFund
+        ? `Write a 2-3 sentence plain-language description of the ${assetType === "etf" ? "ETF" : "Mutual Fund"} ${companyName}. 
+      Explain what index or strategy it tracks, what kind of assets it holds, and why an investor might buy it.
+      Use this context to inform your description:\n${extraContext}\n
+      Avoid investor jargon, filing language, and corporate speak.`
+        : isBond 
+        ? `Write a 2-3 sentence plain-language description of the bond or yield metric ${companyName}.
+      Explain what it represents (e.g. government debt) and what its current yield signifies in plain language.
+      Use this context:\n${extraContext}\n
+      Avoid investor jargon.`
+        : `Write a 2-3 sentence plain-language description of ${companyName} (sector: ${sector}). 
       Explain what the company actually does, how it makes money, and why people care about it.
       Avoid investor jargon, filing language, and corporate speak. 
       Write like you're explaining to a smart friend who knows nothing about finance.
-      Website: ${profile.weburl || "N/A"}`
+      Website: ${profile?.weburl || "N/A"}`
     ),
   ]);
   return response.content as string;
@@ -265,7 +288,7 @@ Include 4-6 most significant news items. If an item mentions earnings, guidance,
     return {
       items: newsResults.results.slice(0, 5).map((r) => ({
         headline: r.title,
-        source: new URL(r.url).hostname,
+        source: (() => { try { return new URL(r.url).hostname; } catch { return r.url || "Unknown"; } })(),
         url: r.url,
         publishedDate: r.publishedDate || "Recent",
         plainSummary: r.content.slice(0, 200),
@@ -357,6 +380,92 @@ Include metrics for: Revenue Growth, Profitability (margins), Return on Equity, 
   }
 }
 
+// ─── Generate Earnings Call Analysis via Gemini ──────────────
+
+async function generateEarningsCallAnalysis(
+  companyName: string,
+  earningsCallResults: NonNullable<ResearchStateType["earningsCallResults"]>
+): Promise<EarningsCallAnalysis> {
+  const callContext = earningsCallResults.results
+    .slice(0, 3)
+    .map((r) => `- ${r.title}: ${r.content.slice(0, 400)}`)
+    .join("\n");
+
+  const response = await geminiModel.invoke([
+    new SystemMessage("You are a financial analyst summarizing earnings call transcripts."),
+    new HumanMessage(`Analyze these recent earnings call summaries for ${companyName} and extract the management tone, key risks, and forward guidance.
+    
+Context:
+${callContext}
+
+Respond with valid JSON only (no markdown) with this exact structure:
+{
+  "managementTone": "Optimistic" or "Neutral" or "Defensive" or "No Data",
+  "keyRisks": ["Risk 1", "Risk 2"],
+  "forwardGuidance": "1-2 sentence plain-language summary of what management expects for the future",
+  "summary": "1-2 sentence overall takeaway from the call"
+}
+`),
+  ]);
+
+  try {
+    const text = (response.content as string).replace(/```json\n?|\n?```/g, "").trim();
+    return JSON.parse(text) as EarningsCallAnalysis;
+  } catch {
+    return {
+      managementTone: "No Data",
+      keyRisks: [],
+      forwardGuidance: "No forward guidance available.",
+      summary: "Earnings call transcript not available.",
+    };
+  }
+}
+
+function processInsiderSentiment(insiderData: { data: Array<{ mspr: number; change: number; }> } | null): InsiderSentiment | undefined {
+  if (!insiderData || !insiderData.data || insiderData.data.length === 0) return undefined;
+
+  // mspr is Monthly Share Purchase Ratio — typically in [-1, 1] range per month
+  // Use average across months, then compare against meaningful thresholds
+  const avgMspr = insiderData.data.reduce((sum, d) => sum + (d.mspr || 0), 0) / insiderData.data.length;
+  // Also sum raw share change to cross-verify direction
+  const totalChange = insiderData.data.reduce((sum, d) => sum + (d.change || 0), 0);
+
+  // Use 0.05 average mspr as threshold — meaningful but not noise
+  const trend = avgMspr > 0.05 || totalChange > 0
+    ? "Buying"
+    : avgMspr < -0.05 || totalChange < 0
+    ? "Selling"
+    : "Neutral";
+
+  const summary = trend === "Buying"
+    ? "Corporate insiders have been net buyers of the stock recently, signaling confidence in the company's future prospects."
+    : trend === "Selling"
+    ? "Corporate insiders have been net sellers recently, which could indicate valuation concerns or personal liquidity needs."
+    : "Insider trading activity has been relatively neutral over the past few months, showing no strong conviction in either direction.";
+
+  return {
+    trend,
+    netBuyingScore: avgMspr,
+    summary,
+  };
+}
+
+function processCompetitorMatrix(_peers: string[], peerMetrics: PeerMetrics[]): CompetitorMatrix | undefined {
+  if (!peerMetrics || peerMetrics.length === 0) return undefined;
+
+  // Build a meaningful data-driven summary
+  const validPE = peerMetrics.filter(p => p.peTTM != null && p.peTTM > 0);
+  const avgPE = validPE.length > 0 ? validPE.reduce((s, p) => s + (p.peTTM || 0), 0) / validPE.length : null;
+  const peerNames = peerMetrics.map(p => p.ticker).join(", ");
+  const summaryParts: string[] = [`Peer comparison against ${peerNames}.`];
+  if (avgPE) summaryParts.push(`The peer group trades at an average P/E of ${avgPE.toFixed(1)}x.`);
+  
+  return {
+    peers: peerMetrics,
+    summary: summaryParts.join(" "),
+  };
+}
+
 // ─── Main synthesis node ───────────────────────────────────
 
 export async function synthesisNode(
@@ -376,6 +485,10 @@ export async function synthesisNode(
     newsResults,
     qualitativeAnalysis,
     historicalPatternAnalysis,
+    etfProfile,
+    insiderSentimentData,
+    peerMetrics,
+    earningsCallResults,
   } = state;
 
   const currentPrice = quote?.c || (candles?.c ? candles.c[candles.c.length - 1] : 0);
@@ -488,22 +601,25 @@ export async function synthesisNode(
   };
 
   // Run AI-dependent steps in parallel
-  const [description, newsAnalysis, financialHealth] = await Promise.all([
-    profile
-      ? generateDescription(companyName, profile.finnhubIndustry || "Unknown", profile)
-      : Promise.resolve(`${companyName} is ${assetType === "crypto" ? "a cryptocurrency" : "a publicly traded company"}.`),
+  const [description, newsAnalysis, financialHealth, earningsCallAnalysis] = await Promise.all([
+    profile || assetType === "etf" || assetType === "mutual_fund" || assetType === "bond"
+      ? generateDescription(companyName, profile?.finnhubIndustry || assetType, profile, assetType, etfProfile)
+      : Promise.resolve(`${companyName} is ${assetType === "crypto" ? "a cryptocurrency" : "an asset"}.`),
     newsResults
       ? generateNewsAnalysis(companyName, newsResults, earnings)
       : Promise.resolve({ items: [], overallSentiment: "neutral" as const, sentimentSummary: "No news available." }),
     generateFinancialHealth(companyName, metrics, assetType),
+    earningsCallResults && assetType === "stock"
+      ? generateEarningsCallAnalysis(companyName, earningsCallResults)
+      : Promise.resolve(undefined),
   ]);
 
   // Assemble the full report
   const companySnapshot: CompanySnapshot = {
     ticker: assetType === "crypto" ? ticker.split(":")[1]?.replace("USDT", "") || ticker : ticker,
     name: profile?.name || companyName,
-    sector: profile?.finnhubIndustry || (assetType === "crypto" ? "Cryptocurrency" : "Unknown"),
-    exchange: profile?.exchange || (assetType === "crypto" ? "Crypto" : "Unknown"),
+    sector: profile?.finnhubIndustry || (assetType === "crypto" ? "Cryptocurrency" : assetType === "etf" ? "Exchange Traded Fund" : assetType === "mutual_fund" ? "Mutual Fund" : assetType === "bond" ? "Government Bond" : "Unknown"),
+    exchange: profile?.exchange || (assetType === "crypto" ? "Crypto" : assetType === "etf" || assetType === "mutual_fund" ? "Fund Exchange" : assetType === "bond" ? "Bond Market" : "Unknown"),
     currentPrice,
     dayChange: quote?.d || 0,
     dayChangePercent: quote?.dp || 0,
@@ -525,6 +641,9 @@ export async function synthesisNode(
     technicalSignal,
     newsAnalysis,
     financialHealth,
+    competitorMatrix: processCompetitorMatrix(state.peers || [], peerMetrics || []),
+    insiderSentiment: processInsiderSentiment(insiderSentimentData),
+    earningsCallAnalysis,
     qualitativeRead: {
       managementAssessment: qualParsed.managementAssessment || "Management assessment not available.",
       competitivePositioning: qualParsed.competitivePositioning || "Competitive positioning assessment not available.",

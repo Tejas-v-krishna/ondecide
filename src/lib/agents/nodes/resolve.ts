@@ -64,6 +64,22 @@ export async function resolveNode(
     };
   }
 
+  // Check if it's a government bond search
+  const rawLower = state.query.toLowerCase();
+  if (
+    rawLower.includes("bond") || 
+    rawLower.includes("yield") || 
+    rawLower.includes("treasury") || 
+    rawLower.includes("g-sec") ||
+    rawLower.includes("gsec")
+  ) {
+    return {
+      ticker: raw,
+      assetType: "bond",
+      companyName: state.query,
+    };
+  }
+
   // Try as stock ticker — validate via Finnhub profile
   try {
     const profile = await getProfile(raw);
@@ -86,17 +102,19 @@ export async function resolveNode(
     const data = await searchRes.json();
     if (data.result && data.result.length > 0) {
       // Find best match — prefer exact ticker or common stock type
-      const match =
-        data.result.find(
-          (r: { type: string; symbol: string }) => r.type === "Common Stock" && r.symbol === raw
-        ) ||
-        data.result.find((r: { type: string }) => r.type === "Common Stock") ||
-        data.result[0];
+      const exactMatch = data.result.find((r: { symbol?: string }) => r.symbol === raw);
+      const stockMatch = data.result.find((r: { type?: string; symbol?: string }) => r.type === "Common Stock" && r.symbol === raw);
+      const etpMatch = data.result.find((r: { type?: string; symbol?: string }) => (r.type === "ETP" || r.type === "ETF") && r.symbol === raw);
+      
+      const match = stockMatch || etpMatch || exactMatch || data.result[0];
 
       if (match) {
+        const isETF = match.type === "ETP" || match.type === "ETF" || match.description.toUpperCase().includes(" ETF");
+        const isMutualFund = match.type === "Mutual Fund" || match.symbol.endsWith("X");
+
         return {
           ticker: match.symbol,
-          assetType: "stock",
+          assetType: isETF ? "etf" : isMutualFund ? "mutual_fund" : "stock",
           companyName: match.description,
         };
       }

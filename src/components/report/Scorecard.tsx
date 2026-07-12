@@ -30,11 +30,11 @@ export function ScorecardSection({ data }: ScorecardProps) {
   const overallColor = SCORE_COLOR(data.overallScore);
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-navy-800 p-6">
+    <div className="rounded-xl border border-zinc-800/60 bg-zinc-950 p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-lg font-semibold text-slate-100">Stock Scorecard</h2>
-          <p className="text-sm text-slate-500 mt-0.5">Computed from Finnhub fundamental data</p>
+          <h2 className="font-serif text-lg font-semibold text-white">Stock Scorecard</h2>
+          <p className="text-sm text-zinc-500 mt-0.5">Computed from Finnhub fundamental data</p>
         </div>
         {/* Overall score badge */}
         <div className="text-center">
@@ -44,7 +44,7 @@ export function ScorecardSection({ data }: ScorecardProps) {
           >
             {data.overallScore}
           </div>
-          <div className="text-xs text-slate-500 mt-1">/ 10</div>
+          <div className="text-xs text-zinc-500 mt-1">/ 10</div>
         </div>
       </div>
 
@@ -80,21 +80,21 @@ export function ScorecardSection({ data }: ScorecardProps) {
             return (
               <div key={axis.label}>
                 <div className="flex items-center justify-between mb-1">
-                  <span className={`text-sm font-medium ${axis.isWarning ? "text-rose-400" : "text-slate-200"}`}>
+                  <span className={`text-sm font-medium ${axis.isWarning ? "text-rose-400" : "text-zinc-100"}`}>
                     {axis.isWarning && <span className="mr-1">⚠</span>}
                     {axis.label}
                   </span>
-                  <span className="text-sm font-mono font-bold" style={{ color }}>
+                  <span className="text-sm font-sans font-bold" style={{ color }}>
                     {axis.score}/10
                   </span>
                 </div>
-                <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                <div className="h-1.5 bg-zinc-900 rounded-full overflow-hidden">
                   <div
                     className="h-full rounded-full transition-all duration-700"
                     style={{ width: `${axis.score * 10}%`, backgroundColor: color }}
                   />
                 </div>
-                <p className="text-xs text-slate-500 mt-1">{axis.verdict}</p>
+                <p className="text-xs text-zinc-500 mt-1">{axis.verdict}</p>
               </div>
             );
           })}

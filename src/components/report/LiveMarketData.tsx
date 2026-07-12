@@ -81,10 +81,10 @@ export function LiveMarketDataSection({ data, ticker }: LiveMarketDataProps) {
   }, [data.candles]);
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-navy-800 overflow-hidden">
-      <div className="px-6 py-4 border-b border-slate-800">
-        <h2 className="text-lg font-semibold text-slate-100">Live Market Data</h2>
-        <p className="text-sm text-slate-500 mt-0.5">1-year price history · {ticker}</p>
+    <div className="rounded-xl border border-zinc-800/60 bg-zinc-950 overflow-hidden">
+      <div className="px-6 py-4 border-b border-zinc-800/60">
+        <h2 className="font-serif text-lg font-semibold text-white">Live Market Data</h2>
+        <p className="text-sm text-zinc-500 mt-0.5">1-year price history · {ticker}</p>
       </div>
 
       {/* Chart */}
@@ -92,7 +92,7 @@ export function LiveMarketDataSection({ data, ticker }: LiveMarketDataProps) {
         {data.candles.length > 0 ? (
           <div ref={chartRef} className="w-full rounded-lg overflow-hidden" />
         ) : (
-          <div className="h-[260px] flex items-center justify-center text-slate-500 bg-navy-900 rounded-lg">
+          <div className="h-[260px] flex items-center justify-center text-zinc-500 bg-black rounded-lg">
             Price chart data unavailable
           </div>
         )}
@@ -102,13 +102,13 @@ export function LiveMarketDataSection({ data, ticker }: LiveMarketDataProps) {
       <div className="px-6 py-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
         {data.keyStats.map((stat) => (
           <div key={stat.label} className="space-y-1">
-            <div className="text-xs text-slate-500 uppercase tracking-wider">
+            <div className="text-xs text-zinc-500 uppercase tracking-wider">
               {stat.glossaryTerm ? (
                 <GlossaryTooltip term={stat.glossaryTerm}>{stat.label}</GlossaryTooltip>
               ) : stat.label}
             </div>
-            <div className="text-base font-mono font-semibold text-slate-100">{stat.value}</div>
-            <div className="text-xs text-slate-500 leading-relaxed">{stat.plainMeaning}</div>
+            <div className="text-base font-sans font-semibold text-white">{stat.value}</div>
+            <div className="text-xs text-zinc-500 leading-relaxed">{stat.plainMeaning}</div>
           </div>
         ))}
       </div>

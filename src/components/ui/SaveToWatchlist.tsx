@@ -56,7 +56,7 @@ export function SaveToWatchlist({ report, isSaved: initialSaved = false, onSaved
       className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium transition-all duration-200 ${
         saved
           ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20"
-          : "border-slate-700 bg-navy-800 text-slate-400 hover:border-slate-500 hover:text-slate-200"
+          : "border-zinc-800 bg-zinc-950 text-zinc-400 hover:border-zinc-600 hover:text-zinc-100"
       }`}
     >
       {loading ? (
