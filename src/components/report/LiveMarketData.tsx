@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from "react";
 import type { LiveMarketData } from "@/types";
-import { GlossaryTooltip } from "@/components/ui/GlossaryTooltip";
 
 interface LiveMarketDataProps {
   data: LiveMarketData;
@@ -96,21 +95,6 @@ export function LiveMarketDataSection({ data, ticker }: LiveMarketDataProps) {
             Price chart data unavailable
           </div>
         )}
-      </div>
-
-      {/* Key stats */}
-      <div className="px-6 py-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
-        {data.keyStats.map((stat) => (
-          <div key={stat.label} className="space-y-1">
-            <div className="text-xs text-zinc-500 uppercase tracking-wider">
-              {stat.glossaryTerm ? (
-                <GlossaryTooltip term={stat.glossaryTerm}>{stat.label}</GlossaryTooltip>
-              ) : stat.label}
-            </div>
-            <div className="text-base font-sans font-semibold text-white">{stat.value}</div>
-            <div className="text-xs text-zinc-500 leading-relaxed">{stat.plainMeaning}</div>
-          </div>
-        ))}
       </div>
     </div>
   );

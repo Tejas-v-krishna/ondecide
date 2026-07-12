@@ -254,7 +254,7 @@ async function getYearCryptoCandlesFromCoinGecko(
     }
   }
 
-  const ordered = [...byDay.values()].sort((a, b) => a.t - b.t);
+  const ordered = Array.from(byDay.values()).sort((a, b) => a.t - b.t);
   return {
     t: ordered.map((d) => d.t),
     c: ordered.map((d) => d.c),

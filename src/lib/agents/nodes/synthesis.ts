@@ -1,6 +1,6 @@
 import { ResearchStateType } from "../state";
 import { geminiModel } from "@/lib/gemini";
-import { HumanMessage, SystemMessage, AIMessage } from "@langchain/core/messages";
+import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import {
   computeRSI,
   computeSMA,
@@ -258,7 +258,8 @@ async function generateNewsAnalysis(
     .map((r, i) => `${i + 1}. ${r.title}\n   Source: ${r.url}\n   Date: ${r.publishedDate || "Recent"}\n   Content: ${r.content.slice(0, 400)}`)
     .join("\n\n");
 
-  let response: AIMessage;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let response: any;
   try {
     response = await geminiModel.invoke([
       new SystemMessage("You are a financial analyst summarizing news for investors."),
@@ -352,7 +353,8 @@ async function generateFinancialHealth(
 
   const m = metrics.metric;
 
-  let response: AIMessage;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let response: any;
   try {
     response = await geminiModel.invoke([
       new SystemMessage("You are a financial analyst translating raw financial metrics into plain-language verdicts."),
@@ -434,7 +436,8 @@ async function generateEarningsCallAnalysis(
     .map((r) => `- ${r.title}: ${r.content.slice(0, 400)}`)
     .join("\n");
 
-  let response: AIMessage;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let response: any;
   try {
     response = await geminiModel.invoke([
       new SystemMessage("You are a financial analyst summarizing earnings call transcripts."),

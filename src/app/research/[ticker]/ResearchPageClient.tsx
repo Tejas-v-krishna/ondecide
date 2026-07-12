@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { useEffect, useState, useRef } from "react";
 import { AgentProgress } from "@/components/ui/AgentProgress";
 import { SaveToWatchlist } from "@/components/ui/SaveToWatchlist";
@@ -11,7 +10,6 @@ import { LiveMarketDataSection } from "@/components/report/LiveMarketData";
 import { ScorecardSection } from "@/components/report/Scorecard";
 import { TechnicalSignalSection } from "@/components/report/TechnicalSignal";
 import { NewsAnalysisSection } from "@/components/report/NewsAnalysis";
-import { FinancialHealthSection } from "@/components/report/FinancialHealth";
 import { QualitativeReadSection } from "@/components/report/QualitativeRead";
 import { HistoricalPatternSection } from "@/components/report/HistoricalPattern";
 import { DecisionSection } from "@/components/report/Decision";
@@ -19,6 +17,7 @@ import { CompetitorMatrixSection } from "@/components/report/CompetitorMatrix";
 import { InsiderSentimentSection } from "@/components/report/InsiderSentiment";
 import { EarningsCallAnalysisSection } from "@/components/report/EarningsCallAnalysis";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
+import { GlossaryTooltip } from "@/components/ui/GlossaryTooltip";
 import type { ResearchReport } from "@/types";
 
 interface ResearchPageClientProps {
@@ -26,6 +25,8 @@ interface ResearchPageClientProps {
 }
 
 type Phase = "loading" | "complete" | "error";
+type AITab = "thesis" | "qualitative" | "news" | "history";
+type ProTab = "peers" | "insiders" | "earnings";
 
 export function ResearchPageClient({ ticker }: ResearchPageClientProps) {
   const [phase, setPhase] = useState<Phase>("loading");
@@ -33,6 +34,8 @@ export function ResearchPageClient({ ticker }: ResearchPageClientProps) {
   const [currentMessage, setCurrentMessage] = useState("");
   const [report, setReport] = useState<ResearchReport | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
+  const [aiTab, setAiTab] = useState<AITab>("thesis");
+  const [proTab, setProTab] = useState<ProTab>("peers");
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
@@ -125,19 +128,14 @@ export function ResearchPageClient({ ticker }: ResearchPageClientProps) {
 
   if (!report) return null;
 
-  const stats = report.liveMarketData?.keyStats ?? [];
-
   return (
-    <div
-      className="max-w-6xl mx-auto px-4 sm:px-6 pb-20"
-      style={{ ["--nav-h" as string]: "64px" } as React.CSSProperties}
-    >
-      {/* Report nav + save — full width header strip */}
-      <div className="flex items-center justify-between py-4">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
+      {/* Top Action Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between py-4 border-b border-zinc-800/50 gap-4 mb-6">
         <ReportNav />
         <div className="flex items-center gap-3">
           <SaveToWatchlist report={report} />
-          <AddToPortfolio
+          <AddToPortfolio 
             ticker={report.ticker}
             assetType={report.assetType}
             companyName={report.companySnapshot.name}
@@ -146,158 +144,223 @@ export function ResearchPageClient({ ticker }: ResearchPageClientProps) {
         </div>
       </div>
 
-      {/* 70 / 30 two-column layout */}
-      <div className="lg:grid lg:grid-cols-[1fr_360px] lg:gap-8 items-start">
-        {/* ── MAIN COLUMN ───────────────────────────── */}
-        <div className="min-w-0 space-y-6 animate-slide-up">
-          {/* Snapshot — full width */}
-          <ErrorBoundary sectionName="Company Snapshot">
-            <div id="snapshot" className="report-section">
-              <CompanySnapshotSection data={report.companySnapshot} />
-            </div>
+      {/* Ticker Banner */}
+      <div className="mb-6">
+        <ErrorBoundary sectionName="Company Overview">
+          <CompanySnapshotSection data={report.companySnapshot} />
+        </ErrorBoundary>
+      </div>
+
+      {/* Main Grid Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+        {/* Left Column (2/3 width on desktop) */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Chart Card */}
+          <ErrorBoundary sectionName="Price Chart">
+            <LiveMarketDataSection
+              data={report.liveMarketData}
+              ticker={report.ticker}
+              currency={report.companySnapshot.currency}
+            />
           </ErrorBoundary>
 
-          {/* Stat cards — 4-up on desktop, 2-up tablet, 1-up mobile */}
-          {stats.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {stats.slice(0, 4).map((s, i) => (
-                <div
-                  key={i}
-                  className="rounded-xl border border-zinc-800/60 bg-zinc-950 p-4"
-                >
-                  <div className="text-xs text-zinc-500 mb-1">{s.label}</div>
-                  <div className="text-base font-semibold text-white font-sans">
-                    {s.value}
-                  </div>
+          {/* AI Insights Terminal (Tabbed Card) */}
+          <div className="rounded-xl border border-zinc-800/60 bg-zinc-950 overflow-hidden">
+            {/* Tab Headers */}
+            <div className="flex border-b border-zinc-800/60 overflow-x-auto scrollbar-none bg-zinc-950/80 backdrop-blur">
+              <button
+                onClick={() => setAiTab("thesis")}
+                className={`px-5 py-4 text-sm font-serif font-semibold border-b-2 whitespace-nowrap transition-all ${
+                  aiTab === "thesis"
+                    ? "border-emerald-500 text-emerald-400 bg-emerald-500/5"
+                    : "border-transparent text-zinc-500 hover:text-zinc-300"
+                }`}
+              >
+                Investment Thesis
+              </button>
+              <button
+                onClick={() => setAiTab("qualitative")}
+                className={`px-5 py-4 text-sm font-serif font-semibold border-b-2 whitespace-nowrap transition-all ${
+                  aiTab === "qualitative"
+                    ? "border-emerald-500 text-emerald-400 bg-emerald-500/5"
+                    : "border-transparent text-zinc-500 hover:text-zinc-300"
+                }`}
+              >
+                Moat & Management
+              </button>
+              <button
+                onClick={() => setAiTab("news")}
+                className={`px-5 py-4 text-sm font-serif font-semibold border-b-2 whitespace-nowrap transition-all ${
+                  aiTab === "news"
+                    ? "border-emerald-500 text-emerald-400 bg-emerald-500/5"
+                    : "border-transparent text-zinc-500 hover:text-zinc-300"
+                }`}
+              >
+                News & Sentiment
+              </button>
+              <button
+                onClick={() => setAiTab("history")}
+                className={`px-5 py-4 text-sm font-serif font-semibold border-b-2 whitespace-nowrap transition-all ${
+                  aiTab === "history"
+                    ? "border-emerald-500 text-emerald-400 bg-emerald-500/5"
+                    : "border-transparent text-zinc-500 hover:text-zinc-300"
+                }`}
+              >
+                Historical Parallels
+              </button>
+            </div>
+
+            {/* Tab Contents */}
+            <div className="p-6">
+              {aiTab === "thesis" && (
+                <ErrorBoundary sectionName="Investment Thesis">
+                  <DecisionSection data={report.decision} />
+                </ErrorBoundary>
+              )}
+
+              {aiTab === "qualitative" && (
+                <div className="space-y-6">
+                  {report.companySnapshot.description && (
+                    <div className="p-5 rounded-xl border border-zinc-800/40 bg-zinc-950/40">
+                      <h4 className="font-serif text-sm font-semibold text-white uppercase tracking-wider mb-2">Company Overview</h4>
+                      <p className="text-zinc-300 text-sm leading-relaxed">{report.companySnapshot.description}</p>
+                      {report.companySnapshot.website && (
+                        <a
+                          href={report.companySnapshot.website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 mt-3 text-xs text-emerald-400 hover:text-emerald-300 transition-colors"
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                          Visit website
+                        </a>
+                      )}
+                    </div>
+                  )}
+                  <ErrorBoundary sectionName="Moat & Management">
+                    <QualitativeReadSection data={report.qualitativeRead} />
+                  </ErrorBoundary>
+                </div>
+              )}
+
+              {aiTab === "news" && (
+                <ErrorBoundary sectionName="News Analysis">
+                  <NewsAnalysisSection data={report.newsAnalysis} />
+                </ErrorBoundary>
+              )}
+
+              {aiTab === "history" && (
+                <ErrorBoundary sectionName="Historical Parallels">
+                  <HistoricalPatternSection data={report.historicalPattern} />
+                </ErrorBoundary>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column (1/3 width on desktop - Quant & Technical Sidebar) */}
+        <div className="space-y-6">
+          {/* Stock Scorecard */}
+          <ErrorBoundary sectionName="Fundamental Scorecard">
+            <ScorecardSection data={report.scorecard} />
+          </ErrorBoundary>
+
+          {/* Technical Indicators */}
+          <ErrorBoundary sectionName="Technical Analysis">
+            <TechnicalSignalSection data={report.technicalSignal} />
+          </ErrorBoundary>
+
+          {/* Market Statistics Card */}
+          <div className="rounded-xl border border-zinc-800/60 bg-zinc-950 p-6">
+            <h3 className="font-serif text-lg font-bold text-white mb-4">Market Statistics</h3>
+            <div className="divide-y divide-zinc-800/40">
+              {report.liveMarketData.keyStats.map((stat) => (
+                <div key={stat.label} className="py-3 flex justify-between items-center text-sm gap-4">
+                  <span className="text-zinc-500 shrink-0">
+                    {stat.glossaryTerm ? (
+                      <GlossaryTooltip term={stat.glossaryTerm}>{stat.label}</GlossaryTooltip>
+                    ) : (
+                      stat.label
+                    )}
+                  </span>
+                  <span className="font-sans font-semibold text-zinc-200 text-right">{stat.value}</span>
                 </div>
               ))}
             </div>
-          )}
-
-          {/* Price chart — full width */}
-          <ErrorBoundary sectionName="Live Market Data">
-            <div id="market" className="report-section">
-              <LiveMarketDataSection
-                data={report.liveMarketData}
-                ticker={report.ticker}
-                currency={report.companySnapshot.currency}
-              />
-            </div>
-          </ErrorBoundary>
-
-          {/* Paired sub-grids — source order pairs sections 2-per-row */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <ErrorBoundary sectionName="Scorecard">
-              <div id="scorecard" className="report-section">
-                <ScorecardSection data={report.scorecard} />
-              </div>
-            </ErrorBoundary>
-
-            <ErrorBoundary sectionName="Technical Signals">
-              <div id="technical" className="report-section">
-                <TechnicalSignalSection data={report.technicalSignal} />
-              </div>
-            </ErrorBoundary>
-
-            <ErrorBoundary sectionName="News Analysis">
-              <div id="news" className="report-section">
-                <NewsAnalysisSection data={report.newsAnalysis} />
-              </div>
-            </ErrorBoundary>
-
-            <ErrorBoundary sectionName="Qualitative Read">
-              <div id="qualitative" className="report-section">
-                <QualitativeReadSection data={report.qualitativeRead} />
-              </div>
-            </ErrorBoundary>
-
-            {report.competitorMatrix && (
-              <ErrorBoundary sectionName="Competitor Matrix">
-                <div id="competitors" className="report-section">
-                  <CompetitorMatrixSection matrix={report.competitorMatrix} />
-                </div>
-              </ErrorBoundary>
-            )}
-
-            <ErrorBoundary sectionName="Historical Pattern">
-              <div id="history" className="report-section">
-                <HistoricalPatternSection data={report.historicalPattern} />
-              </div>
-            </ErrorBoundary>
-
-            <ErrorBoundary sectionName="Financial Health">
-              <div id="financials" className="report-section">
-                <FinancialHealthSection data={report.financialHealth} />
-              </div>
-            </ErrorBoundary>
-
-            {report.insiderSentiment && (
-              <ErrorBoundary sectionName="Insider Sentiment">
-                <div id="insiders" className="report-section">
-                  <InsiderSentimentSection data={report.insiderSentiment} />
-                </div>
-              </ErrorBoundary>
-            )}
-
-            {report.earningsCallAnalysis && (
-              <ErrorBoundary sectionName="Earnings Call Analysis">
-                <div id="earnings-call" className="report-section">
-                  <EarningsCallAnalysisSection data={report.earningsCallAnalysis} />
-                </div>
-              </ErrorBoundary>
-            )}
           </div>
 
-          {/* Footer note */}
-          <p className="text-center text-xs text-zinc-600 pb-4">
-            Report generated {new Date(report.generatedAt).toLocaleString()} · OnDecide uses Finnhub, Tavily, and AI analysis
-          </p>
-        </div>
-
-        {/* ── SIDEBAR (sticky) ─────────────────────── */}
-        <aside className="mt-6 lg:mt-0 lg:sticky lg:top-[calc(var(--nav-h)+16px)] lg:self-start space-y-6">
-          {/* Decision card */}
-          <ErrorBoundary sectionName="Decision">
-            <div id="decision" className="report-section">
-              <DecisionSection data={report.decision} />
+          {/* Pro Insights Terminal (Tabbed Card) */}
+          <div className="rounded-xl border border-zinc-800/60 bg-zinc-950 overflow-hidden">
+            {/* Headers */}
+            <div className="flex border-b border-zinc-800/60 bg-zinc-950/80">
+              <button
+                onClick={() => setProTab("peers")}
+                className={`flex-1 py-3 text-xs font-serif font-semibold border-b-2 text-center transition-all ${
+                  proTab === "peers"
+                    ? "border-emerald-500 text-emerald-400 bg-emerald-500/5"
+                    : "border-transparent text-zinc-500 hover:text-zinc-300"
+                }`}
+              >
+                Peers
+              </button>
+              <button
+                onClick={() => setProTab("insiders")}
+                className={`flex-1 py-3 text-xs font-serif font-semibold border-b-2 text-center transition-all ${
+                  proTab === "insiders"
+                    ? "border-emerald-500 text-emerald-400 bg-emerald-500/5"
+                    : "border-transparent text-zinc-500 hover:text-zinc-300"
+                }`}
+              >
+                Smart Money
+              </button>
+              <button
+                onClick={() => setProTab("earnings")}
+                className={`flex-1 py-3 text-xs font-serif font-semibold border-b-2 text-center transition-all ${
+                  proTab === "earnings"
+                    ? "border-emerald-500 text-emerald-400 bg-emerald-500/5"
+                    : "border-transparent text-zinc-500 hover:text-zinc-300"
+                }`}
+              >
+                Earnings NLP
+              </button>
             </div>
-          </ErrorBoundary>
 
-          {/* Compact key-stats mirror — price / market cap / P/E */}
-          {(() => {
-            const pe = stats.find((s) => /p[\/\s]?e/i.test(s.label));
-            const cap = report.companySnapshot.marketCap;
-            const capStr =
-              cap >= 1000
-                ? `$${(cap / 1000).toFixed(2)}T`
-                : cap >= 1
-                ? `$${(cap).toFixed(2)}B`
-                : `$${(cap * 1000).toFixed(0)}M`;
-            const rows = [
-              { label: "Price", value: `${report.companySnapshot.currency} ${report.companySnapshot.currentPrice.toFixed(2)}` },
-              { label: "Market Cap", value: capStr },
-              ...(pe ? [{ label: "P/E", value: pe.value }] : []),
-            ];
-            return (
-              <div className="rounded-xl border border-zinc-800/60 bg-zinc-950 p-5">
-                <h3 className="font-serif text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-4">
-                  Key Stats
-                </h3>
-                <dl className="space-y-3">
-                  {rows.map((r, i) => (
-                    <div key={i} className="flex items-baseline justify-between gap-3">
-                      <dt className="text-sm text-zinc-400">{r.label}</dt>
-                      <dd className="text-sm font-medium text-white font-sans text-right">
-                        {r.value}
-                      </dd>
+            {/* Contents */}
+            <div className="p-5">
+              {proTab === "peers" && (
+                <ErrorBoundary sectionName="Competitor Matrix">
+                  {report.competitorMatrix ? (
+                    <CompetitorMatrixSection matrix={report.competitorMatrix} />
+                  ) : (
+                    <div className="p-4 text-center text-zinc-500 text-xs border border-dashed border-zinc-800 rounded-lg">
+                      No competitor comparison available for this asset class.
                     </div>
-                  ))}
-                </dl>
-              </div>
-            );
-          })()}
-        </aside>
+                  )}
+                </ErrorBoundary>
+              )}
+
+              {proTab === "insiders" && (
+                <ErrorBoundary sectionName="Insider Sentiment">
+                  <InsiderSentimentSection data={report.insiderSentiment || { trend: "No Data", netBuyingScore: 0, summary: "No data available." }} />
+                </ErrorBoundary>
+              )}
+
+              {proTab === "earnings" && (
+                <ErrorBoundary sectionName="Earnings NLP">
+                  <EarningsCallAnalysisSection data={report.earningsCallAnalysis || { managementTone: "No Data", keyRisks: [], forwardGuidance: "No forward guidance available.", summary: "Earnings call transcript not available." }} />
+                </ErrorBoundary>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
+
+      {/* Footer Note */}
+      <p className="text-center text-xs text-zinc-600 mt-12">
+        Report generated {new Date(report.generatedAt).toLocaleString()} · OnDecide uses Finnhub, Tavily, and AI analysis
+      </p>
     </div>
   );
 }
