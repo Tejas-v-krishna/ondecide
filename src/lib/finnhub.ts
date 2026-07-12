@@ -166,9 +166,7 @@ export function unixToDateStr(ts: number): string {
 }
 
 async function getYearCandlesFromYahoo(
-  symbol: string,
-  from: number,
-  to: number
+  symbol: string
 ): Promise<FinnhubCandle> {
   const url = `https://query2.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=1y`;
   
@@ -228,10 +226,10 @@ export async function getYearCandles(symbol: string): Promise<FinnhubCandle> {
       return candles;
     }
     // Fallback to Yahoo Finance for international stocks/ETFs if Finnhub has no data
-    return await getYearCandlesFromYahoo(symbol, from, to);
+    return await getYearCandlesFromYahoo(symbol);
   } catch {
     try {
-      return await getYearCandlesFromYahoo(symbol, from, to);
+      return await getYearCandlesFromYahoo(symbol);
     } catch {
       return { c: [], h: [], l: [], o: [], t: [], v: [], s: "no_data" };
     }

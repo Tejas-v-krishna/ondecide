@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SearchBar } from "@/components/ui/SearchBar";
-import { FileText, Cpu, Clock, Link2, Download, Filter } from "lucide-react";
+import { FileText, Cpu, Link2, Filter } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "OnDecide — Understand any investment",
