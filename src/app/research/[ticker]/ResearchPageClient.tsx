@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { useEffect, useState, useRef } from "react";
 import { AgentProgress } from "@/components/ui/AgentProgress";
 import { SaveToWatchlist } from "@/components/ui/SaveToWatchlist";
@@ -124,14 +125,19 @@ export function ResearchPageClient({ ticker }: ResearchPageClientProps) {
 
   if (!report) return null;
 
+  const stats = report.liveMarketData?.keyStats ?? [];
+
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 pb-20">
-      {/* Report nav + save */}
+    <div
+      className="max-w-6xl mx-auto px-4 sm:px-6 pb-20"
+      style={{ ["--nav-h" as string]: "64px" } as React.CSSProperties}
+    >
+      {/* Report nav + save — full width header strip */}
       <div className="flex items-center justify-between py-4">
         <ReportNav />
         <div className="flex items-center gap-3">
           <SaveToWatchlist report={report} />
-          <AddToPortfolio 
+          <AddToPortfolio
             ticker={report.ticker}
             assetType={report.assetType}
             companyName={report.companySnapshot.name}
@@ -140,94 +146,157 @@ export function ResearchPageClient({ ticker }: ResearchPageClientProps) {
         </div>
       </div>
 
-      {/* All report sections */}
-      <div className="space-y-6 animate-slide-up">
-        <ErrorBoundary sectionName="Company Snapshot">
-          <div id="snapshot" className="report-section">
-            <CompanySnapshotSection data={report.companySnapshot} />
-          </div>
-        </ErrorBoundary>
-
-        <ErrorBoundary sectionName="Live Market Data">
-          <div id="market" className="report-section">
-            <LiveMarketDataSection
-              data={report.liveMarketData}
-              ticker={report.ticker}
-              currency={report.companySnapshot.currency}
-            />
-          </div>
-        </ErrorBoundary>
-
-        <ErrorBoundary sectionName="Scorecard">
-          <div id="scorecard" className="report-section">
-            <ScorecardSection data={report.scorecard} />
-          </div>
-        </ErrorBoundary>
-
-        <ErrorBoundary sectionName="Technical Signals">
-          <div id="technical" className="report-section">
-            <TechnicalSignalSection data={report.technicalSignal} />
-          </div>
-        </ErrorBoundary>
-
-        <ErrorBoundary sectionName="News Analysis">
-          <div id="news" className="report-section">
-            <NewsAnalysisSection data={report.newsAnalysis} />
-          </div>
-        </ErrorBoundary>
-
-        <ErrorBoundary sectionName="Financial Health">
-          <div id="financials" className="report-section">
-            <FinancialHealthSection data={report.financialHealth} />
-          </div>
-        </ErrorBoundary>
-
-        <ErrorBoundary sectionName="Qualitative Read">
-          <div id="qualitative" className="report-section">
-            <QualitativeReadSection data={report.qualitativeRead} />
-          </div>
-        </ErrorBoundary>
-
-        {report.competitorMatrix && (
-          <ErrorBoundary sectionName="Competitor Matrix">
-            <div id="competitors" className="report-section">
-              <CompetitorMatrixSection matrix={report.competitorMatrix} />
+      {/* 70 / 30 two-column layout */}
+      <div className="lg:grid lg:grid-cols-[1fr_360px] lg:gap-8 items-start">
+        {/* ── MAIN COLUMN ───────────────────────────── */}
+        <div className="min-w-0 space-y-6 animate-slide-up">
+          {/* Snapshot — full width */}
+          <ErrorBoundary sectionName="Company Snapshot">
+            <div id="snapshot" className="report-section">
+              <CompanySnapshotSection data={report.companySnapshot} />
             </div>
           </ErrorBoundary>
-        )}
 
-        {report.insiderSentiment && (
-          <ErrorBoundary sectionName="Insider Sentiment">
-            <div id="insiders" className="report-section">
-              <InsiderSentimentSection data={report.insiderSentiment} />
+          {/* Stat cards — 4-up on desktop, 2-up tablet, 1-up mobile */}
+          {stats.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {stats.slice(0, 4).map((s, i) => (
+                <div
+                  key={i}
+                  className="rounded-xl border border-zinc-800/60 bg-zinc-950 p-4"
+                >
+                  <div className="text-xs text-zinc-500 mb-1">{s.label}</div>
+                  <div className="text-base font-semibold text-white font-sans">
+                    {s.value}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Price chart — full width */}
+          <ErrorBoundary sectionName="Live Market Data">
+            <div id="market" className="report-section">
+              <LiveMarketDataSection
+                data={report.liveMarketData}
+                ticker={report.ticker}
+                currency={report.companySnapshot.currency}
+              />
             </div>
           </ErrorBoundary>
-        )}
 
-        {report.earningsCallAnalysis && (
-          <ErrorBoundary sectionName="Earnings Call Analysis">
-            <div id="earnings-call" className="report-section">
-              <EarningsCallAnalysisSection data={report.earningsCallAnalysis} />
+          {/* Paired sub-grids — source order pairs sections 2-per-row */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <ErrorBoundary sectionName="Scorecard">
+              <div id="scorecard" className="report-section">
+                <ScorecardSection data={report.scorecard} />
+              </div>
+            </ErrorBoundary>
+
+            <ErrorBoundary sectionName="Technical Signals">
+              <div id="technical" className="report-section">
+                <TechnicalSignalSection data={report.technicalSignal} />
+              </div>
+            </ErrorBoundary>
+
+            <ErrorBoundary sectionName="News Analysis">
+              <div id="news" className="report-section">
+                <NewsAnalysisSection data={report.newsAnalysis} />
+              </div>
+            </ErrorBoundary>
+
+            <ErrorBoundary sectionName="Qualitative Read">
+              <div id="qualitative" className="report-section">
+                <QualitativeReadSection data={report.qualitativeRead} />
+              </div>
+            </ErrorBoundary>
+
+            {report.competitorMatrix && (
+              <ErrorBoundary sectionName="Competitor Matrix">
+                <div id="competitors" className="report-section">
+                  <CompetitorMatrixSection matrix={report.competitorMatrix} />
+                </div>
+              </ErrorBoundary>
+            )}
+
+            <ErrorBoundary sectionName="Historical Pattern">
+              <div id="history" className="report-section">
+                <HistoricalPatternSection data={report.historicalPattern} />
+              </div>
+            </ErrorBoundary>
+
+            <ErrorBoundary sectionName="Financial Health">
+              <div id="financials" className="report-section">
+                <FinancialHealthSection data={report.financialHealth} />
+              </div>
+            </ErrorBoundary>
+
+            {report.insiderSentiment && (
+              <ErrorBoundary sectionName="Insider Sentiment">
+                <div id="insiders" className="report-section">
+                  <InsiderSentimentSection data={report.insiderSentiment} />
+                </div>
+              </ErrorBoundary>
+            )}
+
+            {report.earningsCallAnalysis && (
+              <ErrorBoundary sectionName="Earnings Call Analysis">
+                <div id="earnings-call" className="report-section">
+                  <EarningsCallAnalysisSection data={report.earningsCallAnalysis} />
+                </div>
+              </ErrorBoundary>
+            )}
+          </div>
+
+          {/* Footer note */}
+          <p className="text-center text-xs text-zinc-600 pb-4">
+            Report generated {new Date(report.generatedAt).toLocaleString()} · OnDecide uses Finnhub, Tavily, and AI analysis
+          </p>
+        </div>
+
+        {/* ── SIDEBAR (sticky) ─────────────────────── */}
+        <aside className="mt-6 lg:mt-0 lg:sticky lg:top-[calc(var(--nav-h)+16px)] lg:self-start space-y-6">
+          {/* Decision card */}
+          <ErrorBoundary sectionName="Decision">
+            <div id="decision" className="report-section">
+              <DecisionSection data={report.decision} />
             </div>
           </ErrorBoundary>
-        )}
 
-        <ErrorBoundary sectionName="Historical Pattern">
-          <div id="history" className="report-section">
-            <HistoricalPatternSection data={report.historicalPattern} />
-          </div>
-        </ErrorBoundary>
-
-        <ErrorBoundary sectionName="Decision">
-          <div id="decision" className="report-section">
-            <DecisionSection data={report.decision} />
-          </div>
-        </ErrorBoundary>
-
-        {/* Footer note */}
-        <p className="text-center text-xs text-zinc-600 pb-4">
-          Report generated {new Date(report.generatedAt).toLocaleString()} · OnDecide uses Finnhub, Tavily, and AI analysis
-        </p>
+          {/* Compact key-stats mirror — price / market cap / P/E */}
+          {(() => {
+            const pe = stats.find((s) => /p[\/\s]?e/i.test(s.label));
+            const cap = report.companySnapshot.marketCap;
+            const capStr =
+              cap >= 1000
+                ? `$${(cap / 1000).toFixed(2)}T`
+                : cap >= 1
+                ? `$${(cap).toFixed(2)}B`
+                : `$${(cap * 1000).toFixed(0)}M`;
+            const rows = [
+              { label: "Price", value: `${report.companySnapshot.currency} ${report.companySnapshot.currentPrice.toFixed(2)}` },
+              { label: "Market Cap", value: capStr },
+              ...(pe ? [{ label: "P/E", value: pe.value }] : []),
+            ];
+            return (
+              <div className="rounded-xl border border-zinc-800/60 bg-zinc-950 p-5">
+                <h3 className="font-serif text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-4">
+                  Key Stats
+                </h3>
+                <dl className="space-y-3">
+                  {rows.map((r, i) => (
+                    <div key={i} className="flex items-baseline justify-between gap-3">
+                      <dt className="text-sm text-zinc-400">{r.label}</dt>
+                      <dd className="text-sm font-medium text-white font-sans text-right">
+                        {r.value}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            );
+          })()}
+        </aside>
       </div>
     </div>
   );

@@ -17,9 +17,6 @@ const CRYPTO_MAP: Record<string, string> = {
   LTC: "BINANCE:LTCUSDT",
   UNI: "BINANCE:UNIUSDT",
   ATOM: "BINANCE:ATOMUSDT",
-  BITCOIN: "BINANCE:BTCUSDT",
-  ETHEREUM: "BINANCE:ETHUSDT",
-  SOLANA: "BINANCE:SOLUSDT",
 };
 
 const CRYPTO_NAMES: Record<string, string> = {
@@ -39,17 +36,63 @@ const CRYPTO_NAMES: Record<string, string> = {
   ATOM: "Cosmos",
 };
 
+const CRYPTO_SYNONYMS: Record<string, string> = {
+  BITCOIN: "BTC",
+  ETHEREUM: "ETH",
+  ETHER: "ETH",
+  SOLANA: "SOL",
+  BINANCE: "BNB",
+  BINANCECOIN: "BNB",
+  CARDANO: "ADA",
+  RIPPLE: "XRP",
+  DOGECOIN: "DOGE",
+  POLKADOT: "DOT",
+  AVALANCHE: "AVAX",
+  POLYGON: "MATIC",
+  CHAINLINK: "LINK",
+  LITECOIN: "LTC",
+  UNISWAP: "UNI",
+  COSMOS: "ATOM",
+};
+
 export async function resolveNode(
   state: ResearchStateType
 ): Promise<Partial<ResearchStateType>> {
   const raw = state.query.trim().toUpperCase();
+  const cleanRaw = raw.replace(/[^A-Z0-9]/g, "");
 
-  // Check if it's a known crypto
-  if (CRYPTO_MAP[raw]) {
+  // 1. Direct match on symbols (e.g. BTC)
+  let resolvedSymbol = CRYPTO_MAP[cleanRaw] ? cleanRaw : null;
+
+  // 2. Direct match on synonyms (e.g. BITCOIN)
+  if (!resolvedSymbol) {
+    resolvedSymbol = CRYPTO_SYNONYMS[cleanRaw] || null;
+  }
+
+  // 3. Fuzzy search for prefix matching (e.g. "bitco" -> "BITCOIN" -> "BTC")
+  if (!resolvedSymbol && cleanRaw.length >= 3) {
+    // Check if cleanRaw is a prefix of any synonym/symbol, or vice-versa
+    const foundSynonym = Object.keys(CRYPTO_SYNONYMS).find(
+      (key) => key.startsWith(cleanRaw) || cleanRaw.startsWith(key)
+    );
+    if (foundSynonym) {
+      resolvedSymbol = CRYPTO_SYNONYMS[foundSynonym];
+    } else {
+      const foundSymbol = Object.keys(CRYPTO_MAP).find(
+        (key) => key.startsWith(cleanRaw) || cleanRaw.startsWith(key)
+      );
+      if (foundSymbol) {
+        resolvedSymbol = foundSymbol;
+      }
+    }
+  }
+
+  // If resolved to a known crypto ticker
+  if (resolvedSymbol && CRYPTO_MAP[resolvedSymbol]) {
     return {
-      ticker: CRYPTO_MAP[raw],
+      ticker: CRYPTO_MAP[resolvedSymbol],
       assetType: "crypto",
-      companyName: CRYPTO_NAMES[raw] || raw,
+      companyName: CRYPTO_NAMES[resolvedSymbol] || resolvedSymbol,
     };
   }
 

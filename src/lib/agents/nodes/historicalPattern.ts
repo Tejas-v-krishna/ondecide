@@ -57,12 +57,37 @@ CAVEAT:
 CONFIDENCE:
 [Single word: High, Medium, or Low — how confident you are in this parallel's relevance]`;
 
-  const response = await geminiModel.invoke([
-    new SystemMessage("You are a veteran investment analyst and market historian with expertise in pattern recognition."),
-    new HumanMessage(prompt),
-  ]);
+  try {
+    const response = await geminiModel.invoke([
+      new SystemMessage("You are a veteran investment analyst and market historian with expertise in pattern recognition."),
+      new HumanMessage(prompt),
+    ]);
 
-  return {
-    historicalPatternAnalysis: response.content as string,
-  };
+    return {
+      historicalPatternAnalysis: response.content as string,
+    };
+  } catch {
+    // LLM unavailable (e.g. API quota exhausted). Degrade gracefully.
+    console.warn("Historical pattern LLM unavailable (quota/network); using rules-based fallback.");
+    const fallback = [
+      `HISTORICAL_SCENARIO:`,
+      `Historical pattern analysis is temporarily unavailable (AI service rate-limited).`,
+      ``,
+      `YEAR:`,
+      `N/A`,
+      ``,
+      `HISTORICAL_OUTCOME:`,
+      `No historical parallel could be generated right now.`,
+      ``,
+      `CURRENT_PARALLELS:`,
+      `Review the technical signal and financial health sections, which are based on real market data, to form your own view.`,
+      ``,
+      `CAVEAT:`,
+      `Historical patterns are illustrative only and do not guarantee future results.`,
+      ``,
+      `CONFIDENCE:`,
+      `Low`,
+    ].join("\n");
+    return { historicalPatternAnalysis: fallback };
+  }
 }

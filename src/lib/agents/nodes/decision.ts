@@ -66,10 +66,30 @@ IMPORTANT RULES:
 - The reasoning must be in plain language — no jargon
 - Be honest — if signals are mixed, say so in the reasoning`;
 
-  const response = await geminiModel.invoke([
-    new SystemMessage("You are a senior portfolio analyst producing investment research. You are objective, evidence-based, and write in plain language."),
-    new HumanMessage(prompt),
-  ]);
+  let response;
+  try {
+    response = await geminiModel.invoke([
+      new SystemMessage("You are a senior portfolio analyst producing investment research. You are objective, evidence-based, and write in plain language."),
+      new HumanMessage(prompt),
+    ]);
+  } catch {
+    // LLM unavailable (e.g. API quota exhausted). Use the default
+    // decision fallback below instead of killing the pipeline.
+    console.warn("Decision LLM unavailable (quota/network); using default decision.");
+    return {
+      report: {
+        ...report,
+        decision: {
+          recommendation: "Hold",
+          confidenceBreakdown: { financials: 40, newsSentiment: 25, historicalPattern: 15, qualitative: 20 },
+          reasoning: "The analysis presents a mixed picture. Given the available data, a cautious approach is warranted while monitoring key metrics. (AI synthesis was unavailable due to rate limits; this is a rules-based default.)",
+          keyRisks: ["Data limitations prevent full risk assessment"],
+          keyTailwinds: ["Continued business operations"],
+          disclaimer: "This research synthesis is for informational and educational purposes only and does not constitute personalized financial advice.",
+        },
+      },
+    };
+  }
 
   try {
     const text = (response.content as string).replace(/```json\n?|\n?```/g, "").trim();

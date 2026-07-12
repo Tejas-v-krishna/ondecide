@@ -1,6 +1,6 @@
 import { ResearchStateType } from "../state";
 import { geminiModel } from "@/lib/gemini";
-import { HumanMessage, SystemMessage } from "@langchain/core/messages";
+import { HumanMessage, SystemMessage, AIMessage } from "@langchain/core/messages";
 import {
   computeRSI,
   computeSMA,
@@ -58,7 +58,7 @@ function parseHistoricalPattern(text: string) {
 // ─── Compute scorecard from metrics ────────────────────────
 
 function computeScorecard(metrics: NonNullable<ResearchStateType["metrics"]>): Scorecard {
-  const m = metrics.metric;
+  const m = metrics.metric || {};
 
   // Valuation score (1=very expensive, 10=very cheap/fair)
   const pe = m.peTTM || 0;
@@ -215,7 +215,8 @@ async function generateDescription(
     ? etfProfile.results.map((r) => `- ${r.title}: ${r.content.slice(0, 300)}`).join("\n")
     : "";
     
-  const response = await geminiModel.invoke([
+  try {
+    const response = await geminiModel.invoke([
     new SystemMessage("You write clear, jargon-free company and asset descriptions for first-time investors."),
     new HumanMessage(
       isFund
@@ -236,7 +237,14 @@ async function generateDescription(
     ),
   ]);
   return response.content as string;
-}
+  } catch {
+  // LLM unavailable (e.g. quota exhausted). Return a real-data description.
+  console.warn("Description LLM unavailable (quota/network); using rules-based fallback.");
+  const sectorLine = sector && sector !== "Unknown" ? ` It operates in the ${sector} sector.` : "";
+  const siteLine = profile?.weburl ? ` Learn more at ${profile.weburl}.` : "";
+  return `${companyName} is a ${assetType === "crypto" ? "cryptocurrency" : assetType === "etf" || assetType === "mutual_fund" ? "fund" : "company"} tracked by OnDecide.${sectorLine} (AI-generated description is temporarily unavailable due to rate limits; the financial health, scorecard, and technical sections below are based on real market data.)${siteLine}`;
+  }
+  }
 
 // ─── Generate news analysis via Gemini ─────────────────────
 
@@ -250,9 +258,11 @@ async function generateNewsAnalysis(
     .map((r, i) => `${i + 1}. ${r.title}\n   Source: ${r.url}\n   Date: ${r.publishedDate || "Recent"}\n   Content: ${r.content.slice(0, 400)}`)
     .join("\n\n");
 
-  const response = await geminiModel.invoke([
-    new SystemMessage("You are a financial analyst summarizing news for investors."),
-    new HumanMessage(`Analyze these recent news items about ${companyName} and provide a JSON response.
+  let response: AIMessage;
+  try {
+    response = await geminiModel.invoke([
+      new SystemMessage("You are a financial analyst summarizing news for investors."),
+      new HumanMessage(`Analyze these recent news items about ${companyName} and provide a JSON response.
 
 News items:
 ${newsText}
@@ -278,7 +288,24 @@ Respond with a valid JSON object (no markdown, no code fences) with this exact s
 }
 
 Include 4-6 most significant news items. If an item mentions earnings, guidance, or quarterly results, set isEarningsRelated to true.`),
-  ]);
+    ]);
+  } catch {
+    console.warn("News LLM unavailable (quota/network); using rules-based fallback.");
+    return {
+      items: newsResults.results.slice(0, 5).map((r) => ({
+        headline: r.title,
+        source: (() => { try { return new URL(r.url).hostname; } catch { return r.url || "Unknown"; } })(),
+        url: r.url,
+        publishedDate: r.publishedDate || "Recent",
+        plainSummary: r.content.slice(0, 200),
+        whyItMatters: "This development may affect investor sentiment and the company's near-term outlook.",
+        isEarningsRelated: r.title.toLowerCase().includes("earn") || r.title.toLowerCase().includes("quarter"),
+        sentiment: "neutral" as const,
+      })),
+      overallSentiment: "neutral",
+      sentimentSummary: "AI news synthesis is temporarily unavailable (rate-limited); the headlines above are real and sourced.",
+    };
+  }
 
   try {
     const text = (response.content as string).replace(/```json\n?|\n?```/g, "").trim();
@@ -325,9 +352,11 @@ async function generateFinancialHealth(
 
   const m = metrics.metric;
 
-  const response = await geminiModel.invoke([
-    new SystemMessage("You are a financial analyst translating raw financial metrics into plain-language verdicts."),
-    new HumanMessage(`Generate a financial health analysis for ${companyName} based on these metrics. Respond with valid JSON only (no markdown).
+  let response: AIMessage;
+  try {
+    response = await geminiModel.invoke([
+      new SystemMessage("You are a financial analyst translating raw financial metrics into plain-language verdicts."),
+      new HumanMessage(`Generate a financial health analysis for ${companyName} based on these metrics. Respond with valid JSON only (no markdown).
 
 Raw metrics:
 - Revenue Growth TTM: ${m.revenueGrowthTTM || "N/A"}%
@@ -360,7 +389,21 @@ JSON format:
 }
 
 Include metrics for: Revenue Growth, Profitability (margins), Return on Equity, Debt Level, Liquidity, Earnings Growth. Skip any metric where the value is N/A.`),
-  ]);
+    ]);
+  } catch {
+    console.warn("Financial health LLM unavailable (quota/network); using rules-based fallback.");
+    return {
+      metrics: [
+        {
+          label: "Data Availability",
+          value: "Limited",
+          verdict: "AI financial analysis is temporarily unavailable (rate-limited). The scorecard and technical signal sections above use real market data.",
+          verdictType: "neutral",
+        },
+      ],
+      summary: "Financial health data is limited for this security right now.",
+    };
+  }
 
   try {
     const text = (response.content as string).replace(/```json\n?|\n?```/g, "").trim();
@@ -391,9 +434,11 @@ async function generateEarningsCallAnalysis(
     .map((r) => `- ${r.title}: ${r.content.slice(0, 400)}`)
     .join("\n");
 
-  const response = await geminiModel.invoke([
-    new SystemMessage("You are a financial analyst summarizing earnings call transcripts."),
-    new HumanMessage(`Analyze these recent earnings call summaries for ${companyName} and extract the management tone, key risks, and forward guidance.
+  let response: AIMessage;
+  try {
+    response = await geminiModel.invoke([
+      new SystemMessage("You are a financial analyst summarizing earnings call transcripts."),
+      new HumanMessage(`Analyze these recent earnings call summaries for ${companyName} and extract the management tone, key risks, and forward guidance.
     
 Context:
 ${callContext}
@@ -406,7 +451,16 @@ Respond with valid JSON only (no markdown) with this exact structure:
   "summary": "1-2 sentence overall takeaway from the call"
 }
 `),
-  ]);
+    ]);
+  } catch {
+    console.warn("Earnings call LLM unavailable (quota/network); using rules-based fallback.");
+    return {
+      managementTone: "No Data",
+      keyRisks: [],
+      forwardGuidance: "AI earnings-call analysis is temporarily unavailable (rate-limited).",
+      summary: "Earnings call transcript analysis is unavailable right now.",
+    };
+  }
 
   try {
     const text = (response.content as string).replace(/```json\n?|\n?```/g, "").trim();

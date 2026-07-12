@@ -172,11 +172,98 @@ export async function getYearCandles(symbol: string): Promise<FinnhubCandle> {
   return getCandles(symbol, "D", from, to);
 }
 
-/** Get 1-year candle data for crypto */
+/** Get 1-year candle data for crypto.
+ *  Finnhub's free tier blocks /crypto/candle (403), so we fall back to
+ *  CoinGecko's public market_chart endpoint (no API key required). */
 export async function getYearCryptoCandles(symbol: string): Promise<FinnhubCandle> {
   const to = Math.floor(Date.now() / 1000);
   const from = to - 365 * 24 * 3600;
-  return getCryptoCandles(symbol, "D", from, to);
+  try {
+    return await getCryptoCandles(symbol, "D", from, to);
+  } catch {
+    return getYearCryptoCandlesFromCoinGecko(symbol, from, to);
+  }
+}
+
+// Map Finnhub crypto symbols (e.g. BINANCE:BTCUSDT) or bare tickers (BTC)
+// to CoinGecko coin ids. Keyed by the base asset symbol.
+const COINGECKO_IDS: Record<string, string> = {
+  BTC: "bitcoin",
+  ETH: "ethereum",
+  SOL: "solana",
+  BNB: "binancecoin",
+  ADA: "cardano",
+  XRP: "ripple",
+  DOGE: "dogecoin",
+  DOT: "polkadot",
+  AVAX: "avalanche-2",
+  MATIC: "matic-network",
+  LINK: "chainlink",
+  LTC: "litecoin",
+  UNI: "uniswap",
+  ATOM: "cosmos",
+};
+
+function coingeckoIdFor(symbol: string): string | null {
+  const base = symbol.split(":").pop()?.replace(/USDT$/, "") || symbol;
+  return COINGECKO_IDS[base.toUpperCase()] || null;
+}
+
+async function getYearCryptoCandlesFromCoinGecko(
+  symbol: string,
+  from: number,
+  to: number
+): Promise<FinnhubCandle> {
+  const id = coingeckoIdFor(symbol);
+  if (!id) {
+    throw new Error(`No CoinGecko mapping for crypto symbol ${symbol}`);
+  }
+  const days = Math.ceil((to - from) / (24 * 3600));
+  const url = `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=${days}`;
+  const res = await fetch(url, { next: { revalidate: 0 } });
+  if (!res.ok) {
+    throw new Error(`CoinGecko market_chart failed: ${res.status} ${res.statusText}`);
+  }
+  const data = (await res.json()) as {
+    prices?: [number, number][];
+    market_caps?: [number, number][];
+    total_volumes?: [number, number][];
+  };
+
+  const prices = data.prices || [];
+  if (prices.length === 0) {
+    return { c: [], h: [], l: [], o: [], t: [], v: [], s: "no_data" };
+  }
+
+  // CoinGecko returns daily-ish points; resample to one point per UTC day
+  // to mimic Finnhub's daily candles and keep arrays aligned.
+  const byDay = new Map<string, { t: number; c: number; h: number; l: number; v: number }>();
+  const volumes = data.total_volumes || [];
+  const volByTs = new Map<number, number>(volumes.map(([ts, v]) => [ts, v]));
+  for (const [ms, price] of prices) {
+    const dayKey = new Date(ms).toISOString().slice(0, 10);
+    const ts = Math.floor(ms / 1000);
+    const prev = byDay.get(dayKey);
+    if (!prev) {
+      byDay.set(dayKey, { t: ts, c: price, h: price, l: price, v: volByTs.get(ms) || 0 });
+    } else {
+      prev.c = price; // close = last seen price of the day
+      prev.h = Math.max(prev.h, price);
+      prev.l = Math.min(prev.l, price);
+      prev.v += volByTs.get(ms) || 0;
+    }
+  }
+
+  const ordered = [...byDay.values()].sort((a, b) => a.t - b.t);
+  return {
+    t: ordered.map((d) => d.t),
+    c: ordered.map((d) => d.c),
+    h: ordered.map((d) => d.h),
+    l: ordered.map((d) => d.l),
+    o: ordered.map((d) => d.c), // CoinGecko has no OHLC; approximate open = close
+    v: ordered.map((d) => d.v),
+    s: "ok",
+  };
 }
 
 /**

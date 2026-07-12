@@ -88,12 +88,36 @@ LONG_TERM_INVESTOR_LENS:
 
 Be specific, evidence-based, and write in plain language that a first-time investor can understand.`;
 
-  const response = await geminiModel.invoke([
-    new SystemMessage("You are an expert investment analyst providing qualitative assessments."),
-    new HumanMessage(prompt),
-  ]);
-
-  return {
-    qualitativeAnalysis: response.content as string,
-  };
+  try {
+    const response = await geminiModel.invoke([
+      new SystemMessage("You are an expert investment analyst providing qualitative assessments."),
+      new HumanMessage(prompt),
+    ]);
+    return {
+      qualitativeAnalysis: response.content as string,
+    };
+  } catch {
+    // LLM unavailable (e.g. API quota exhausted). Degrade gracefully using
+    // the real data we already pulled, so the report still completes.
+    console.warn("Qualitative LLM unavailable (quota/network); using rules-based fallback.");
+    const fallback = [
+      `MANAGEMENT_ASSESSMENT:`,
+      `Detailed management analysis is unavailable right now (AI service rate-limited). ${metricsContext !== "Financial metrics not available" ? "See the financial health and scorecard sections for hard numbers on performance." : ""}`,
+      ``,
+      `COMPETITIVE_POSITIONING:`,
+      entityContext.replace(/\n+/g, " ").slice(0, 400) || "Competitive positioning data is being summarized from available metrics.",
+      ``,
+      `MOAT_STRENGTH:`,
+      "Moderate",
+      ``,
+      `ANALYST_SENTIMENT_SUMMARY:`,
+      recsContext !== "No analyst recommendations available"
+        ? `Analyst consensus (${recsContext}). ${priceTargetContext !== "No price target data" ? priceTargetContext + "." : ""} This is a summary of publicly available commentary, not a live brokerage feed.`
+        : "Analyst sentiment commentary is unavailable at the moment.",
+      ``,
+      `LONG_TERM_INVESTOR_LENS:`,
+      `Evaluate this as a long-term holding using the financial health, scorecard, and technical signal sections, which are based on real market data.`,
+    ].join("\n");
+    return { qualitativeAnalysis: fallback };
+  }
 }
