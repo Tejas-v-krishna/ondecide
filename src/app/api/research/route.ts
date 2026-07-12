@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { auth } from "@clerk/nextjs/server";
+// import { auth } from "@clerk/nextjs/server";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 120; // 2 minutes for the full pipeline
@@ -23,14 +23,14 @@ function checkRateLimit(ip: string): boolean {
 }
 
 export async function POST(req: NextRequest) {
-  // ── Auth check ─────────────────────────────────────────────
-  const { userId } = await auth();
-  if (!userId) {
-    return new Response(JSON.stringify({ error: "Authentication required. Please sign in to run research." }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
+  // ── Auth check (DISABLED FOR DEMO) ─────────────────────────────────────────────
+  // const { userId } = await auth();
+  // if (!userId) {
+  //   return new Response(JSON.stringify({ error: "Authentication required. Please sign in to run research." }), {
+  //     status: 401,
+  //     headers: { "Content-Type": "application/json" },
+  //   });
+  // }
 
   // ── Rate limiting ──────────────────────────────────────────
   const ip =

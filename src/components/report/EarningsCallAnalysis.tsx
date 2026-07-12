@@ -2,7 +2,23 @@ import { EarningsCallAnalysis } from "@/types";
 import { Info, Mic, AlertTriangle } from "lucide-react";
 
 export function EarningsCallAnalysisSection({ data }: { data: EarningsCallAnalysis }) {
-  if (!data || data.managementTone === "No Data") return null;
+  if (!data || data.managementTone === "No Data" || data.managementTone === undefined) {
+    return (
+      <div className="bg-zinc-950 rounded-xl p-6 border border-zinc-800/60 relative overflow-hidden">
+        <div className="flex items-center justify-between mb-4 opacity-50">
+          <h3 className="font-serif text-lg font-bold text-white flex items-center gap-2">
+            <Mic className="w-5 h-5 text-indigo-400" />
+            Earnings Call Analysis
+          </h3>
+        </div>
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center">
+          <div className="px-4 py-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-sm font-medium">
+            Coming Soon
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-zinc-950 rounded-xl p-6 border border-zinc-800/60">

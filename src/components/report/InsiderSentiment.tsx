@@ -2,7 +2,22 @@ import { InsiderSentiment } from "@/types";
 import { Info, TrendingUp, TrendingDown, Minus } from "lucide-react";
 
 export function InsiderSentimentSection({ data }: { data: InsiderSentiment }) {
-  if (!data || data.trend === "No Data") return null;
+  if (!data || data.trend === "No Data") {
+    return (
+      <div className="bg-zinc-950 rounded-xl p-6 border border-zinc-800/60 relative overflow-hidden">
+        <div className="flex items-center justify-between mb-4 opacity-50">
+          <h3 className="font-serif text-lg font-bold text-white flex items-center gap-2">
+            &quot;Smart Money&quot; Insider Tracker
+          </h3>
+        </div>
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center">
+          <div className="px-4 py-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-sm font-medium">
+            Coming Soon
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-zinc-950 rounded-xl p-6 border border-zinc-800/60">

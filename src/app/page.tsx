@@ -159,7 +159,7 @@ export default function HomePage() {
             Two asset classes, done properly.<br className="hidden sm:block" /> Everything else, pointed in the right direction.
           </h2>
           <p className="text-zinc-500 max-w-xl mx-auto text-lg">
-            We'd rather give you a real analyst's depth on stocks and crypto than a shallow score on everything.
+            We&apos;d rather give you a real analyst&apos;s depth on stocks and crypto than a shallow score on everything.
           </p>
         </div>
 
@@ -189,7 +189,7 @@ export default function HomePage() {
               Seven agents. One coherent report.
             </h2>
             <p className="text-zinc-500 max-w-xl mx-auto text-lg">
-              Most tools give you a number. OnDecide shows its reasoning — because a decision you don't understand isn't really your decision.
+              Most tools give you a number. OnDecide shows its reasoning — because a decision you don&apos;t understand isn&apos;t really your decision.
             </p>
           </div>
 
@@ -214,7 +214,7 @@ export default function HomePage() {
                 Built for the person, not the jargon.
               </h2>
               <p className="text-zinc-500 text-lg leading-relaxed">
-                Every term in your report is explained the moment you need it — whether you're opening your first brokerage account or your fiftieth.
+                Every term in your report is explained the moment you need it — whether you&apos;re opening your first brokerage account or your fiftieth.
               </p>
             </div>
             <div className="space-y-6">
@@ -228,7 +228,7 @@ export default function HomePage() {
               </div>
               <div className="flex gap-4 items-start">
                 <div className="w-1.5 h-1.5 rounded-full bg-white mt-2 shrink-0" />
-                <p className="text-zinc-300">Every "why" is spelled out. Nothing is a black box you have to trust blindly.</p>
+                <p className="text-zinc-300">Every &quot;why&quot; is spelled out. Nothing is a black box you have to trust blindly.</p>
               </div>
             </div>
           </div>
@@ -240,7 +240,7 @@ export default function HomePage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-32">
           <div className="text-center mb-16">
             <h2 className="text-4xl sm:text-5xl font-serif text-white mb-6">
-              What you'd otherwise stitch together yourself
+              What you&apos;d otherwise stitch together yourself
             </h2>
           </div>
 
