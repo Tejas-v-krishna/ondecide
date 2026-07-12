@@ -165,11 +165,77 @@ export function unixToDateStr(ts: number): string {
   return new Date(ts * 1000).toISOString().split("T")[0];
 }
 
+async function getYearCandlesFromYahoo(
+  symbol: string,
+  from: number,
+  to: number
+): Promise<FinnhubCandle> {
+  const url = `https://query2.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=1y`;
+  
+  const res = await fetch(url, {
+    headers: {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+    },
+    next: { revalidate: 0 }
+  });
+  
+  if (!res.ok) {
+    throw new Error(`Yahoo Finance failed: ${res.statusText}`);
+  }
+  
+  const data = await res.json();
+  const result = data.chart?.result?.[0];
+  
+  if (!result || !result.timestamp || !result.indicators?.quote?.[0]) {
+    return { c: [], h: [], l: [], o: [], t: [], v: [], s: "no_data" };
+  }
+  
+  const quote = result.indicators.quote[0];
+  
+  const t: number[] = [];
+  const c: number[] = [];
+  const h: number[] = [];
+  const l: number[] = [];
+  const o: number[] = [];
+  const v: number[] = [];
+  
+  for (let i = 0; i < result.timestamp.length; i++) {
+    if (quote.close[i] !== null && quote.close[i] !== undefined) {
+      t.push(result.timestamp[i]);
+      c.push(quote.close[i]);
+      h.push(quote.high[i]);
+      l.push(quote.low[i]);
+      o.push(quote.open[i]);
+      v.push(quote.volume[i]);
+    }
+  }
+  
+  if (t.length === 0) {
+    return { c: [], h: [], l: [], o: [], t: [], v: [], s: "no_data" };
+  }
+  
+  return { t, c, h, l, o, v, s: "ok" };
+}
+
 /** Get 1-year candle data for a stock */
 export async function getYearCandles(symbol: string): Promise<FinnhubCandle> {
   const to = Math.floor(Date.now() / 1000);
   const from = to - 365 * 24 * 3600;
-  return getCandles(symbol, "D", from, to);
+  
+  try {
+    const candles = await getCandles(symbol, "D", from, to);
+    if (candles.s === "ok") {
+      return candles;
+    }
+    // Fallback to Yahoo Finance for international stocks/ETFs if Finnhub has no data
+    return await getYearCandlesFromYahoo(symbol, from, to);
+  } catch {
+    try {
+      return await getYearCandlesFromYahoo(symbol, from, to);
+    } catch {
+      return { c: [], h: [], l: [], o: [], t: [], v: [], s: "no_data" };
+    }
+  }
 }
 
 /** Get 1-year candle data for crypto.

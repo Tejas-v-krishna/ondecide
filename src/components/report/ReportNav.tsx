@@ -3,14 +3,13 @@
 import { useState } from "react";
 
 const SECTIONS = [
-  { id: "snapshot", label: "Snapshot" },
+  { id: "snapshot", label: "Overview" },
+  { id: "decision", label: "Thesis" },
   { id: "market", label: "Market Data" },
   { id: "scorecard", label: "Scorecard" },
-  { id: "news", label: "News" },
-  { id: "financials", label: "Financials" },
-  { id: "qualitative", label: "Qualitative" },
-  { id: "history", label: "History" },
-  { id: "decision", label: "Decision" },
+  { id: "qualitative", label: "Moat & History" },
+  { id: "news", label: "News & Earnings" },
+  { id: "technical", label: "Technicals & Peers" },
 ];
 
 export function ReportNav() {

@@ -206,3 +206,11 @@ body {
   pointer-events: none;
   z-index: 0;
 }
+
+/* ─── Print styling ───────────────────────────────────── */
+@media print {
+  body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

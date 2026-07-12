@@ -4,14 +4,14 @@ import { Info, TrendingUp, TrendingDown, Minus } from "lucide-react";
 export function InsiderSentimentSection({ data }: { data: InsiderSentiment }) {
   if (!data || data.trend === "No Data") {
     return (
-      <div className="bg-zinc-950 rounded-xl p-6 border border-zinc-800/60 relative overflow-hidden">
+      <div className="flex flex-col relative overflow-hidden">
         <div className="flex items-center justify-between mb-4 opacity-50">
           <h3 className="font-serif text-lg font-bold text-white flex items-center gap-2">
             &quot;Smart Money&quot; Insider Tracker
           </h3>
         </div>
         <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center">
-          <div className="px-4 py-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-sm font-medium">
+          <div className="px-4 py-2 rounded-full border border-zinc-800 bg-zinc-900/50 text-emerald-400 text-sm font-medium">
             Coming Soon
           </div>
         </div>
@@ -20,7 +20,7 @@ export function InsiderSentimentSection({ data }: { data: InsiderSentiment }) {
   }
 
   return (
-    <div className="bg-zinc-950 rounded-xl p-6 border border-zinc-800/60">
+    <div className="flex flex-col">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-serif text-lg font-bold text-white flex items-center gap-2">
           &quot;Smart Money&quot; Insider Tracker
@@ -33,8 +33,8 @@ export function InsiderSentimentSection({ data }: { data: InsiderSentiment }) {
         </h3>
         
         <div className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-1
-          ${data.trend === 'Buying' ? 'bg-emerald-950 text-emerald-400 border border-emerald-900' : ''}
-          ${data.trend === 'Selling' ? 'bg-rose-950 text-rose-400 border border-rose-900' : ''}
+          ${data.trend === 'Buying' ? 'bg-zinc-900/50 text-emerald-400 border border-zinc-800' : ''}
+          ${data.trend === 'Selling' ? 'bg-zinc-900/50 text-zinc-400 border border-zinc-800' : ''}
           ${data.trend === 'Neutral' ? 'bg-zinc-900 text-zinc-300 border border-zinc-800' : ''}
         `}>
           {data.trend === 'Buying' && <TrendingUp className="w-4 h-4" />}

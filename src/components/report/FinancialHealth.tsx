@@ -13,15 +13,15 @@ const VERDICT_CONFIG = {
     icon: "↑",
   },
   negative: {
-    color: "text-rose-400",
-    bg: "bg-rose-400/5",
-    dot: "bg-rose-400",
+    color: "text-zinc-400",
+    bg: "bg-zinc-400/5",
+    dot: "bg-zinc-400",
     icon: "↓",
   },
   warning: {
-    color: "text-amber-400",
-    bg: "bg-amber-400/5",
-    dot: "bg-amber-400",
+    color: "text-zinc-400",
+    bg: "bg-zinc-400/5",
+    dot: "bg-zinc-400",
     icon: "⚠",
   },
   neutral: {
@@ -34,15 +34,15 @@ const VERDICT_CONFIG = {
 
 export function FinancialHealthSection({ data }: FinancialHealthProps) {
   return (
-    <div className="rounded-xl border border-zinc-800/60 bg-zinc-950 overflow-hidden">
-      <div className="px-6 py-4 border-b border-zinc-800/60">
+    <div className="flex flex-col overflow-hidden">
+      <div className="pb-4 mb-4 border-b border-zinc-800/40">
         <h2 className="font-serif text-lg font-semibold text-white">Financial Health</h2>
         <p className="text-sm text-zinc-500 mt-0.5">Numbers with plain-language interpretation</p>
       </div>
 
       {/* Summary */}
-      <div className="px-6 py-4 bg-zinc-950 border-b border-zinc-800/60">
-        <p className="text-sm text-zinc-300 leading-relaxed">{data.summary}</p>
+      <div className="p-4 bg-zinc-900/30 rounded-lg mb-4 border border-zinc-800/50">
+        <p className="text-sm text-zinc-300 leading-relaxed whitespace-pre-wrap">{data.summary}</p>
       </div>
 
       {/* Metrics table */}

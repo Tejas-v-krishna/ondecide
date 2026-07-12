@@ -4,7 +4,7 @@ import { Info, Mic, AlertTriangle } from "lucide-react";
 export function EarningsCallAnalysisSection({ data }: { data: EarningsCallAnalysis }) {
   if (!data || data.managementTone === "No Data" || data.managementTone === undefined) {
     return (
-      <div className="bg-zinc-950 rounded-xl p-6 border border-zinc-800/60 relative overflow-hidden">
+      <div className="flex flex-col relative overflow-hidden">
         <div className="flex items-center justify-between mb-4 opacity-50">
           <h3 className="font-serif text-lg font-bold text-white flex items-center gap-2">
             <Mic className="w-5 h-5 text-indigo-400" />
@@ -12,7 +12,7 @@ export function EarningsCallAnalysisSection({ data }: { data: EarningsCallAnalys
           </h3>
         </div>
         <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center">
-          <div className="px-4 py-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-sm font-medium">
+          <div className="px-4 py-2 rounded-full border border-zinc-800 bg-zinc-900/50 text-emerald-400 text-sm font-medium">
             Coming Soon
           </div>
         </div>
@@ -21,7 +21,7 @@ export function EarningsCallAnalysisSection({ data }: { data: EarningsCallAnalys
   }
 
   return (
-    <div className="bg-zinc-950 rounded-xl p-6 border border-zinc-800/60">
+    <div className="flex flex-col">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-serif text-lg font-bold text-white flex items-center gap-2">
           <Mic className="w-5 h-5 text-indigo-400" />
@@ -35,8 +35,8 @@ export function EarningsCallAnalysisSection({ data }: { data: EarningsCallAnalys
         </h3>
         
         <div className={`px-3 py-1 rounded-full text-sm font-semibold
-          ${data.managementTone === 'Optimistic' ? 'bg-emerald-950 text-emerald-400 border border-emerald-900' : ''}
-          ${data.managementTone === 'Defensive' ? 'bg-amber-950 text-amber-400 border border-amber-900' : ''}
+          ${data.managementTone === 'Optimistic' ? 'bg-zinc-900/50 text-emerald-400 border border-zinc-800' : ''}
+          ${data.managementTone === 'Defensive' ? 'bg-zinc-900/50 text-zinc-400 border border-zinc-800' : ''}
           ${data.managementTone === 'Neutral' ? 'bg-zinc-900 text-zinc-300 border border-zinc-800' : ''}
         `}>
           Tone: {data.managementTone}
@@ -54,12 +54,12 @@ export function EarningsCallAnalysisSection({ data }: { data: EarningsCallAnalys
       </div>
 
       {data.keyRisks && data.keyRisks.length > 0 && (
-        <div className="bg-rose-950/20 border border-rose-900/30 rounded-lg p-3">
-          <strong className="text-rose-400 block mb-2 text-sm flex items-center gap-2">
+        <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-3">
+          <strong className="text-zinc-400 block mb-2 text-sm flex items-center gap-2">
             <AlertTriangle className="w-4 h-4" />
             Key Risks Mentioned:
           </strong>
-          <ul className="list-disc pl-5 text-rose-300/80 text-sm space-y-1">
+          <ul className="list-disc pl-5 text-300/80 text-sm space-y-1">
             {data.keyRisks.map((risk, idx) => (
               <li key={idx}>{risk}</li>
             ))}

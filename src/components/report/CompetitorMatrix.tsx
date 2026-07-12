@@ -5,7 +5,7 @@ export function CompetitorMatrixSection({ matrix }: { matrix: CompetitorMatrix }
   if (!matrix || !matrix.peers || matrix.peers.length === 0) return null;
 
   return (
-    <div className="bg-zinc-950 rounded-xl p-6 border border-zinc-800/60">
+    <div className="flex flex-col">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-serif text-lg font-bold text-white flex items-center gap-2">
           Peer Comps Analysis

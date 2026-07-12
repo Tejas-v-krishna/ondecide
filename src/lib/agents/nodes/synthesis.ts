@@ -210,6 +210,7 @@ async function generateDescription(
 ): Promise<string> {
   const isFund = assetType === "etf" || assetType === "mutual_fund";
   const isBond = assetType === "bond";
+  const isCrypto = assetType === "crypto";
 
   const extraContext = (isFund || isBond) && etfProfile
     ? etfProfile.results.map((r) => `- ${r.title}: ${r.content.slice(0, 300)}`).join("\n")
@@ -229,6 +230,10 @@ async function generateDescription(
       Explain what it represents (e.g. government debt) and what its current yield signifies in plain language.
       Use this context:\n${extraContext}\n
       Avoid investor jargon.`
+        : isCrypto
+        ? `Write a 2-3 sentence plain-language description of the cryptocurrency ${companyName}.
+      Explain what it is, its primary use case or technological purpose, and why people care about it.
+      Avoid highly technical crypto jargon and explain it simply to a smart friend who knows nothing about blockchain.`
         : `Write a 2-3 sentence plain-language description of ${companyName} (sector: ${sector}). 
       Explain what the company actually does, how it makes money, and why people care about it.
       Avoid investor jargon, filing language, and corporate speak. 
@@ -244,7 +249,7 @@ async function generateDescription(
   const siteLine = profile?.weburl ? ` Learn more at ${profile.weburl}.` : "";
   return `${companyName} is a ${assetType === "crypto" ? "cryptocurrency" : assetType === "etf" || assetType === "mutual_fund" ? "fund" : "company"} tracked by OnDecide.${sectorLine} (AI-generated description is temporarily unavailable due to rate limits; the financial health, scorecard, and technical sections below are based on real market data.)${siteLine}`;
   }
-  }
+}
 
 // ─── Generate news analysis via Gemini ─────────────────────
 
@@ -659,7 +664,7 @@ export async function synthesisNode(
 
   // Run AI-dependent steps in parallel
   const [description, newsAnalysis, financialHealth, earningsCallAnalysis] = await Promise.all([
-    profile || assetType === "etf" || assetType === "mutual_fund" || assetType === "bond"
+    profile || ["etf", "mutual_fund", "bond", "crypto"].includes(assetType)
       ? generateDescription(companyName, profile?.finnhubIndustry || assetType, profile, assetType, etfProfile)
       : Promise.resolve(`${companyName} is ${assetType === "crypto" ? "a cryptocurrency" : "an asset"}.`),
     newsResults

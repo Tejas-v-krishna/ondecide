@@ -5,46 +5,46 @@ interface NewsAnalysisProps {
 }
 
 const SENTIMENT_CONFIG = {
-  positive: { label: "Positive", color: "text-emerald-400", bg: "bg-emerald-400/10 border-emerald-400/20" },
-  negative: { label: "Negative", color: "text-rose-400", bg: "bg-rose-400/10 border-rose-400/20" },
-  neutral: { label: "Neutral", color: "text-amber-400", bg: "bg-amber-400/10 border-amber-400/20" },
+  positive: { label: "Positive", color: "text-emerald-400", bg: "bg-zinc-900/50 border-zinc-800" },
+  negative: { label: "Negative", color: "text-zinc-400", bg: "bg-zinc-900/50 border-zinc-800" },
+  neutral: { label: "Neutral", color: "text-zinc-400", bg: "bg-zinc-900/50 border-zinc-800" },
 };
 
 export function NewsAnalysisSection({ data }: NewsAnalysisProps) {
   const overallConfig = SENTIMENT_CONFIG[data.overallSentiment];
 
   return (
-    <div className="rounded-xl border border-zinc-800/60 bg-zinc-950 overflow-hidden">
-      <div className="px-6 py-4 border-b border-zinc-800/60 flex items-center justify-between">
+    <div className="flex flex-col overflow-hidden">
+      <div className="pb-4 mb-4 border-b border-zinc-800/40 flex items-center justify-between">
         <div>
           <h2 className="font-serif text-lg font-semibold text-white">Recent News & Why It Matters</h2>
           <p className="text-sm text-zinc-500 mt-0.5">Via Tavily · Last 7 days</p>
         </div>
-        <span className={`px-3 py-1 rounded-full border text-sm font-medium ${overallConfig.color} ${overallConfig.bg}`}>
+        <span className={`px-2.5 py-0.5 rounded-full border text-xs font-semibold ${overallConfig.color} ${overallConfig.bg}`}>
           {overallConfig.label} Sentiment
         </span>
       </div>
 
       {/* Sentiment summary */}
-      <div className="px-6 py-4 bg-zinc-950 border-b border-zinc-800/60">
-        <p className="text-sm text-zinc-300 leading-relaxed">{data.sentimentSummary}</p>
+      <div className="p-4 bg-zinc-900/30 rounded-lg mb-4 border border-zinc-800/50">
+        <p className="text-sm text-zinc-300 leading-relaxed whitespace-pre-wrap">{data.sentimentSummary}</p>
       </div>
 
       {/* News items */}
       <div className="divide-y divide-zinc-800">
         {data.items.length === 0 ? (
-          <div className="px-6 py-8 text-center text-zinc-500">No significant news found for this period.</div>
+          <div className="py-8 text-center text-zinc-500">No significant news found for this period.</div>
         ) : (
           data.items.map((item, i) => {
             const sentConfig = SENTIMENT_CONFIG[item.sentiment];
             return (
-              <div key={i} className="px-6 py-5 hover:bg-zinc-900 transition-colors">
+              <div key={i} className="py-5 hover:bg-zinc-900 transition-colors">
                 <div className="flex items-start gap-3">
                   <div className="flex-1 min-w-0">
                     {/* Headline + badges */}
                     <div className="flex flex-wrap items-start gap-2 mb-2">
                       {item.isEarningsRelated && (
-                        <span className="flex-shrink-0 text-xs text-amber-400 bg-amber-400/10 border border-amber-400/20 px-2 py-0.5 rounded-full font-medium">
+                        <span className="flex-shrink-0 text-xs text-zinc-400 bg-zinc-900/50 border border-zinc-800 px-2 py-0.5 rounded-full font-medium">
                           📊 Earnings
                         </span>
                       )}

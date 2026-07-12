@@ -169,7 +169,7 @@ const COMPANY_MENU: MegaMenuConfig = {
 
 export function Navbar() {
   return (
-    <nav className="sticky top-4 z-50 mx-auto h-16 w-full max-w-5xl border border-zinc-800 bg-black/80 backdrop-blur-md px-6 rounded-lg flex items-center justify-between">
+    <nav className="sticky top-4 z-[100] mx-auto h-16 w-full max-w-5xl border border-zinc-800 bg-black/80 backdrop-blur-md px-6 rounded-lg flex items-center justify-between">
       {/* Left: Logo */}
       <div className="flex items-center gap-6">
         <Link href="/" className="flex items-center gap-2 flex-shrink-0">

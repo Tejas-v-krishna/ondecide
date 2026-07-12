@@ -30,7 +30,7 @@ export function ScorecardSection({ data }: ScorecardProps) {
   const overallColor = SCORE_COLOR(data.overallScore);
 
   return (
-    <div className="rounded-xl border border-zinc-800/60 bg-zinc-950 p-6">
+    <div className="flex flex-col">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="font-serif text-lg font-semibold text-white">Stock Scorecard</h2>
@@ -80,7 +80,7 @@ export function ScorecardSection({ data }: ScorecardProps) {
             return (
               <div key={axis.label}>
                 <div className="flex items-center justify-between mb-1">
-                  <span className={`text-sm font-medium ${axis.isWarning ? "text-rose-400" : "text-zinc-100"}`}>
+                  <span className={`text-sm font-medium ${axis.isWarning ? "text-zinc-400" : "text-zinc-100"}`}>
                     {axis.isWarning && <span className="mr-1">⚠</span>}
                     {axis.label}
                   </span>

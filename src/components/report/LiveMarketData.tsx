@@ -15,10 +15,11 @@ export function LiveMarketDataSection({ data, ticker }: LiveMarketDataProps) {
   useEffect(() => {
     if (!chartRef.current || data.candles.length === 0) return;
 
+    let isMounted = true;
     let cleanup: (() => void) | undefined;
 
     import("lightweight-charts").then(({ createChart, ColorType, LineSeries }) => {
-      if (!chartRef.current) return;
+      if (!chartRef.current || !isMounted) return;
 
       const chart = createChart(chartRef.current, {
         width: chartRef.current.clientWidth,
@@ -76,18 +77,21 @@ export function LiveMarketDataSection({ data, ticker }: LiveMarketDataProps) {
       };
     });
 
-    return () => cleanup?.();
+    return () => {
+      isMounted = false;
+      cleanup?.();
+    };
   }, [data.candles]);
 
   return (
-    <div className="rounded-xl border border-zinc-800/60 bg-zinc-950 overflow-hidden">
-      <div className="px-6 py-4 border-b border-zinc-800/60">
+    <div className="flex flex-col overflow-hidden">
+      <div className="pb-4 mb-4 border-b border-zinc-800/40">
         <h2 className="font-serif text-lg font-semibold text-white">Live Market Data</h2>
         <p className="text-sm text-zinc-500 mt-0.5">1-year price history · {ticker}</p>
       </div>
 
       {/* Chart */}
-      <div className="px-4 pt-4 pb-2">
+      <div className="pt-4">
         {data.candles.length > 0 ? (
           <div ref={chartRef} className="w-full rounded-lg overflow-hidden" />
         ) : (

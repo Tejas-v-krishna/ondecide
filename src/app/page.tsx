@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SearchBar } from "@/components/ui/SearchBar";
+import { FileText, Cpu, Clock, Link2, Download, Filter } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "OnDecide — Understand any investment",
@@ -16,13 +17,6 @@ const POPULAR = [
   { ticker: "BTC", name: "Bitcoin" },
   { ticker: "RELIANCE.NS", name: "Reliance" },
   { ticker: "ETH", name: "Ethereum" },
-];
-
-const STATS = [
-  { value: "2", label: "Asset Classes", suffix: "" },
-  { value: "7", label: "Node Pipeline", suffix: "" },
-  { value: "<60", label: "Seconds Per Report", suffix: "s" },
-  { value: "100", label: "Free to Start", suffix: "%" },
 ];
 
 const ASSET_CLASSES = [
@@ -47,46 +41,6 @@ const ASSET_CLASSES = [
     desc: "Not ready to research these directly yet — so instead of a broken half-feature, we'll teach you what they are and point you to the best free tools that already do this well.", 
     example: "Curated directory, updated regularly" 
   },
-];
-
-const FEATURES = [
-  {
-    title: "Resolve",
-    desc: "Understands what you're actually asking about, even from a partial name or ticker.",
-  },
-  {
-    title: "Financials",
-    desc: "Pulls live price, fundamentals, and a structured scorecard across Valuation, Profitability, Growth, and Red Flags — computed from real data, not guessed.",
-  },
-  {
-    title: "News Synthesis",
-    desc: "Reads recent coverage and tells you not just what happened, but why it matters for this specific investment.",
-  },
-  {
-    title: "Qualitative Read",
-    desc: "Reasons through management quality and competitive position — the part pure number-crunchers skip entirely.",
-  },
-  {
-    title: "Historical Pattern Matching",
-    desc: "Finds the closest parallel from market history and tells you what happened next, with the honest caveat that history doesn't repeat on command.",
-  },
-  {
-    title: "Analyst Sentiment Synthesis",
-    desc: "Summarizes the prevailing tone of publicly available commentary in plain language — clearly labeled as AI-synthesized, never presented as a live brokerage feed.",
-  },
-  {
-    title: "The Decision",
-    desc: "Invest, Hold, or Avoid — with a transparent breakdown of what drove the call, and a 3-sentence explanation anyone can follow.",
-  },
-];
-
-const COMPARISON = [
-  { feature: "Plain-language explanations", ondecide: true, news: false, screener: false },
-  { feature: "Reasoned Invest/Hold/Avoid call", ondecide: true, news: false, screener: false },
-  { feature: "Historical context", ondecide: true, news: false, screener: false },
-  { feature: "Transparent reasoning breakdown", ondecide: true, news: false, screener: false },
-  { feature: "Live price & fundamentals", ondecide: true, news: "partial", screener: true },
-  { feature: "Takes under a minute", ondecide: true, news: false, screener: true },
 ];
 
 // ─── Main Component ────────────────────────────────────────
@@ -136,24 +90,140 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── 2. STATS BAR ─────────────────────────────────────── */}
-      <section className="border-y border-zinc-800/60 bg-zinc-950/50 backdrop-blur-md">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {STATS.map((stat, i) => (
-              <div key={stat.label} className="text-center animate-stat" style={{ animationDelay: `${i * 0.1}s` }}>
-                <div className="text-3xl sm:text-4xl font-serif text-white mb-2">
-                  {stat.value}<span className="text-zinc-500 text-2xl ml-1">{stat.suffix}</span>
-                </div>
-                <div className="text-zinc-500 text-xs tracking-wide uppercase font-sans">{stat.label}</div>
+      {/* ── 2. UNIFIED BENTO GRID (The Pipeline, Stats, Comparisons) ──────────────── */}
+      <section className="bg-black py-16 lg:py-24 border-t border-zinc-800/60 relative">
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 relative z-10">
+          
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif text-white mb-4">
+              Seven agents. One coherent report.
+            </h2>
+            <p className="text-zinc-500 max-w-xl mx-auto text-base sm:text-lg">
+              Most tools give you a number. OnDecide shows its reasoning — because a decision you don&apos;t understand isn&apos;t really your decision.
+            </p>
+          </div>
+
+          {/* Bento Grid Container */}
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-px bg-zinc-800/60 p-px rounded-sm overflow-hidden">
+            
+            {/* ── ROW 1: Pipeline (4 columns of 3) ── */}
+            <div className="md:col-span-3 bg-[#131313] hover:bg-[#181818] transition-colors flex flex-col justify-between p-6 lg:p-8 min-h-[300px] lg:min-h-[320px] group relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                <Filter className="w-16 h-16 lg:w-20 lg:h-20 text-white" strokeWidth={1} />
               </div>
-            ))}
+              <div className="space-y-4 relative z-10">
+                <p className="text-zinc-500 text-xs font-sans tracking-widest uppercase">Data Ingestion</p>
+              </div>
+              <div className="relative z-10 pt-10">
+                <h3 className="text-xl lg:text-2xl font-serif text-white mb-2 lg:mb-3 leading-tight">Live Market<br/>Resolution</h3>
+                <p className="text-xs lg:text-sm text-zinc-400 leading-relaxed">Resolves partial names or tickers, fetching live pricing and deep fundamentals from institutional-grade APIs instantly.</p>
+              </div>
+            </div>
+
+            <div className="md:col-span-3 bg-[#131313] hover:bg-[#181818] transition-colors flex flex-col justify-between p-6 lg:p-8 min-h-[300px] lg:min-h-[320px] group relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                <FileText className="w-16 h-16 lg:w-20 lg:h-20 text-white" strokeWidth={1} />
+              </div>
+              <div className="space-y-4 relative z-10">
+                <p className="text-zinc-500 text-xs font-sans tracking-widest uppercase">Market Context</p>
+              </div>
+              <div className="relative z-10 pt-10">
+                <h3 className="text-xl lg:text-2xl font-serif text-white mb-2 lg:mb-3 leading-tight">News & Sentiment<br/>Synthesis</h3>
+                <p className="text-xs lg:text-sm text-zinc-400 leading-relaxed">Reads the latest coverage and distills market consensus, telling you not just what happened, but why it matters.</p>
+              </div>
+            </div>
+
+            <div className="md:col-span-3 bg-[#131313] hover:bg-[#181818] transition-colors flex flex-col justify-between p-6 lg:p-8 min-h-[300px] lg:min-h-[320px] group relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                <Cpu className="w-16 h-16 lg:w-20 lg:h-20 text-white" strokeWidth={1} />
+              </div>
+              <div className="space-y-4 relative z-10">
+                <p className="text-zinc-500 text-xs font-sans tracking-widest uppercase">Deep Reasoning</p>
+              </div>
+              <div className="relative z-10 pt-10">
+                <h3 className="text-xl lg:text-2xl font-serif text-white mb-2 lg:mb-3 leading-tight">Historical<br/>Pattern Matching</h3>
+                <p className="text-xs lg:text-sm text-zinc-400 leading-relaxed">Finds the closest parallel from market history and reasons through management quality and competitive moats.</p>
+              </div>
+            </div>
+
+            <div className="md:col-span-3 bg-[#131313] hover:bg-[#181818] transition-colors flex flex-col justify-between p-6 lg:p-8 min-h-[300px] lg:min-h-[320px] group relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                <Link2 className="w-16 h-16 lg:w-20 lg:h-20 text-white" strokeWidth={1} />
+              </div>
+              <div className="space-y-4 relative z-10">
+                <p className="text-zinc-500 text-xs font-sans tracking-widest uppercase">The Output</p>
+              </div>
+              <div className="relative z-10 pt-10">
+                <h3 className="text-xl lg:text-2xl font-serif text-white mb-2 lg:mb-3 leading-tight">The Final<br/>Decision</h3>
+                <p className="text-xs lg:text-sm text-zinc-400 leading-relaxed">Synthesizes all 7 nodes into a single, reasoned Invest, Hold, or Avoid call—backed by a transparent breakdown.</p>
+              </div>
+            </div>
+
+            {/* ── ROW 2: Stats (3 columns of 4) ── */}
+            <div className="md:col-span-4 bg-[#111111] p-6 lg:p-8 flex flex-col justify-end min-h-[220px] border-t border-zinc-800/20">
+              <div className="text-5xl lg:text-[4rem] leading-none font-serif text-white tracking-tight mb-3 lg:mb-4">7</div>
+              <div className="text-xs lg:text-sm font-sans text-zinc-500 tracking-wide">Parallel AI Agents running per report</div>
+            </div>
+
+            <div className="md:col-span-4 bg-[#111111] p-6 lg:p-8 flex flex-col justify-end min-h-[220px] border-t border-zinc-800/20">
+              <div className="text-5xl lg:text-[4rem] leading-none font-serif text-white tracking-tight mb-3 lg:mb-4">2</div>
+              <div className="text-xs lg:text-sm font-sans text-zinc-500 tracking-wide">Asset classes (Stocks & Crypto) supported</div>
+            </div>
+
+            <div className="md:col-span-4 bg-[#111111] p-6 lg:p-8 flex flex-col justify-end min-h-[220px] border-t border-zinc-800/20">
+              <div className="text-5xl lg:text-[4rem] leading-none font-serif text-white tracking-tight mb-3 lg:mb-4">&lt;60<span className="text-4xl text-zinc-600">s</span></div>
+              <div className="text-xs lg:text-sm font-sans text-zinc-500 tracking-wide">Time from your prompt to a final decision</div>
+            </div>
+
+            {/* ── ROW 3: Comparisons (3 columns of 4) ── */}
+            <div className="md:col-span-4 bg-[#131313] p-6 lg:p-8 flex flex-col min-h-[200px]">
+              <h4 className="text-xl lg:text-2xl font-serif text-white mb-auto">Research Time</h4>
+              <div className="space-y-3 lg:space-y-4 font-sans text-xs lg:text-sm mt-6 lg:mt-8 w-full">
+                <div className="flex justify-between border-b border-zinc-800/60 pb-3">
+                  <span className="text-zinc-600">Before</span>
+                  <span className="text-zinc-400">2+ Hours</span>
+                </div>
+                <div className="flex justify-between pt-1">
+                  <span className="text-zinc-500">with OnDecide</span>
+                  <span className="text-white font-medium">&lt; 1 Minute</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="md:col-span-4 bg-[#131313] p-6 lg:p-8 flex flex-col min-h-[200px]">
+              <h4 className="text-xl lg:text-2xl font-serif text-white mb-auto">Data Sources</h4>
+              <div className="space-y-3 lg:space-y-4 font-sans text-xs lg:text-sm mt-6 lg:mt-8 w-full">
+                <div className="flex justify-between border-b border-zinc-800/60 pb-3">
+                  <span className="text-zinc-600">Before</span>
+                  <span className="text-zinc-400">Fragmented Tools</span>
+                </div>
+                <div className="flex justify-between pt-1">
+                  <span className="text-zinc-500">with OnDecide</span>
+                  <span className="text-white font-medium">Unified & Traceable</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="md:col-span-4 bg-[#131313] p-6 lg:p-8 flex flex-col min-h-[200px]">
+              <h4 className="text-xl lg:text-2xl font-serif text-white mb-auto">The Output</h4>
+              <div className="space-y-3 lg:space-y-4 font-sans text-xs lg:text-sm mt-6 lg:mt-8 w-full">
+                <div className="flex justify-between border-b border-zinc-800/60 pb-3">
+                  <span className="text-zinc-600">Before</span>
+                  <span className="text-zinc-400">A numeric score</span>
+                </div>
+                <div className="flex justify-between pt-1">
+                  <span className="text-zinc-500">with OnDecide</span>
+                  <span className="text-white font-medium">Reasoned Decision</span>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
 
       {/* ── 3. ASSET CLASS GRID ───────────────────────────────── */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-32">
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-32 border-t border-zinc-800/60">
         <div className="text-center mb-20">
           <h2 className="text-4xl sm:text-5xl font-serif text-white mb-6">
             Two asset classes, done properly.<br className="hidden sm:block" /> Everything else, pointed in the right direction.
@@ -167,7 +237,7 @@ export default function HomePage() {
           {ASSET_CLASSES.map((asset) => (
             <div
               key={asset.name}
-              className="bg-black p-10 hover:bg-zinc-950 transition-colors group relative"
+              className="bg-black p-10 hover:bg-[#111] transition-colors group relative"
             >
               <div className="absolute top-8 right-8 text-2xs font-sans uppercase tracking-widest text-zinc-600 border border-zinc-800 px-2 py-0.5 rounded-full">
                 {asset.tag}
@@ -181,117 +251,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── 4. HOW IT WORKS ──────────────────────────────────── */}
-      <section className="border-t border-zinc-800/60 bg-black">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-32">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl sm:text-5xl font-serif text-white mb-6">
-              Seven agents. One coherent report.
-            </h2>
-            <p className="text-zinc-500 max-w-xl mx-auto text-lg">
-              Most tools give you a number. OnDecide shows its reasoning — because a decision you don&apos;t understand isn&apos;t really your decision.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-zinc-800/50 p-px">
-            {FEATURES.map((feature, i) => (
-              <div key={i} className="bg-black p-10">
-                <div className="mb-2 text-xs font-sans text-zinc-500">{String(i + 1).padStart(2, '0')}</div>
-                <h3 className="text-lg font-serif text-white mb-2">{feature.title}</h3>
-                <p className="text-zinc-500 text-sm leading-relaxed">{feature.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── 5. WHY PLAIN LANGUAGE MATTERS ────────────────────── */}
-      <section className="border-t border-zinc-800/60 bg-zinc-950/20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-32">
-          <div className="grid md:grid-cols-2 gap-16 items-center">
-            <div>
-              <h2 className="text-4xl sm:text-5xl font-serif text-white mb-6">
-                Built for the person, not the jargon.
-              </h2>
-              <p className="text-zinc-500 text-lg leading-relaxed">
-                Every term in your report is explained the moment you need it — whether you&apos;re opening your first brokerage account or your fiftieth.
-              </p>
-            </div>
-            <div className="space-y-6">
-              <div className="flex gap-4 items-start">
-                <div className="w-1.5 h-1.5 rounded-full bg-white mt-2 shrink-0" />
-                <p className="text-zinc-300">No hidden vocabulary. Tap any term, get a plain answer.</p>
-              </div>
-              <div className="flex gap-4 items-start">
-                <div className="w-1.5 h-1.5 rounded-full bg-white mt-2 shrink-0" />
-                <p className="text-zinc-300">The same report for a beginner and a professional — just read as deep as you want.</p>
-              </div>
-              <div className="flex gap-4 items-start">
-                <div className="w-1.5 h-1.5 rounded-full bg-white mt-2 shrink-0" />
-                <p className="text-zinc-300">Every &quot;why&quot; is spelled out. Nothing is a black box you have to trust blindly.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── 6. COMPARISON TABLE ──────────────────────────────── */}
-      <section className="border-t border-zinc-800/60">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-32">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl sm:text-5xl font-serif text-white mb-6">
-              What you&apos;d otherwise stitch together yourself
-            </h2>
-          </div>
-
-          <div className="border border-zinc-800/60">
-            {/* Header */}
-            <div className="grid grid-cols-4 bg-zinc-950 border-b border-zinc-800/60">
-              <div className="p-5 text-xs font-sans text-zinc-500 uppercase tracking-widest">Capabilities</div>
-              <div className="p-5 text-center text-sm font-serif text-white">OnDecide</div>
-              <div className="p-5 text-center text-sm font-serif text-zinc-500">Reading news sites solo</div>
-              <div className="p-5 text-center text-sm font-serif text-zinc-500">Raw stock screeners</div>
-            </div>
-
-            {COMPARISON.map((row, i) => (
-              <div
-                key={row.feature}
-                className={`grid grid-cols-4 border-b border-zinc-800/40 ${i % 2 === 0 ? "bg-black" : "bg-zinc-950/30"}`}
-              >
-                <div className="p-5 text-sm text-zinc-400 flex items-center">{row.feature}</div>
-                
-                {/* OnDecide */}
-                <div className="p-5 flex items-center justify-center">
-                  {row.ondecide ? <div className="w-2 h-2 rounded-full bg-white" /> : <div className="w-4 h-px bg-zinc-700" />}
-                </div>
-
-                {/* News Sites Solo */}
-                <div className="p-5 flex items-center justify-center">
-                  {row.news === true ? (
-                    <div className="w-2 h-2 rounded-full bg-zinc-700" />
-                  ) : row.news === "partial" ? (
-                    <span className="text-xs text-zinc-500 font-sans">Partial</span>
-                  ) : (
-                    <div className="w-4 h-px bg-zinc-800" />
-                  )}
-                </div>
-
-                {/* Raw Stock Screeners */}
-                <div className="p-5 flex items-center justify-center">
-                  {row.screener ? (
-                    <div className="w-2 h-2 rounded-full bg-zinc-700" />
-                  ) : (
-                    <div className="w-4 h-px bg-zinc-800" />
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── 7. FINAL CTA ─────────────────────────────────────── */}
-      <section className="border-t border-zinc-800/60 bg-zinc-950">
+      {/* ── 4. FINAL CTA ─────────────────────────────────────── */}
+      <section className="border-t border-zinc-800/60 bg-[#111]">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-32 text-center">
           <h2 className="text-4xl sm:text-5xl font-serif text-white mb-6">
             Stop guessing what the numbers mean.
@@ -310,4 +271,3 @@ export default function HomePage() {
     </div>
   );
 }
-
