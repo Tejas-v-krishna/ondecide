@@ -19,7 +19,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
       const elements = gsap.utils.toArray(
         "main > section:not(.no-gsap), main .gsap-reveal",
         container.current
-      ) as any[];
+      ) as Element[];
 
       // Reset any previous ScrollTriggers to avoid duplicates on route change
       ScrollTrigger.killAll();

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SearchBar } from "@/components/ui/SearchBar";
-import { CheckCircle2, ArrowRight, Zap, Target, BookOpen, LineChart, Database, BrainCircuit, Activity } from "lucide-react";
+import { CheckCircle2, Target, Database, BrainCircuit, Activity } from "lucide-react";
 import { BentoGrid } from "@/components/ui/BentoGrid";
 import {
   Accordion,
@@ -192,7 +192,7 @@ export default function HomePage() {
               </div>
               <h3 className="text-xl font-serif text-white mb-3">2. Context Synthesis</h3>
               <p className="text-zinc-500 text-sm leading-relaxed">
-                Our agents read today's news and macro sentiment, giving qualitative context to the raw quantitative data.
+                Our agents read today&apos;s news and macro sentiment, giving qualitative context to the raw quantitative data.
               </p>
             </div>
             <div className="bg-black border border-zinc-800/60 p-8 rounded-lg relative">
@@ -254,7 +254,7 @@ export default function HomePage() {
                 Anatomy of a generated thesis
               </h2>
               <p className="text-zinc-500 text-lg mb-8 leading-relaxed">
-                We don't give you a black-box score. Every thesis is broken down into clear, readable sections detailing the competitive moat, valuation risks, and a definitive bottom-line call.
+                We don&apos;t give you a black-box score. Every thesis is broken down into clear, readable sections detailing the competitive moat, valuation risks, and a definitive bottom-line call.
               </p>
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">

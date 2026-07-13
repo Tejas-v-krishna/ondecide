@@ -287,7 +287,7 @@ export default function ProductDemo() {
                     <h3 className="font-serif text-xl font-bold text-white mb-1">The Decision</h3>
                     <p className="text-sm text-zinc-400 mb-3">Mixed signals — monitor and revisit</p>
                     <p className="text-sm text-zinc-200 leading-relaxed">
-                      Apple is a world-class company with an incredibly loyal customer base, but the stock is currently very expensive while its actual sales growth has started to slow down. While the company's move into high-profit digital services and its massive stock buybacks are great signs, the high price tag makes it a risky time for new investors to jump in.
+                      Apple is a world-class company with an incredibly loyal customer base, but the stock is currently very expensive while its actual sales growth has started to slow down. While the company&apos;s move into high-profit digital services and its massive stock buybacks are great signs, the high price tag makes it a risky time for new investors to jump in.
                     </p>
                   </div>
                 </div>
