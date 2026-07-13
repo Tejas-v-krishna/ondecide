@@ -3,6 +3,7 @@ import Link from "next/link";
 import { SearchBar } from "@/components/ui/SearchBar";
 import { CheckCircle2, Target, Database, BrainCircuit, Activity } from "lucide-react";
 import { BentoGrid } from "@/components/ui/BentoGrid";
+import { FadeIn, StaggerContainer, FadeInStaggerItem } from "@/components/ui/FadeIn";
 import {
   Accordion,
   AccordionContent,
@@ -77,43 +78,53 @@ export default function HomePage() {
 
       {/* ── 1. HERO ──────────────────────────────────────────── */}
       <section className="relative overflow-hidden dot-grid min-h-[85vh] flex items-center justify-center">
-        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 py-24 text-center">
+        <StaggerContainer className="relative max-w-5xl mx-auto px-4 sm:px-6 py-24 text-center" delayChildren={0.1} staggerChildren={0.15}>
           
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-zinc-800 bg-zinc-900/50 mb-8 text-xs font-sans text-zinc-400 tracking-wide uppercase">
-            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-            AI RESEARCH, NOT A SCREENER
-          </div>
+          <FadeInStaggerItem direction="up">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-zinc-800 bg-zinc-900/50 mb-8 text-xs font-sans text-zinc-400 tracking-wide uppercase">
+              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+              AI RESEARCH, NOT A SCREENER
+            </div>
+          </FadeInStaggerItem>
 
           {/* Headline */}
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-serif text-white mb-6 leading-tight tracking-tight">
-            Understand any investment.<br className="hidden sm:block" />
-            <span className="text-zinc-400">Not just its score.</span>
-          </h1>
+          <FadeInStaggerItem direction="up">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-serif text-white mb-6 leading-tight tracking-tight">
+              Understand any investment.<br className="hidden sm:block" />
+              <span className="text-zinc-400">Not just its score.</span>
+            </h1>
+          </FadeInStaggerItem>
 
           {/* Sub-headline */}
-          <p className="text-lg sm:text-xl text-zinc-500 mb-12 max-w-2xl mx-auto leading-relaxed">
-            OnDecide reads the news, the numbers, and the history — then explains what they mean, in plain English, before you decide.
-          </p>
+          <FadeInStaggerItem direction="up">
+            <p className="text-lg sm:text-xl text-zinc-500 mb-12 max-w-2xl mx-auto leading-relaxed">
+              OnDecide reads the news, the numbers, and the history — then explains what they mean, in plain English, before you decide.
+            </p>
+          </FadeInStaggerItem>
 
           {/* Search */}
-          <div className="max-w-xl mx-auto mb-8">
-            <SearchBar large />
-          </div>
+          <FadeInStaggerItem direction="up">
+            <div className="max-w-xl mx-auto mb-8">
+              <SearchBar large />
+            </div>
+          </FadeInStaggerItem>
 
           {/* Popular tickers */}
-          <div className="flex flex-wrap justify-center gap-2">
-            {POPULAR.map((p) => (
-              <Link
-                key={p.ticker}
-                href={`/research/${p.ticker}`}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-sm border border-zinc-800 bg-black hover:bg-zinc-900 hover:border-zinc-700 transition-all text-xs group"
-              >
-                <span className="font-sans text-zinc-300 group-hover:text-white transition-colors">{p.ticker}</span>
-              </Link>
-            ))}
-          </div>
-        </div>
+          <FadeInStaggerItem direction="up">
+            <div className="flex flex-wrap justify-center gap-2">
+              {POPULAR.map((p) => (
+                <Link
+                  key={p.ticker}
+                  href={`/research/${p.ticker}`}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-sm border border-zinc-800 bg-black hover:bg-zinc-900 hover:border-zinc-700 transition-all text-xs group"
+                >
+                  <span className="font-sans text-zinc-300 group-hover:text-white transition-colors">{p.ticker}</span>
+                </Link>
+              ))}
+            </div>
+          </FadeInStaggerItem>
+        </StaggerContainer>
       </section>
 
       {/* ── 2. UNIFIED BENTO GRID (The Pipeline, Stats, Comparisons) ──────────────── */}
@@ -135,19 +146,19 @@ export default function HomePage() {
       </section>
 
       {/* ── 3. ASSET CLASS GRID ───────────────────────────────── */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-32 border-t border-zinc-800/60">
-        <div className="text-center mb-20">
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-32 border-t border-zinc-800/60 no-gsap">
+        <FadeIn direction="up" className="text-center mb-20">
           <h2 className="text-4xl sm:text-5xl font-serif text-white mb-6">
             Two asset classes, done properly.<br className="hidden sm:block" /> Everything else, pointed in the right direction.
           </h2>
           <p className="text-zinc-500 max-w-xl mx-auto text-lg">
             We&apos;d rather give you a real analyst&apos;s depth on stocks and crypto than a shallow score on everything.
           </p>
-        </div>
+        </FadeIn>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-zinc-800/50 p-px">
+        <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-px bg-zinc-800/50 p-px" staggerChildren={0.15}>
           {ASSET_CLASSES.map((asset) => (
-            <div
+            <FadeInStaggerItem
               key={asset.name}
               className="bg-black p-10 hover:bg-[#111] transition-colors group relative"
             >
@@ -158,26 +169,26 @@ export default function HomePage() {
               <h3 className="text-xl font-serif text-white mb-3">{asset.name}</h3>
               <p className="text-zinc-500 text-sm mb-6 leading-relaxed">{asset.desc}</p>
               <p className="text-zinc-700 text-xs font-sans">{asset.example}</p>
-            </div>
+            </FadeInStaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
       </section>
 
       {/* ── 4. HOW IT WORKS ────────────────────────────────────── */}
-      <section className="bg-[#111] py-24 border-t border-zinc-800/60 relative overflow-hidden">
+      <section className="bg-[#111] py-24 border-t border-zinc-800/60 relative overflow-hidden no-gsap">
         <div className="absolute inset-0 dot-grid opacity-50" />
         <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
-          <div className="text-center mb-16">
+          <FadeIn direction="up" className="text-center mb-16">
             <h2 className="text-4xl sm:text-5xl font-serif text-white mb-4">
               How OnDecide works
             </h2>
             <p className="text-zinc-500 max-w-xl mx-auto text-lg">
               A transparent, repeatable methodology for generating high-conviction research.
             </p>
-          </div>
+          </FadeIn>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-black border border-zinc-800/60 p-8 rounded-lg relative">
+          <StaggerContainer className="grid md:grid-cols-3 gap-8" staggerChildren={0.15}>
+            <FadeInStaggerItem className="bg-black border border-zinc-800/60 p-8 rounded-lg relative">
               <div className="w-12 h-12 bg-zinc-900 rounded flex items-center justify-center mb-6">
                 <Database className="w-6 h-6 text-zinc-300" />
               </div>
@@ -185,8 +196,8 @@ export default function HomePage() {
               <p className="text-zinc-500 text-sm leading-relaxed">
                 We ingest 10+ years of SEC filings, earnings call transcripts, and live market data. No metric is left unchecked.
               </p>
-            </div>
-            <div className="bg-black border border-zinc-800/60 p-8 rounded-lg relative">
+            </FadeInStaggerItem>
+            <FadeInStaggerItem className="bg-black border border-zinc-800/60 p-8 rounded-lg relative">
               <div className="w-12 h-12 bg-zinc-900 rounded flex items-center justify-center mb-6">
                 <Activity className="w-6 h-6 text-zinc-300" />
               </div>
@@ -194,8 +205,8 @@ export default function HomePage() {
               <p className="text-zinc-500 text-sm leading-relaxed">
                 Our agents read today&apos;s news and macro sentiment, giving qualitative context to the raw quantitative data.
               </p>
-            </div>
-            <div className="bg-black border border-zinc-800/60 p-8 rounded-lg relative">
+            </FadeInStaggerItem>
+            <FadeInStaggerItem className="bg-black border border-zinc-800/60 p-8 rounded-lg relative">
               <div className="w-12 h-12 bg-zinc-900 rounded flex items-center justify-center mb-6">
                 <BrainCircuit className="w-6 h-6 text-zinc-300" />
               </div>
@@ -203,16 +214,16 @@ export default function HomePage() {
               <p className="text-zinc-500 text-sm leading-relaxed">
                 We compare the current setup to historical patterns to generate a final Invest, Hold, or Avoid thesis.
               </p>
-            </div>
-          </div>
+            </FadeInStaggerItem>
+          </StaggerContainer>
         </div>
       </section>
 
       {/* ── 5. ANATOMY OF A REPORT ─────────────────────────────── */}
-      <section className="py-24 border-t border-zinc-800/60 bg-black">
+      <section className="py-24 border-t border-zinc-800/60 bg-black no-gsap">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div className="order-2 lg:order-1">
+            <FadeIn direction="left" className="order-2 lg:order-1">
               <div className="bg-[#111] border border-zinc-800 rounded-xl p-2 shadow-2xl relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
                   <Target className="w-32 h-32 text-white" strokeWidth={0.5} />
@@ -247,72 +258,74 @@ export default function HomePage() {
                   </div>
                 </div>
               </div>
-            </div>
+            </FadeIn>
             
-            <div className="order-1 lg:order-2">
+            <FadeIn direction="right" className="order-1 lg:order-2">
               <h2 className="text-3xl sm:text-4xl font-serif text-white mb-6">
                 Anatomy of a generated thesis
               </h2>
               <p className="text-zinc-500 text-lg mb-8 leading-relaxed">
                 We don&apos;t give you a black-box score. Every thesis is broken down into clear, readable sections detailing the competitive moat, valuation risks, and a definitive bottom-line call.
               </p>
-              <ul className="space-y-4">
-                <li className="flex items-start gap-3">
+              <StaggerContainer className="space-y-4" staggerChildren={0.1}>
+                <FadeInStaggerItem className="flex items-start gap-3">
                   <CheckCircle2 className="w-5 h-5 text-zinc-400 mt-0.5" />
                   <div>
                     <strong className="text-zinc-200 block mb-1 font-serif text-lg">Clear Verdict</strong>
                     <span className="text-sm text-zinc-500">A definitive Invest, Hold, or Avoid rating based on deep synthesis.</span>
                   </div>
-                </li>
-                <li className="flex items-start gap-3">
+                </FadeInStaggerItem>
+                <FadeInStaggerItem className="flex items-start gap-3">
                   <CheckCircle2 className="w-5 h-5 text-zinc-400 mt-0.5" />
                   <div>
                     <strong className="text-zinc-200 block mb-1 font-serif text-lg">Risk Breakdown</strong>
                     <span className="text-sm text-zinc-500">Every bull case is stress-tested against primary market and business risks.</span>
                   </div>
-                </li>
-                <li className="flex items-start gap-3">
+                </FadeInStaggerItem>
+                <FadeInStaggerItem className="flex items-start gap-3">
                   <CheckCircle2 className="w-5 h-5 text-zinc-400 mt-0.5" />
                   <div>
                     <strong className="text-zinc-200 block mb-1 font-serif text-lg">Plain English</strong>
                     <span className="text-sm text-zinc-500">No jargon. Complex financials translated into human-readable insights.</span>
                   </div>
-                </li>
-              </ul>
-            </div>
+                </FadeInStaggerItem>
+              </StaggerContainer>
+            </FadeIn>
           </div>
         </div>
       </section>
 
       {/* ── 6. FAQ ───────────────────────────────────────────── */}
-      <section className="py-24 border-t border-zinc-800/60 bg-black">
+      <section className="py-24 border-t border-zinc-800/60 bg-black no-gsap">
         <div className="max-w-3xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12">
+          <FadeIn direction="up" className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-serif text-white mb-4">
               Frequently Asked Questions
             </h2>
             <p className="text-zinc-500 text-lg">
               Everything you need to know about how OnDecide operates.
             </p>
-          </div>
-          <Accordion type="single" collapsible className="w-full">
-            {FAQS.map((faq, i) => (
-              <AccordionItem key={i} value={`item-${i}`} className="border-zinc-800">
-                <AccordionTrigger className="text-left font-serif text-lg text-zinc-200 hover:text-white py-4">
-                  {faq.question}
-                </AccordionTrigger>
-                <AccordionContent className="text-zinc-500 text-base leading-relaxed pb-4">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+          </FadeIn>
+          <FadeIn direction="up" delay={0.2}>
+            <Accordion type="single" collapsible className="w-full">
+              {FAQS.map((faq, i) => (
+                <AccordionItem key={i} value={`item-${i}`} className="border-zinc-800">
+                  <AccordionTrigger className="text-left font-serif text-lg text-zinc-200 hover:text-white py-4">
+                    {faq.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-zinc-500 text-base leading-relaxed pb-4">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </FadeIn>
         </div>
       </section>
 
       {/* ── 4. FINAL CTA ─────────────────────────────────────── */}
-      <section className="border-t border-zinc-800/60 bg-[#111]">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-32 text-center">
+      <section className="border-t border-zinc-800/60 bg-[#111] no-gsap">
+        <FadeIn direction="up" className="max-w-3xl mx-auto px-4 sm:px-6 py-32 text-center">
           <h2 className="text-4xl sm:text-5xl font-serif text-white mb-6">
             Stop guessing what the numbers mean.
           </h2>
@@ -325,7 +338,7 @@ export default function HomePage() {
           <p className="text-xs text-zinc-600 font-sans">
             Research your first stock today.
           </p>
-        </div>
+        </FadeIn>
       </section>
     </div>
   );

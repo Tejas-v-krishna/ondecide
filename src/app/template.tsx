@@ -15,9 +15,9 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
   useGSAP(
     () => {
-      // Select top-level sections (excluding those handled by Custom animations like Bento Grid)
+      // Select elements explicitly marked for GSAP animations
       const elements = gsap.utils.toArray(
-        "main section:not(.no-gsap), main .gsap-reveal",
+        "main .gsap-reveal",
         container.current
       ) as Element[];
 
