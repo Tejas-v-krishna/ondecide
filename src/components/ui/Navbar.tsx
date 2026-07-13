@@ -5,6 +5,8 @@ import Link from "next/link";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { SearchBar } from "./SearchBar";
 import { MenuIcon, XIcon, Play } from "lucide-react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import {
@@ -228,57 +230,86 @@ function DesktopMenu() {
               {menu.trigger}
             </NavigationMenuTrigger>
             <NavigationMenuContent>
-              <div className="grid w-[800px] grid-cols-[1.2fr_1.2fr_1fr] bg-black border border-zinc-800 rounded-lg p-6">
-                {/* Left Columns */}
-                {menu.sections.map((section) => (
-                  <div key={section.label} className="space-y-4">
-                    <span className="text-2xs text-zinc-500 font-sans tracking-wider uppercase block">
-                      {section.label}
-                    </span>
-                    <ul className="space-y-2">
-                      {section.items.map((item) => (
-                        <li key={item.title}>
-                          <Link href={item.href} passHref legacyBehavior>
-                            <NavigationMenuLink className="text-sm text-zinc-400 hover:text-white transition-colors py-1 block w-full text-left">
-                              {item.title}
-                            </NavigationMenuLink>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-
-                {/* Right Visual Card */}
-                <div className="relative group/card bg-zinc-950 border border-zinc-800 rounded-md p-4 overflow-hidden flex flex-col justify-end min-h-[180px]">
-                  {/* Subtle decorative mesh */}
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.03),transparent)] pointer-events-none" />
-                  
-                  {/* Play icon overlay */}
-                  <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center group-hover/card:bg-white group-hover/card:border-white transition-all">
-                    <Play className="w-3.5 h-3.5 text-zinc-400 fill-zinc-400 group-hover/card:text-black group-hover/card:fill-black transition-colors ml-0.5" />
-                  </div>
-
-                  <div className="space-y-1 relative z-10">
-                    {menu.graphic.tag && (
-                      <span className="text-2xs text-zinc-500 font-sans tracking-wider uppercase block">
-                        {menu.graphic.tag}
-                      </span>
-                    )}
-                    <h4 className="text-sm font-serif text-white leading-tight">
-                      {menu.graphic.title}
-                    </h4>
-                    <p className="text-xs text-zinc-400 leading-normal line-clamp-2">
-                      {menu.graphic.description}
-                    </p>
-                  </div>
-                </div>
-              </div>
+              <GsapMegaMenuContent menu={menu} />
             </NavigationMenuContent>
           </NavigationMenuItem>
         ))}
       </NavigationMenuList>
     </NavigationMenu>
+  );
+}
+
+function GsapMegaMenuContent({ menu }: { menu: MegaMenuConfig }) {
+  const container = React.useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      const items = gsap.utils.toArray('.gsap-stagger-item', container.current);
+      gsap.fromTo(
+        items,
+        { opacity: 0, y: 15 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.4,
+          stagger: 0.04,
+          ease: "power2.out",
+        }
+      );
+    },
+    { scope: container }
+  );
+
+  return (
+    <div
+      ref={container}
+      className="grid w-[800px] grid-cols-[1.2fr_1.2fr_1fr] bg-black border border-zinc-800 rounded-lg p-6"
+    >
+      {/* Left Columns */}
+      {menu.sections.map((section) => (
+        <div key={section.label} className="space-y-4">
+          <span className="gsap-stagger-item text-2xs text-zinc-500 font-sans tracking-wider uppercase block opacity-0">
+            {section.label}
+          </span>
+          <ul className="space-y-2">
+            {section.items.map((item) => (
+              <li key={item.title} className="gsap-stagger-item opacity-0">
+                <Link href={item.href} passHref legacyBehavior>
+                  <NavigationMenuLink className="text-sm text-zinc-400 hover:text-white transition-colors py-1 block w-full text-left">
+                    {item.title}
+                  </NavigationMenuLink>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+
+      {/* Right Visual Card */}
+      <div className="gsap-stagger-item opacity-0 relative group/card bg-zinc-950 border border-zinc-800 rounded-md p-4 overflow-hidden flex flex-col justify-end min-h-[180px]">
+        {/* Subtle decorative mesh */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.03),transparent)] pointer-events-none" />
+
+        {/* Play icon overlay */}
+        <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center group-hover/card:bg-white group-hover/card:border-white transition-all">
+          <Play className="w-3.5 h-3.5 text-zinc-400 fill-zinc-400 group-hover/card:text-black group-hover/card:fill-black transition-colors ml-0.5" />
+        </div>
+
+        <div className="space-y-1 relative z-10">
+          {menu.graphic.tag && (
+            <span className="text-2xs text-zinc-500 font-sans tracking-wider uppercase block">
+              {menu.graphic.tag}
+            </span>
+          )}
+          <h4 className="text-sm font-serif text-white leading-tight">
+            {menu.graphic.title}
+          </h4>
+          <p className="text-xs text-zinc-400 leading-normal line-clamp-2">
+            {menu.graphic.description}
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }
 

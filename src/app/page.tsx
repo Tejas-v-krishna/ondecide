@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SearchBar } from "@/components/ui/SearchBar";
-import { FileText, Cpu, Link2, Filter } from "lucide-react";
+import { CheckCircle2, ArrowRight, Zap, Target, BookOpen, LineChart, Database, BrainCircuit, Activity } from "lucide-react";
+import { BentoGrid } from "@/components/ui/BentoGrid";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 export const metadata: Metadata = {
   title: "OnDecide — Understand any investment",
@@ -40,6 +47,25 @@ const ASSET_CLASSES = [
     tag: "guided",
     desc: "Not ready to research these directly yet — so instead of a broken half-feature, we'll teach you what they are and point you to the best free tools that already do this well.", 
     example: "Curated directory, updated regularly" 
+  },
+];
+
+const FAQS = [
+  {
+    question: "Is this financial advice?",
+    answer: "No, OnDecide provides independent, AI-driven investment research and analysis to help you make your own decisions. We synthesize public data, news, and history into plain language, but we are not financial advisors.",
+  },
+  {
+    question: "How fresh is the data?",
+    answer: "We pull live pricing and real-time news the moment you request a report. Our agents synthesize the absolute latest information alongside 10+ years of historical SEC filings.",
+  },
+  {
+    question: "Can I use this for Day Trading?",
+    answer: "OnDecide is built for fundamental investors, swing traders, and value seekers. While we process live data, our insights focus on macro trends, company health, and longer-term thesis building rather than minute-by-minute scalping.",
+  },
+  {
+    question: "Which markets do you cover?",
+    answer: "We currently cover all major US equities (NYSE, NASDAQ), top Indian equities (NSE), and top cryptocurrencies by market cap.",
   },
 ];
 
@@ -91,7 +117,7 @@ export default function HomePage() {
       </section>
 
       {/* ── 2. UNIFIED BENTO GRID (The Pipeline, Stats, Comparisons) ──────────────── */}
-      <section className="bg-black py-16 lg:py-24 border-t border-zinc-800/60 relative">
+      <section className="bg-black py-16 lg:py-24 border-t border-zinc-800/60 relative no-gsap">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 relative z-10">
           
           <div className="text-center mb-12">
@@ -104,121 +130,7 @@ export default function HomePage() {
           </div>
 
           {/* Bento Grid Container */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-px bg-zinc-800/60 p-px rounded-sm overflow-hidden">
-            
-            {/* ── ROW 1: Pipeline (4 columns of 3) ── */}
-            <div className="md:col-span-3 bg-[#131313] hover:bg-[#181818] transition-colors flex flex-col justify-between p-6 lg:p-8 min-h-[300px] lg:min-h-[320px] group relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                <Filter className="w-16 h-16 lg:w-20 lg:h-20 text-white" strokeWidth={1} />
-              </div>
-              <div className="space-y-4 relative z-10">
-                <p className="text-zinc-500 text-xs font-sans tracking-widest uppercase">Data Ingestion</p>
-              </div>
-              <div className="relative z-10 pt-10">
-                <h3 className="text-xl lg:text-2xl font-serif text-white mb-2 lg:mb-3 leading-tight">Live Market<br/>Resolution</h3>
-                <p className="text-xs lg:text-sm text-zinc-400 leading-relaxed">Resolves partial names or tickers, fetching live pricing and deep fundamentals from institutional-grade APIs instantly.</p>
-              </div>
-            </div>
-
-            <div className="md:col-span-3 bg-[#131313] hover:bg-[#181818] transition-colors flex flex-col justify-between p-6 lg:p-8 min-h-[300px] lg:min-h-[320px] group relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                <FileText className="w-16 h-16 lg:w-20 lg:h-20 text-white" strokeWidth={1} />
-              </div>
-              <div className="space-y-4 relative z-10">
-                <p className="text-zinc-500 text-xs font-sans tracking-widest uppercase">Market Context</p>
-              </div>
-              <div className="relative z-10 pt-10">
-                <h3 className="text-xl lg:text-2xl font-serif text-white mb-2 lg:mb-3 leading-tight">News & Sentiment<br/>Synthesis</h3>
-                <p className="text-xs lg:text-sm text-zinc-400 leading-relaxed">Reads the latest coverage and distills market consensus, telling you not just what happened, but why it matters.</p>
-              </div>
-            </div>
-
-            <div className="md:col-span-3 bg-[#131313] hover:bg-[#181818] transition-colors flex flex-col justify-between p-6 lg:p-8 min-h-[300px] lg:min-h-[320px] group relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                <Cpu className="w-16 h-16 lg:w-20 lg:h-20 text-white" strokeWidth={1} />
-              </div>
-              <div className="space-y-4 relative z-10">
-                <p className="text-zinc-500 text-xs font-sans tracking-widest uppercase">Deep Reasoning</p>
-              </div>
-              <div className="relative z-10 pt-10">
-                <h3 className="text-xl lg:text-2xl font-serif text-white mb-2 lg:mb-3 leading-tight">Historical<br/>Pattern Matching</h3>
-                <p className="text-xs lg:text-sm text-zinc-400 leading-relaxed">Finds the closest parallel from market history and reasons through management quality and competitive moats.</p>
-              </div>
-            </div>
-
-            <div className="md:col-span-3 bg-[#131313] hover:bg-[#181818] transition-colors flex flex-col justify-between p-6 lg:p-8 min-h-[300px] lg:min-h-[320px] group relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                <Link2 className="w-16 h-16 lg:w-20 lg:h-20 text-white" strokeWidth={1} />
-              </div>
-              <div className="space-y-4 relative z-10">
-                <p className="text-zinc-500 text-xs font-sans tracking-widest uppercase">The Output</p>
-              </div>
-              <div className="relative z-10 pt-10">
-                <h3 className="text-xl lg:text-2xl font-serif text-white mb-2 lg:mb-3 leading-tight">The Final<br/>Decision</h3>
-                <p className="text-xs lg:text-sm text-zinc-400 leading-relaxed">Synthesizes all 7 nodes into a single, reasoned Invest, Hold, or Avoid call—backed by a transparent breakdown.</p>
-              </div>
-            </div>
-
-            {/* ── ROW 2: Stats (3 columns of 4) ── */}
-            <div className="md:col-span-4 bg-[#111111] p-6 lg:p-8 flex flex-col justify-end min-h-[220px] border-t border-zinc-800/20">
-              <div className="text-5xl lg:text-[4rem] leading-none font-serif text-white tracking-tight mb-3 lg:mb-4">7</div>
-              <div className="text-xs lg:text-sm font-sans text-zinc-500 tracking-wide">Parallel AI Agents running per report</div>
-            </div>
-
-            <div className="md:col-span-4 bg-[#111111] p-6 lg:p-8 flex flex-col justify-end min-h-[220px] border-t border-zinc-800/20">
-              <div className="text-5xl lg:text-[4rem] leading-none font-serif text-white tracking-tight mb-3 lg:mb-4">2</div>
-              <div className="text-xs lg:text-sm font-sans text-zinc-500 tracking-wide">Asset classes (Stocks & Crypto) supported</div>
-            </div>
-
-            <div className="md:col-span-4 bg-[#111111] p-6 lg:p-8 flex flex-col justify-end min-h-[220px] border-t border-zinc-800/20">
-              <div className="text-5xl lg:text-[4rem] leading-none font-serif text-white tracking-tight mb-3 lg:mb-4">&lt;60<span className="text-4xl text-zinc-600">s</span></div>
-              <div className="text-xs lg:text-sm font-sans text-zinc-500 tracking-wide">Time from your prompt to a final decision</div>
-            </div>
-
-            {/* ── ROW 3: Comparisons (3 columns of 4) ── */}
-            <div className="md:col-span-4 bg-[#131313] p-6 lg:p-8 flex flex-col min-h-[200px]">
-              <h4 className="text-xl lg:text-2xl font-serif text-white mb-auto">Research Time</h4>
-              <div className="space-y-3 lg:space-y-4 font-sans text-xs lg:text-sm mt-6 lg:mt-8 w-full">
-                <div className="flex justify-between border-b border-zinc-800/60 pb-3">
-                  <span className="text-zinc-600">Before</span>
-                  <span className="text-zinc-400">2+ Hours</span>
-                </div>
-                <div className="flex justify-between pt-1">
-                  <span className="text-zinc-500">with OnDecide</span>
-                  <span className="text-white font-medium">&lt; 1 Minute</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="md:col-span-4 bg-[#131313] p-6 lg:p-8 flex flex-col min-h-[200px]">
-              <h4 className="text-xl lg:text-2xl font-serif text-white mb-auto">Data Sources</h4>
-              <div className="space-y-3 lg:space-y-4 font-sans text-xs lg:text-sm mt-6 lg:mt-8 w-full">
-                <div className="flex justify-between border-b border-zinc-800/60 pb-3">
-                  <span className="text-zinc-600">Before</span>
-                  <span className="text-zinc-400">Fragmented Tools</span>
-                </div>
-                <div className="flex justify-between pt-1">
-                  <span className="text-zinc-500">with OnDecide</span>
-                  <span className="text-white font-medium">Unified & Traceable</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="md:col-span-4 bg-[#131313] p-6 lg:p-8 flex flex-col min-h-[200px]">
-              <h4 className="text-xl lg:text-2xl font-serif text-white mb-auto">The Output</h4>
-              <div className="space-y-3 lg:space-y-4 font-sans text-xs lg:text-sm mt-6 lg:mt-8 w-full">
-                <div className="flex justify-between border-b border-zinc-800/60 pb-3">
-                  <span className="text-zinc-600">Before</span>
-                  <span className="text-zinc-400">A numeric score</span>
-                </div>
-                <div className="flex justify-between pt-1">
-                  <span className="text-zinc-500">with OnDecide</span>
-                  <span className="text-white font-medium">Reasoned Decision</span>
-                </div>
-              </div>
-            </div>
-
-          </div>
+          <BentoGrid />
         </div>
       </section>
 
@@ -248,6 +160,153 @@ export default function HomePage() {
               <p className="text-zinc-700 text-xs font-sans">{asset.example}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* ── 4. HOW IT WORKS ────────────────────────────────────── */}
+      <section className="bg-[#111] py-24 border-t border-zinc-800/60 relative overflow-hidden">
+        <div className="absolute inset-0 dot-grid opacity-50" />
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl sm:text-5xl font-serif text-white mb-4">
+              How OnDecide works
+            </h2>
+            <p className="text-zinc-500 max-w-xl mx-auto text-lg">
+              A transparent, repeatable methodology for generating high-conviction research.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="bg-black border border-zinc-800/60 p-8 rounded-lg relative">
+              <div className="w-12 h-12 bg-zinc-900 rounded flex items-center justify-center mb-6">
+                <Database className="w-6 h-6 text-zinc-300" />
+              </div>
+              <h3 className="text-xl font-serif text-white mb-3">1. Deep Ingestion</h3>
+              <p className="text-zinc-500 text-sm leading-relaxed">
+                We ingest 10+ years of SEC filings, earnings call transcripts, and live market data. No metric is left unchecked.
+              </p>
+            </div>
+            <div className="bg-black border border-zinc-800/60 p-8 rounded-lg relative">
+              <div className="w-12 h-12 bg-zinc-900 rounded flex items-center justify-center mb-6">
+                <Activity className="w-6 h-6 text-zinc-300" />
+              </div>
+              <h3 className="text-xl font-serif text-white mb-3">2. Context Synthesis</h3>
+              <p className="text-zinc-500 text-sm leading-relaxed">
+                Our agents read today's news and macro sentiment, giving qualitative context to the raw quantitative data.
+              </p>
+            </div>
+            <div className="bg-black border border-zinc-800/60 p-8 rounded-lg relative">
+              <div className="w-12 h-12 bg-zinc-900 rounded flex items-center justify-center mb-6">
+                <BrainCircuit className="w-6 h-6 text-zinc-300" />
+              </div>
+              <h3 className="text-xl font-serif text-white mb-3">3. Thesis Generation</h3>
+              <p className="text-zinc-500 text-sm leading-relaxed">
+                We compare the current setup to historical patterns to generate a final Invest, Hold, or Avoid thesis.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 5. ANATOMY OF A REPORT ─────────────────────────────── */}
+      <section className="py-24 border-t border-zinc-800/60 bg-black">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div className="order-2 lg:order-1">
+              <div className="bg-[#111] border border-zinc-800 rounded-xl p-2 shadow-2xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
+                  <Target className="w-32 h-32 text-white" strokeWidth={0.5} />
+                </div>
+                <div className="bg-black border border-zinc-800/50 rounded-lg p-6 sm:p-8">
+                  <div className="flex items-center justify-between mb-8 pb-4 border-b border-zinc-800">
+                    <div>
+                      <h4 className="text-2xl font-serif text-white mb-1">Nvidia Corp</h4>
+                      <div className="text-sm font-mono text-zinc-500">NVDA · NASDAQ</div>
+                    </div>
+                    <div className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-4 py-1.5 rounded-full text-sm font-medium tracking-wide uppercase">
+                      Invest
+                    </div>
+                  </div>
+                  <div className="space-y-6">
+                    <div>
+                      <div className="text-xs text-zinc-500 uppercase tracking-widest mb-2 font-sans">The Thesis</div>
+                      <p className="text-sm text-zinc-300 leading-relaxed">
+                        Nvidia maintains a near-monopoly on data center AI accelerators. Despite a premium valuation, forward earnings growth easily justifies the multiple due to structural hyperscaler demand.
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-zinc-800/60">
+                      <div>
+                         <div className="text-xs text-zinc-500 uppercase tracking-widest mb-1 font-sans">Moat</div>
+                         <div className="text-sm text-zinc-200">CUDA Ecosystem</div>
+                      </div>
+                      <div>
+                         <div className="text-xs text-zinc-500 uppercase tracking-widest mb-1 font-sans">Risk</div>
+                         <div className="text-sm text-rose-400">Geopolitical Export Bans</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="order-1 lg:order-2">
+              <h2 className="text-3xl sm:text-4xl font-serif text-white mb-6">
+                Anatomy of a generated thesis
+              </h2>
+              <p className="text-zinc-500 text-lg mb-8 leading-relaxed">
+                We don't give you a black-box score. Every thesis is broken down into clear, readable sections detailing the competitive moat, valuation risks, and a definitive bottom-line call.
+              </p>
+              <ul className="space-y-4">
+                <li className="flex items-start gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-zinc-400 mt-0.5" />
+                  <div>
+                    <strong className="text-zinc-200 block mb-1 font-serif text-lg">Clear Verdict</strong>
+                    <span className="text-sm text-zinc-500">A definitive Invest, Hold, or Avoid rating based on deep synthesis.</span>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-zinc-400 mt-0.5" />
+                  <div>
+                    <strong className="text-zinc-200 block mb-1 font-serif text-lg">Risk Breakdown</strong>
+                    <span className="text-sm text-zinc-500">Every bull case is stress-tested against primary market and business risks.</span>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-zinc-400 mt-0.5" />
+                  <div>
+                    <strong className="text-zinc-200 block mb-1 font-serif text-lg">Plain English</strong>
+                    <span className="text-sm text-zinc-500">No jargon. Complex financials translated into human-readable insights.</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 6. FAQ ───────────────────────────────────────────── */}
+      <section className="py-24 border-t border-zinc-800/60 bg-black">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-serif text-white mb-4">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-zinc-500 text-lg">
+              Everything you need to know about how OnDecide operates.
+            </p>
+          </div>
+          <Accordion type="single" collapsible className="w-full">
+            {FAQS.map((faq, i) => (
+              <AccordionItem key={i} value={`item-${i}`} className="border-zinc-800">
+                <AccordionTrigger className="text-left font-serif text-lg text-zinc-200 hover:text-white py-4">
+                  {faq.question}
+                </AccordionTrigger>
+                <AccordionContent className="text-zinc-500 text-base leading-relaxed pb-4">
+                  {faq.answer}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </div>
       </section>
 
