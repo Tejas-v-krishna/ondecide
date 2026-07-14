@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 
@@ -15,8 +15,13 @@ const PIPELINE_STEPS = [
   { id: "thesis", label: "Forming thesis" },
 ];
 
-export default function ProductDemo() {
+interface ProductDemoProps {
+  className?: string;
+}
+
+export default function ProductDemo({ className = "h-screen w-full" }: ProductDemoProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
 
   // Agent Progress Refs
   const agentPhaseRef = useRef<HTMLDivElement>(null);
@@ -38,8 +43,26 @@ export default function ProductDemo() {
   const decisionContentRef = useRef<HTMLDivElement>(null);
   const bullBearContentRef = useRef<HTMLDivElement>(null);
 
+  // Handle auto-scaling for responsive embedding
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const handleResize = () => {
+      if (!containerRef.current) return;
+      const width = containerRef.current.clientWidth;
+      // Scale down if container is narrower than 1024px
+      if (width < 1024) {
+        setScale(width / 1024);
+      } else {
+        setScale(1);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   useGSAP(() => {
-    if (!containerRef.current || !companyContentRef.current || !decisionContentRef.current || !bullBearContentRef.current) return;
+    if (!containerRef.current) return;
 
     const tl = gsap.timeline({ repeat: -1 });
 
@@ -65,19 +88,19 @@ export default function ProductDemo() {
     tl.set(cameraRef.current, { scale: 1.35, x: "22%", y: "10%" });
     tl.set(bentoGridRef.current, { opacity: 0 });
     
-    // Prep children for staggered fade-up
-    const companyChildren = companyContentRef.current.children;
-    const decisionChildren = decisionContentRef.current.children;
-    const bullBearChildren = bullBearContentRef.current.children;
+    // Prep children for staggered fade-up (safely convert HTMLCollection to flat arrays)
+    const companyChildren = companyContentRef.current ? Array.from(companyContentRef.current.children) : [];
+    const decisionChildren = decisionContentRef.current ? Array.from(decisionContentRef.current.children) : [];
+    const bullBearChildren = bullBearContentRef.current ? Array.from(bullBearContentRef.current.children) : [];
     
-    tl.set([companyChildren, decisionChildren, bullBearChildren], { opacity: 0, y: 15 });
+    tl.set([...companyChildren, ...decisionChildren, ...bullBearChildren], { opacity: 0, y: 15 });
     // Parents start completely hidden to prevent borders/margins from showing early
     tl.set([companyContentRef.current, decisionContentRef.current, bullBearContentRef.current], { opacity: 0, x: 0, y: 0 });
 
     // ── Animation Sequence ──
     
     // 1. Fade in the agent phase smoothly from black
-    tl.to(agentPhaseRef.current, { opacity: 1, duration: 0.5, ease: "power2.out" });
+    tl.to(agentPhaseRef.current, { opacity: 1, duration: 0.6, ease: "power2.out" });
     tl.to(subtitleRef.current, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, "-=0.3");
     
     // 1b. Staggered fade-up entrance for the pipeline rows
@@ -145,7 +168,7 @@ export default function ProductDemo() {
   }, { scope: containerRef });
 
   return (
-    <div ref={containerRef} className="relative flex h-screen w-full items-center justify-center overflow-hidden bg-black font-sans text-white selection:bg-zinc-800">
+    <div ref={containerRef} className={`relative flex items-center justify-center overflow-hidden bg-black font-sans text-white selection:bg-zinc-800 ${className}`}>
       
       {/* ─────────────────────────────────────────────────────────
           PHASE 1: Agent Progress
@@ -211,131 +234,137 @@ export default function ProductDemo() {
           PHASE 2: Final Report (Bento Grid)
           ───────────────────────────────────────────────────────── */}
       <div ref={reportPhaseRef} className="absolute flex w-full justify-center">
-        {/* Camera Wrapper */}
-        <div ref={cameraRef} className="w-full max-w-[1000px] px-6">
-          
-          {/* Top Navbar mockup */}
-          <div className="mb-6 flex items-center justify-between border-b border-zinc-800/60 pb-4">
-            <div className="flex gap-4">
-              <div className="h-4 w-20 rounded bg-zinc-800" />
-              <div className="h-4 w-24 rounded bg-zinc-800" />
-              <div className="h-4 w-16 rounded bg-zinc-800" />
-            </div>
-            <div className="flex gap-2">
-              <div className="h-8 w-24 rounded-lg bg-zinc-900 border border-zinc-800" />
-              <div className="h-8 w-8 rounded-lg bg-emerald-500/20 text-emerald-500 flex items-center justify-center">★</div>
-            </div>
-          </div>
-
-          {/* Bento Grid */}
-          <div ref={bentoGridRef} className="grid grid-cols-1 gap-px bg-zinc-800 lg:grid-cols-12 p-px overflow-hidden">
+        {/* Scale Wrapper (React-controlled for responsive centering) */}
+        <div 
+          className="shrink-0 origin-center flex justify-center items-center"
+          style={{ transform: `scale(${scale})` }}
+        >
+          {/* Camera Wrapper (GSAP-controlled) */}
+          <div ref={cameraRef} className="w-[1000px] px-6">
             
-            {/* Company Snapshot */}
-            <div className="col-span-1 flex flex-col bg-black p-6 lg:col-span-4">
-              <div ref={companyContentRef} className="flex h-full flex-col">
-                <div className="flex justify-between items-start mb-6">
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 bg-white rounded-xl flex items-center justify-center">
-                      <svg className="h-6 w-6 text-black" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm3.99 15h-1.99v-2h-2v2H10v-2H8v-2h2v-2H8V9h2V7h2v2h2V7h2v2h-2v2h2v2h-2v2h2v2z"/>
-                      </svg>
+            {/* Top Navbar mockup */}
+            <div className="mb-6 flex items-center justify-between border-b border-zinc-800/60 pb-4">
+              <div className="flex gap-4">
+                <div className="h-4 w-20 rounded bg-zinc-800" />
+                <div className="h-4 w-24 rounded bg-zinc-800" />
+                <div className="h-4 w-16 rounded bg-zinc-800" />
+              </div>
+              <div className="flex gap-2">
+                <div className="h-8 w-24 rounded-lg bg-zinc-900 border border-zinc-800" />
+                <div className="h-8 w-8 rounded-lg bg-emerald-500/20 text-emerald-500 flex items-center justify-center">★</div>
+              </div>
+            </div>
+
+            {/* Bento Grid */}
+            <div ref={bentoGridRef} className="grid grid-cols-1 gap-px bg-zinc-800 lg:grid-cols-12 p-px overflow-hidden">
+              
+              {/* Company Snapshot */}
+              <div className="col-span-1 flex flex-col bg-black p-6 lg:col-span-4">
+                <div ref={companyContentRef} className="flex h-full flex-col">
+                  <div className="flex justify-between items-start mb-6">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 bg-white rounded-xl flex items-center justify-center">
+                        <svg className="h-6 w-6 text-black" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm3.99 15h-1.99v-2h-2v2H10v-2H8v-2h2v-2H8V9h2V7h2v2h2V7h2v2h-2v2h2v2h-2v2h2v2z"/>
+                        </svg>
+                      </div>
+                      <div>
+                        <h2 className="font-serif text-2xl font-bold text-white">Apple Inc <span className="text-xs font-sans text-zinc-500 bg-zinc-900 px-1.5 py-0.5 rounded align-middle">AAPL</span></h2>
+                        <p className="text-xs text-zinc-500 mt-1">Technology · NASDAQ NMS</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-sans text-xl font-bold text-white">
+                        <span className="text-sm text-zinc-500 font-normal">USD</span> 315.32
+                      </div>
+                      <div className="inline-flex rounded bg-zinc-900 px-1.5 py-0.5 text-xs text-zinc-400 mt-1">
+                        ▼ 0.28% (-0.90)
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <h3 className="font-serif text-sm tracking-widest text-zinc-400 uppercase mb-3">About Apple Inc</h3>
+                  <p className="text-sm text-zinc-300 leading-relaxed">
+                    Apple is best known for creating and selling popular electronics like the iPhone, Mac computers, and the Apple Watch. The company makes money both by selling these high-end gadgets and through digital services like the App Store, music subscriptions, and extra phone storage. People care about Apple because it has a massive, loyal customer base that tends to stick with the brand every time they need a new device.
+                  </p>
+                  
+                  <div className="mt-8 flex gap-8">
+                    <div>
+                      <p className="text-[10px] text-zinc-500 uppercase tracking-widest mb-1">Market Cap</p>
+                      <p className="text-sm font-medium text-white">$4.63M</p>
                     </div>
                     <div>
-                      <h2 className="font-serif text-2xl font-bold text-white">Apple Inc <span className="text-xs font-sans text-zinc-500 bg-zinc-900 px-1.5 py-0.5 rounded align-middle">AAPL</span></h2>
-                      <p className="text-xs text-zinc-500 mt-1">Technology · NASDAQ NMS</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-sans text-xl font-bold text-white">
-                      <span className="text-sm text-zinc-500 font-normal">USD</span> 315.32
-                    </div>
-                    <div className="inline-flex rounded bg-zinc-900 px-1.5 py-0.5 text-xs text-zinc-400 mt-1">
-                      ▼ 0.28% (-0.90)
+                      <p className="text-[10px] text-zinc-500 uppercase tracking-widest mb-1">Website</p>
+                      <p className="text-sm font-medium text-emerald-400">apple.com ↗</p>
                     </div>
                   </div>
                 </div>
+              </div>
+
+              {/* Investment Thesis */}
+              <div className="col-span-1 flex flex-col bg-black p-6 lg:col-span-8">
                 
-                <h3 className="font-serif text-sm tracking-widest text-zinc-400 uppercase mb-3">About Apple Inc</h3>
-                <p className="text-sm text-zinc-300 leading-relaxed">
-                  Apple is best known for creating and selling popular electronics like the iPhone, Mac computers, and the Apple Watch. The company makes money both by selling these high-end gadgets and through digital services like the App Store, music subscriptions, and extra phone storage. People care about Apple because it has a massive, loyal customer base that tends to stick with the brand every time they need a new device.
-                </p>
-                
-                <div className="mt-8 flex gap-8">
+                {/* The Decision Component */}
+                <div ref={decisionContentRef}>
+                  <div className="flex gap-5 mb-8">
+                    <div className="h-16 w-16 rounded-xl border border-zinc-800 bg-zinc-900 flex flex-col items-center justify-center shrink-0">
+                      <div className="h-4 w-4 bg-zinc-400 mb-1 rounded-sm" />
+                      <span className="text-xs font-bold text-white">Hold</span>
+                    </div>
+                    <div>
+                      <h3 className="font-serif text-xl font-bold text-white mb-1">The Decision</h3>
+                      <p className="text-sm text-zinc-400 mb-3">Mixed signals — monitor and revisit</p>
+                      <p className="text-sm text-zinc-200 leading-relaxed">
+                        Apple is a world-class company with an incredibly loyal customer base, but the stock is currently very expensive while its actual sales growth has started to slow down. While the company&apos;s move into high-profit digital services and its massive stock buybacks are great signs, the high price tag makes it a risky time for new investors to jump in.
+                      </p>
+                    </div>
+                  </div>
+
+                  <h4 className="font-serif text-xs text-zinc-400 uppercase tracking-widest mb-4">How this call was weighted</h4>
+                  <div className="space-y-3 mb-8">
+                    <div className="flex justify-between text-xs text-zinc-300">
+                      <span>Financials</span>
+                      <span>35%</span>
+                    </div>
+                    <div className="h-1 w-full bg-zinc-900 rounded-full overflow-hidden">
+                      <div className="h-full bg-zinc-500 w-[35%]" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bull Bear Case Component */}
+                <div ref={bullBearContentRef} className="grid grid-cols-2 gap-8 mt-auto border-t border-zinc-800/60 pt-6">
                   <div>
-                    <p className="text-[10px] text-zinc-500 uppercase tracking-widest mb-1">Market Cap</p>
-                    <p className="text-sm font-medium text-white">$4.63M</p>
+                    <h4 className="font-serif text-sm text-emerald-400 uppercase tracking-widest mb-3">The Bull Case</h4>
+                    <ul className="space-y-2 text-xs text-zinc-300">
+                      <li className="flex gap-2">
+                        <span className="text-emerald-400">+</span> Massive $110 billion share buyback program
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="text-emerald-400">+</span> Strong shift toward high-margin digital services
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="text-emerald-400">+</span> Positive technical momentum with a &apos;Golden Cross&apos; signal
+                      </li>
+                    </ul>
                   </div>
                   <div>
-                    <p className="text-[10px] text-zinc-500 uppercase tracking-widest mb-1">Website</p>
-                    <p className="text-sm font-medium text-emerald-400">apple.com ↗</p>
+                    <h4 className="font-serif text-sm text-rose-400 uppercase tracking-widest mb-3">The Bear Case</h4>
+                    <ul className="space-y-2 text-xs text-zinc-300">
+                      <li className="flex gap-2">
+                        <span className="text-rose-400">-</span> High stock price relative to actual company earnings
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="text-rose-400">-</span> Slowing growth in hardware sales like the iPhone
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="text-rose-400">-</span> Loss of market share to local competitors in China
+                      </li>
+                    </ul>
                   </div>
                 </div>
+
               </div>
-            </div>
-
-            {/* Investment Thesis */}
-            <div className="col-span-1 flex flex-col bg-black p-6 lg:col-span-8">
-              
-              {/* The Decision Component */}
-              <div ref={decisionContentRef}>
-                <div className="flex gap-5 mb-8">
-                  <div className="h-16 w-16 rounded-xl border border-zinc-800 bg-zinc-900 flex flex-col items-center justify-center shrink-0">
-                    <div className="h-4 w-4 bg-zinc-400 mb-1 rounded-sm" />
-                    <span className="text-xs font-bold text-white">Hold</span>
-                  </div>
-                  <div>
-                    <h3 className="font-serif text-xl font-bold text-white mb-1">The Decision</h3>
-                    <p className="text-sm text-zinc-400 mb-3">Mixed signals — monitor and revisit</p>
-                    <p className="text-sm text-zinc-200 leading-relaxed">
-                      Apple is a world-class company with an incredibly loyal customer base, but the stock is currently very expensive while its actual sales growth has started to slow down. While the company&apos;s move into high-profit digital services and its massive stock buybacks are great signs, the high price tag makes it a risky time for new investors to jump in.
-                    </p>
-                  </div>
-                </div>
-
-                <h4 className="font-serif text-xs text-zinc-400 uppercase tracking-widest mb-4">How this call was weighted</h4>
-                <div className="space-y-3 mb-8">
-                  <div className="flex justify-between text-xs text-zinc-300">
-                    <span>Financials</span>
-                    <span>35%</span>
-                  </div>
-                  <div className="h-1 w-full bg-zinc-900 rounded-full overflow-hidden">
-                    <div className="h-full bg-zinc-500 w-[35%]" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Bull Bear Case Component */}
-              <div ref={bullBearContentRef} className="grid grid-cols-2 gap-8 mt-auto border-t border-zinc-800/60 pt-6">
-                <div>
-                  <h4 className="font-serif text-sm text-emerald-400 uppercase tracking-widest mb-3">The Bull Case</h4>
-                  <ul className="space-y-2 text-xs text-zinc-300">
-                    <li className="flex gap-2">
-                      <span className="text-emerald-400">+</span> Massive $110 billion share buyback program
-                    </li>
-                    <li className="flex gap-2">
-                      <span className="text-emerald-400">+</span> Strong shift toward high-margin digital services
-                    </li>
-                    <li className="flex gap-2">
-                      <span className="text-emerald-400">+</span> Positive technical momentum with a &apos;Golden Cross&apos; signal
-                    </li>
-                  </ul>
-                </div>
-                <div>
-                  <h4 className="font-serif text-sm text-rose-400 uppercase tracking-widest mb-3">The Bear Case</h4>
-                  <ul className="space-y-2 text-xs text-zinc-300">
-                    <li className="flex gap-2">
-                      <span className="text-rose-400">-</span> High stock price relative to actual company earnings
-                    </li>
-                    <li className="flex gap-2">
-                      <span className="text-rose-400">-</span> Slowing growth in hardware sales like the iPhone
-                    </li>
-                    <li className="flex gap-2">
-                      <span className="text-rose-400">-</span> Loss of market share to local competitors in China
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
             </div>
           </div>
         </div>

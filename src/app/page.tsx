@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SearchBar } from "@/components/ui/SearchBar";
-import { CheckCircle2, Target, Database, BrainCircuit, Activity } from "lucide-react";
+import { Database, BrainCircuit, Activity } from "lucide-react";
 import { BentoGrid } from "@/components/ui/BentoGrid";
 import { FadeIn, StaggerContainer, FadeInStaggerItem } from "@/components/ui/FadeIn";
 import {
@@ -10,6 +10,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import ProductDemo from "@/components/demo/ProductDemo";
 
 export const metadata: Metadata = {
   title: "OnDecide — Understand any investment",
@@ -78,7 +79,12 @@ export default function HomePage() {
 
       {/* ── 1. HERO ──────────────────────────────────────────── */}
       <section className="relative overflow-hidden dot-grid min-h-[85vh] flex items-center justify-center">
-        <StaggerContainer className="relative max-w-5xl mx-auto px-4 sm:px-6 py-24 text-center" delayChildren={0.1} staggerChildren={0.15}>
+        
+        {/* Cinematic Background Lighting */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] mix-blend-screen animate-orb pointer-events-none" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-navy-500/20 rounded-full blur-[120px] mix-blend-screen animate-orb pointer-events-none" style={{ animationDelay: "2s" }} />
+
+        <StaggerContainer className="relative max-w-5xl mx-auto px-4 sm:px-6 py-24 text-center z-10" delayChildren={0.1} staggerChildren={0.15}>
           
           {/* Badge */}
           <FadeInStaggerItem direction="up">
@@ -91,7 +97,7 @@ export default function HomePage() {
           {/* Headline */}
           <FadeInStaggerItem direction="up">
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-serif text-white mb-6 leading-tight tracking-tight">
-              Understand any investment.<br className="hidden sm:block" />
+              <span className="text-gradient-premium">Understand any investment.</span><br className="hidden sm:block" />
               <span className="text-zinc-400">Not just its score.</span>
             </h1>
           </FadeInStaggerItem>
@@ -223,74 +229,87 @@ export default function HomePage() {
       <section className="py-24 border-t border-zinc-800/60 bg-black no-gsap">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <FadeIn direction="left" className="order-2 lg:order-1">
-              <div className="bg-[#111] border border-zinc-800 rounded-xl p-2 shadow-2xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
-                  <Target className="w-32 h-32 text-white" strokeWidth={0.5} />
+            {/* Left Column: Text, Links, Chips */}
+            <FadeIn direction="left" className="lg:order-1">
+              <h2 className="text-4xl sm:text-5xl font-serif text-white mb-6 leading-[1.15]">
+                Synthesize complex data into a clear investment thesis
+              </h2>
+              <p className="text-zinc-500 text-lg mb-8 leading-relaxed">
+                Automate document-heavy financial research with unmatched precision. Cut down manual reading workloads, identify valuation risks, and unlock faster reviews with plain-English insights.
+              </p>
+              
+              <div className="mb-10">
+                <Link href="/auth/signup" className="inline-flex items-center gap-1.5 text-sm font-medium text-white hover:text-zinc-300 transition-colors">
+                  Explore the analyst pipeline <span className="text-xs">↗</span>
+                </Link>
+              </div>
+
+              <div>
+                <div className="text-[11px] font-mono text-zinc-600 uppercase tracking-widest mb-4">
+                  Active analyst agents
                 </div>
-                <div className="bg-black border border-zinc-800/50 rounded-lg p-6 sm:p-8">
-                  <div className="flex items-center justify-between mb-8 pb-4 border-b border-zinc-800">
-                    <div>
-                      <h4 className="text-2xl font-serif text-white mb-1">Nvidia Corp</h4>
-                      <div className="text-sm font-mono text-zinc-500">NVDA · NASDAQ</div>
-                    </div>
-                    <div className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-4 py-1.5 rounded-full text-sm font-medium tracking-wide uppercase">
-                      Invest
-                    </div>
-                  </div>
-                  <div className="space-y-6">
-                    <div>
-                      <div className="text-xs text-zinc-500 uppercase tracking-widest mb-2 font-sans">The Thesis</div>
-                      <p className="text-sm text-zinc-300 leading-relaxed">
-                        Nvidia maintains a near-monopoly on data center AI accelerators. Despite a premium valuation, forward earnings growth easily justifies the multiple due to structural hyperscaler demand.
-                      </p>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-zinc-800/60">
-                      <div>
-                         <div className="text-xs text-zinc-500 uppercase tracking-widest mb-1 font-sans">Moat</div>
-                         <div className="text-sm text-zinc-200">CUDA Ecosystem</div>
-                      </div>
-                      <div>
-                         <div className="text-xs text-zinc-500 uppercase tracking-widest mb-1 font-sans">Risk</div>
-                         <div className="text-sm text-rose-400">Geopolitical Export Bans</div>
-                      </div>
-                    </div>
-                  </div>
+                <div className="flex flex-wrap gap-2">
+                  <span className="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/40 px-3 py-1.5 text-xs text-zinc-300">
+                    <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                    Company Resolution Agent
+                  </span>
+                  <span className="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/40 px-3 py-1.5 text-xs text-zinc-300">
+                    <span className="h-2 w-2 rounded-full bg-blue-500" />
+                    Financial Ingestion Agent
+                  </span>
+                  <span className="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/40 px-3 py-1.5 text-xs text-zinc-300">
+                    <span className="h-2 w-2 rounded-full bg-violet-500" />
+                    Real-Time News Agent
+                  </span>
+                  <span className="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/40 px-3 py-1.5 text-xs text-zinc-300">
+                    <span className="h-2 w-2 rounded-full bg-amber-500" />
+                    Qualitative Factors Agent
+                  </span>
+                  <span className="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/40 px-3 py-1.5 text-xs text-zinc-300">
+                    <span className="h-2 w-2 rounded-full bg-rose-500" />
+                    Pattern Matching Agent
+                  </span>
+                  <span className="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/40 px-3 py-1.5 text-xs text-zinc-300">
+                    <span className="h-2 w-2 rounded-full bg-cyan-500" />
+                    Report Synthesis Agent
+                  </span>
+                  <span className="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/40 px-3 py-1.5 text-xs text-zinc-300">
+                    <span className="h-2 w-2 rounded-full bg-fuchsia-500" />
+                    Thesis Formulation Agent
+                  </span>
+                  <span className="text-xs text-zinc-600 self-center pl-1 font-medium">+12 more</span>
                 </div>
               </div>
             </FadeIn>
-            
-            <FadeIn direction="right" className="order-1 lg:order-2">
-              <h2 className="text-3xl sm:text-4xl font-serif text-white mb-6">
-                Anatomy of a generated thesis
-              </h2>
-              <p className="text-zinc-500 text-lg mb-8 leading-relaxed">
-                We don&apos;t give you a black-box score. Every thesis is broken down into clear, readable sections detailing the competitive moat, valuation risks, and a definitive bottom-line call.
-              </p>
-              <StaggerContainer className="space-y-4" staggerChildren={0.1}>
-                <FadeInStaggerItem className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-zinc-400 mt-0.5" />
-                  <div>
-                    <strong className="text-zinc-200 block mb-1 font-serif text-lg">Clear Verdict</strong>
-                    <span className="text-sm text-zinc-500">A definitive Invest, Hold, or Avoid rating based on deep synthesis.</span>
-                  </div>
-                </FadeInStaggerItem>
-                <FadeInStaggerItem className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-zinc-400 mt-0.5" />
-                  <div>
-                    <strong className="text-zinc-200 block mb-1 font-serif text-lg">Risk Breakdown</strong>
-                    <span className="text-sm text-zinc-500">Every bull case is stress-tested against primary market and business risks.</span>
-                  </div>
-                </FadeInStaggerItem>
-                <FadeInStaggerItem className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-zinc-400 mt-0.5" />
-                  <div>
-                    <strong className="text-zinc-200 block mb-1 font-serif text-lg">Plain English</strong>
-                    <span className="text-sm text-zinc-500">No jargon. Complex financials translated into human-readable insights.</span>
-                  </div>
-                </FadeInStaggerItem>
-              </StaggerContainer>
+
+            {/* Right Column: Dynamic Animation */}
+            <FadeIn direction="right" className="lg:order-2">
+              <div className="relative overflow-hidden h-[500px] sm:h-[550px] w-full">
+                <ProductDemo className="h-full w-full" />
+              </div>
             </FadeIn>
+          </div>
+
+          {/* Bottom Statistics Row */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-16 border-t border-zinc-800/60 mt-20">
+            <div>
+              <div className="text-4xl font-serif text-white mb-2">10x</div>
+              <div className="text-sm text-zinc-500 leading-relaxed">
+                Faster due diligence reviews compared to manual parsing.
+              </div>
+            </div>
+            <div>
+              <div className="text-4xl font-serif text-white mb-2">99%</div>
+              <div className="text-sm text-zinc-500 leading-relaxed">
+                Coverage across global listed equities and major digital assets.
+              </div>
+            </div>
+            <div>
+              <div className="text-4xl font-serif text-white mb-2">100%</div>
+              <div className="text-sm text-zinc-500 leading-relaxed">
+                Jargon-free qualitative synthesis written in plain English.
+              </div>
+            </div>
           </div>
         </div>
       </section>

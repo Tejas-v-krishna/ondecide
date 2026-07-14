@@ -171,7 +171,7 @@ const COMPANY_MENU: MegaMenuConfig = {
 
 export function Navbar() {
   return (
-    <nav className="sticky top-4 z-[100] mx-auto h-16 w-full max-w-5xl border border-zinc-800 bg-black/80 backdrop-blur-md px-6 rounded-lg flex items-center justify-between">
+    <nav className="sticky top-4 z-[100] mx-auto h-16 w-full max-w-5xl border border-white/10 bg-black/60 backdrop-blur-xl px-6 rounded-lg flex items-center justify-between shadow-2xl">
       {/* Left: Logo */}
       <div className="flex items-center gap-6">
         <Link href="/" className="flex items-center gap-2 flex-shrink-0">
@@ -204,8 +204,9 @@ export function Navbar() {
           >
             Log in
           </Link>
-          <Link href="/sign-up" className="hidden sm:block">
-            <Button variant="default" className="bg-white hover:bg-zinc-200 text-black px-4 py-1.5 h-auto text-sm font-medium rounded">
+          <Link href="/sign-up" className="hidden sm:block relative group">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-zinc-500 to-zinc-200 rounded opacity-0 group-hover:opacity-40 transition duration-500 blur"></div>
+            <Button variant="default" className="relative bg-white hover:bg-zinc-100 text-black px-4 py-1.5 h-auto text-sm font-medium rounded">
               Get started
             </Button>
           </Link>

@@ -1,79 +1,119 @@
 "use client";
 
-import React from "react";
+import React, { useRef, useState } from "react";
 import { Filter, FileText, Cpu, Link2 } from "lucide-react";
 import { StaggerContainer, FadeInStaggerItem } from "@/components/ui/FadeIn";
+
+function SpotlightCard({ children, className }: { children: React.ReactNode; className?: string }) {
+  const divRef = useRef<HTMLDivElement>(null);
+  const [isFocused] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [opacity, setOpacity] = useState(0);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!divRef.current || isFocused) return;
+    const rect = divRef.current.getBoundingClientRect();
+    setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  };
+
+  return (
+    <div
+      ref={divRef}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setOpacity(1)}
+      onMouseLeave={() => setOpacity(0)}
+      className={`relative overflow-hidden ${className}`}
+    >
+      <div
+        className="pointer-events-none absolute -inset-px transition-opacity duration-300 z-0"
+        style={{
+          opacity,
+          background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, rgba(255,255,255,0.06), transparent 40%)`,
+        }}
+      />
+      {children}
+    </div>
+  );
+}
 
 export function BentoGrid() {
   return (
     <StaggerContainer className="grid grid-cols-1 md:grid-cols-12 gap-px bg-zinc-800/60 p-px rounded-sm overflow-hidden">
       {/* ── ROW 1: Pipeline (4 columns of 3) ── */}
-      <FadeInStaggerItem className="md:col-span-3 bg-[#131313] hover:bg-[#181818] transition-colors flex flex-col justify-between p-6 lg:p-8 min-h-[300px] lg:min-h-[320px] group relative overflow-hidden">
-        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-          <Filter className="w-16 h-16 lg:w-20 lg:h-20 text-white" strokeWidth={1} />
-        </div>
-        <div className="space-y-4 relative z-10">
-          <p className="text-zinc-500 text-xs font-sans tracking-widest uppercase">Data Ingestion</p>
-        </div>
-        <div className="relative z-10 pt-10">
-          <h3 className="text-xl lg:text-2xl font-serif text-white mb-2 lg:mb-3 leading-tight">
-            Live Market<br />Resolution
-          </h3>
-          <p className="text-xs lg:text-sm text-zinc-400 leading-relaxed">
-            Resolves partial names or tickers, fetching live pricing and deep fundamentals from institutional-grade APIs instantly.
-          </p>
-        </div>
+      <FadeInStaggerItem className="md:col-span-3 bg-[#131313] hover:bg-[#181818] transition-colors p-6 lg:p-8 min-h-[300px] lg:min-h-[320px] group border-gradient-fade">
+        <SpotlightCard className="h-full flex flex-col justify-between -m-6 p-6 lg:-m-8 lg:p-8">
+          <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+            <Filter className="w-16 h-16 lg:w-20 lg:h-20 text-white" strokeWidth={1} />
+          </div>
+          <div className="space-y-4 relative z-10">
+            <p className="text-zinc-500 text-xs font-sans tracking-widest uppercase">Data Ingestion</p>
+          </div>
+          <div className="relative z-10 pt-10">
+            <h3 className="text-xl lg:text-2xl font-serif text-white mb-2 lg:mb-3 leading-tight">
+              Live Market<br />Resolution
+            </h3>
+            <p className="text-xs lg:text-sm text-zinc-400 leading-relaxed">
+              Resolves partial names or tickers, fetching live pricing and deep fundamentals from institutional-grade APIs instantly.
+            </p>
+          </div>
+        </SpotlightCard>
       </FadeInStaggerItem>
 
-      <FadeInStaggerItem className="md:col-span-3 bg-[#131313] hover:bg-[#181818] transition-colors flex flex-col justify-between p-6 lg:p-8 min-h-[300px] lg:min-h-[320px] group relative overflow-hidden">
-        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-          <FileText className="w-16 h-16 lg:w-20 lg:h-20 text-white" strokeWidth={1} />
-        </div>
-        <div className="space-y-4 relative z-10">
-          <p className="text-zinc-500 text-xs font-sans tracking-widest uppercase">Market Context</p>
-        </div>
-        <div className="relative z-10 pt-10">
-          <h3 className="text-xl lg:text-2xl font-serif text-white mb-2 lg:mb-3 leading-tight">
-            News & Sentiment<br />Synthesis
-          </h3>
-          <p className="text-xs lg:text-sm text-zinc-400 leading-relaxed">
-            Reads the latest coverage and distills market consensus, telling you not just what happened, but why it matters.
-          </p>
-        </div>
+      <FadeInStaggerItem className="md:col-span-3 bg-[#131313] hover:bg-[#181818] transition-colors p-6 lg:p-8 min-h-[300px] lg:min-h-[320px] group border-gradient-fade">
+        <SpotlightCard className="h-full flex flex-col justify-between -m-6 p-6 lg:-m-8 lg:p-8">
+          <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+            <FileText className="w-16 h-16 lg:w-20 lg:h-20 text-white" strokeWidth={1} />
+          </div>
+          <div className="space-y-4 relative z-10">
+            <p className="text-zinc-500 text-xs font-sans tracking-widest uppercase">Market Context</p>
+          </div>
+          <div className="relative z-10 pt-10">
+            <h3 className="text-xl lg:text-2xl font-serif text-white mb-2 lg:mb-3 leading-tight">
+              News & Sentiment<br />Synthesis
+            </h3>
+            <p className="text-xs lg:text-sm text-zinc-400 leading-relaxed">
+              Reads the latest coverage and distills market consensus, telling you not just what happened, but why it matters.
+            </p>
+          </div>
+        </SpotlightCard>
       </FadeInStaggerItem>
 
-      <FadeInStaggerItem className="md:col-span-3 bg-[#131313] hover:bg-[#181818] transition-colors flex flex-col justify-between p-6 lg:p-8 min-h-[300px] lg:min-h-[320px] group relative overflow-hidden">
-        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-          <Cpu className="w-16 h-16 lg:w-20 lg:h-20 text-white" strokeWidth={1} />
-        </div>
-        <div className="space-y-4 relative z-10">
-          <p className="text-zinc-500 text-xs font-sans tracking-widest uppercase">Deep Reasoning</p>
-        </div>
-        <div className="relative z-10 pt-10">
-          <h3 className="text-xl lg:text-2xl font-serif text-white mb-2 lg:mb-3 leading-tight">
-            Historical<br />Pattern Matching
-          </h3>
-          <p className="text-xs lg:text-sm text-zinc-400 leading-relaxed">
-            Finds the closest parallel from market history and reasons through management quality and competitive moats.
-          </p>
-        </div>
+      <FadeInStaggerItem className="md:col-span-3 bg-[#131313] hover:bg-[#181818] transition-colors p-6 lg:p-8 min-h-[300px] lg:min-h-[320px] group border-gradient-fade">
+        <SpotlightCard className="h-full flex flex-col justify-between -m-6 p-6 lg:-m-8 lg:p-8">
+          <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+            <Cpu className="w-16 h-16 lg:w-20 lg:h-20 text-white" strokeWidth={1} />
+          </div>
+          <div className="space-y-4 relative z-10">
+            <p className="text-zinc-500 text-xs font-sans tracking-widest uppercase">Deep Reasoning</p>
+          </div>
+          <div className="relative z-10 pt-10">
+            <h3 className="text-xl lg:text-2xl font-serif text-white mb-2 lg:mb-3 leading-tight">
+              Historical<br />Pattern Matching
+            </h3>
+            <p className="text-xs lg:text-sm text-zinc-400 leading-relaxed">
+              Finds the closest parallel from market history and reasons through management quality and competitive moats.
+            </p>
+          </div>
+        </SpotlightCard>
       </FadeInStaggerItem>
 
-      <FadeInStaggerItem className="md:col-span-3 bg-[#131313] hover:bg-[#181818] transition-colors flex flex-col justify-between p-6 lg:p-8 min-h-[300px] lg:min-h-[320px] group relative overflow-hidden">
-        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-          <Link2 className="w-16 h-16 lg:w-20 lg:h-20 text-white" strokeWidth={1} />
-        </div>
-        <div className="space-y-4 relative z-10">
-          <p className="text-zinc-500 text-xs font-sans tracking-widest uppercase">The Output</p>
-        </div>
-        <div className="relative z-10 pt-10">
-          <h3 className="text-xl lg:text-2xl font-serif text-white mb-2 lg:mb-3 leading-tight">
-            The Final<br />Decision
-          </h3>
-          <p className="text-xs lg:text-sm text-zinc-400 leading-relaxed">
-            Synthesizes all 7 nodes into a single, reasoned Invest, Hold, or Avoid call—backed by a transparent breakdown.
-          </p>
-        </div>
+      <FadeInStaggerItem className="md:col-span-3 bg-[#131313] hover:bg-[#181818] transition-colors p-6 lg:p-8 min-h-[300px] lg:min-h-[320px] group border-gradient-fade">
+        <SpotlightCard className="h-full flex flex-col justify-between -m-6 p-6 lg:-m-8 lg:p-8">
+          <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+            <Link2 className="w-16 h-16 lg:w-20 lg:h-20 text-white" strokeWidth={1} />
+          </div>
+          <div className="space-y-4 relative z-10">
+            <p className="text-zinc-500 text-xs font-sans tracking-widest uppercase">The Output</p>
+          </div>
+          <div className="relative z-10 pt-10">
+            <h3 className="text-xl lg:text-2xl font-serif text-white mb-2 lg:mb-3 leading-tight">
+              The Final<br />Decision
+            </h3>
+            <p className="text-xs lg:text-sm text-zinc-400 leading-relaxed">
+              Synthesizes all 7 nodes into a single, reasoned Invest, Hold, or Avoid call—backed by a transparent breakdown.
+            </p>
+          </div>
+        </SpotlightCard>
       </FadeInStaggerItem>
 
       {/* ── ROW 2: Stats (3 columns of 4) ── */}
