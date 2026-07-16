@@ -3,7 +3,6 @@
 import React from "react";
 import Link from "next/link";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
-import { SearchBar } from "./SearchBar";
 import { MenuIcon, XIcon, Play } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -171,14 +170,14 @@ const COMPANY_MENU: MegaMenuConfig = {
 
 export function Navbar() {
   return (
-    <nav className="sticky top-4 z-[100] mx-auto h-16 w-full max-w-5xl border border-white/10 bg-black/60 backdrop-blur-xl px-6 rounded-lg flex items-center justify-between shadow-2xl">
-      {/* Left: Logo */}
-      <div className="flex items-center gap-6">
-        <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-          <div className="w-7 h-7 bg-white flex items-center justify-center">
+    <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] flex h-[56px] w-max items-center gap-8 border border-white/[0.06] bg-[linear-gradient(137deg,rgba(17,18,20,0.75)_4.87%,rgba(12,13,15,0.9)_75.88%)] px-6 backdrop-blur-[5px] rounded-2xl shadow-[inset_0_1px_1px_0_rgba(255,255,255,0.15)]">
+      {/* Left: Logo + Navigation */}
+      <div className="flex items-center gap-8">
+        <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 group">
+          <div className="h-6 w-6 rounded-md bg-white flex items-center justify-center shadow-[0_0_20px_-4px_rgba(255,255,255,0.4)] transition-transform group-hover:scale-105">
             <span className="text-black text-xs font-bold font-sans">O</span>
           </div>
-          <span className="text-white font-serif text-xl tracking-tight">
+          <span className="font-sans text-xl tracking-tight text-white">
             OnDecide
           </span>
         </Link>
@@ -187,26 +186,20 @@ export function Navbar() {
         <DesktopMenu />
       </div>
 
-      {/* Middle: Desktop Search */}
-      <div className="hidden md:block flex-1 max-w-xs mx-4">
-        <SearchBar />
-      </div>
-
       {/* Right: Auth / Buttons */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 flex-shrink-0">
         <SignedIn>
           <UserButton afterSignOutUrl="/" />
         </SignedIn>
         <SignedOut>
           <Link
             href="/sign-in"
-            className="text-sm text-zinc-400 hover:text-white transition-colors px-3 py-1.5 font-sans"
+            className="text-sm text-[#78787c] hover:text-[#f2f3f5] transition-colors px-3 py-1.5 font-sans"
           >
             Log in
           </Link>
-          <Link href="/sign-up" className="hidden sm:block relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-zinc-500 to-zinc-200 rounded opacity-0 group-hover:opacity-40 transition duration-500 blur"></div>
-            <Button variant="default" className="relative bg-white hover:bg-zinc-100 text-black px-4 py-1.5 h-auto text-sm font-medium rounded">
+          <Link href="/sign-up" className="hidden sm:block">
+            <Button variant="default" className="relative bg-[rgba(255,255,255,0.815)] hover:bg-white text-[#18191A] px-4 py-1.5 h-auto text-sm font-medium rounded-full">
               Get started
             </Button>
           </Link>
@@ -223,11 +216,11 @@ function DesktopMenu() {
   const menus = [PRODUCT_MENU, SOLUTIONS_MENU, RESOURCES_MENU, COMPANY_MENU];
 
   return (
-    <NavigationMenu className="hidden lg:block">
+    <NavigationMenu viewportClassName="border border-transparent rounded-2xl bg-transparent" className="hidden lg:block">
       <NavigationMenuList className="gap-2">
         {menus.map((menu) => (
           <NavigationMenuItem key={menu.trigger}>
-            <NavigationMenuTrigger className="px-3 py-1.5 text-sm hover:text-white transition-colors">
+            <NavigationMenuTrigger className="px-3 py-1.5 text-sm text-[#78787c] hover:text-[#f2f3f5] transition-colors">
               {menu.trigger}
             </NavigationMenuTrigger>
             <NavigationMenuContent>
@@ -264,19 +257,19 @@ function GsapMegaMenuContent({ menu }: { menu: MegaMenuConfig }) {
   return (
     <div
       ref={container}
-      className="grid w-[800px] grid-cols-[1.2fr_1.2fr_1fr] bg-black border border-zinc-800 rounded-lg p-6"
+      className="grid w-[800px] grid-cols-[1.2fr_1.2fr_1fr] bg-[linear-gradient(137deg,rgba(17,18,20,0.95),rgba(12,13,15,0.98))] border border-white/[0.06] rounded-2xl p-6 shadow-[inset_0_1px_1px_0_rgba(255,255,255,0.15)]"
     >
       {/* Left Columns */}
       {menu.sections.map((section) => (
         <div key={section.label} className="space-y-4">
-          <span className="gsap-stagger-item text-2xs text-zinc-500 font-sans tracking-wider uppercase block opacity-0">
+          <span className="gsap-stagger-item text-2xs text-[#78787c] font-sans tracking-wider uppercase block opacity-0">
             {section.label}
           </span>
           <ul className="space-y-2">
             {section.items.map((item) => (
               <li key={item.title} className="gsap-stagger-item opacity-0">
                 <Link href={item.href} passHref legacyBehavior>
-                  <NavigationMenuLink className="text-sm text-zinc-400 hover:text-white transition-colors py-1 block w-full text-left">
+                  <NavigationMenuLink className="text-sm text-[#78787c] hover:text-[#f2f3f5] transition-colors py-1 block w-full text-left">
                     {item.title}
                   </NavigationMenuLink>
                 </Link>
@@ -287,25 +280,25 @@ function GsapMegaMenuContent({ menu }: { menu: MegaMenuConfig }) {
       ))}
 
       {/* Right Visual Card */}
-      <div className="gsap-stagger-item opacity-0 relative group/card bg-zinc-950 border border-zinc-800 rounded-md p-4 overflow-hidden flex flex-col justify-end min-h-[180px]">
+      <div className="gsap-stagger-item opacity-0 relative group/card bg-[#18191A] border border-white/[0.06] rounded-xl p-4 overflow-hidden flex flex-col justify-end min-h-[180px]">
         {/* Subtle decorative mesh */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.03),transparent)] pointer-events-none" />
 
         {/* Play icon overlay */}
-        <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center group-hover/card:bg-white group-hover/card:border-white transition-all">
-          <Play className="w-3.5 h-3.5 text-zinc-400 fill-zinc-400 group-hover/card:text-black group-hover/card:fill-black transition-colors ml-0.5" />
+        <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#18191A] border border-white/[0.06] flex items-center justify-center group-hover/card:bg-white group-hover/card:border-white transition-all">
+          <Play className="w-3.5 h-3.5 text-[#78787c] fill-[#78787c] group-hover/card:text-black group-hover/card:fill-black transition-colors ml-0.5" />
         </div>
 
         <div className="space-y-1 relative z-10">
           {menu.graphic.tag && (
-            <span className="text-2xs text-zinc-500 font-sans tracking-wider uppercase block">
+            <span className="text-2xs text-[#78787c] font-sans tracking-wider uppercase block">
               {menu.graphic.tag}
             </span>
           )}
-          <h4 className="text-sm font-serif text-white leading-tight">
+          <h4 className="text-sm font-sans text-[#f2f3f5] leading-tight">
             {menu.graphic.title}
           </h4>
-          <p className="text-xs text-zinc-400 leading-normal line-clamp-2">
+          <p className="text-xs text-[#78787c] leading-normal line-clamp-2">
             {menu.graphic.description}
           </p>
         </div>
@@ -329,7 +322,12 @@ function MobileNav() {
         showClose={false}
       >
         <div className="flex h-16 items-center justify-between border-b border-zinc-800 px-6">
-          <span className="text-white font-serif text-xl tracking-tight">OnDecide</span>
+          <div className="flex items-center gap-2.5">
+            <div className="h-6 w-6 rounded-md bg-white flex items-center justify-center shadow-[0_0_20px_-4px_rgba(255,255,255,0.4)]">
+              <span className="text-black text-xs font-bold font-sans">O</span>
+            </div>
+            <span className="font-sans text-white text-xl tracking-tight">OnDecide</span>
+          </div>
           <SheetClose asChild>
             <Button size="icon" variant="ghost" className="rounded-full text-zinc-400 hover:text-white">
               <XIcon className="size-5" />
@@ -339,21 +337,16 @@ function MobileNav() {
         </div>
 
         <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
-          {/* Quick Search */}
-          <div className="w-full">
-            <SearchBar />
-          </div>
-
           <Accordion type="single" collapsible className="w-full">
             {menus.map((menu) => (
-              <AccordionItem key={menu.trigger} value={menu.trigger} className="border-zinc-800">
-                <AccordionTrigger className="font-sans text-white text-base hover:no-underline py-3">
+              <AccordionItem key={menu.trigger} value={menu.trigger} className="border-white/[0.06]">
+                <AccordionTrigger className="font-sans text-[#f2f3f5] text-base hover:no-underline py-3">
                   {menu.trigger}
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-2">
                   {menu.sections.map((section) => (
                     <div key={section.label} className="space-y-2">
-                      <span className="text-2xs text-zinc-500 font-sans tracking-wider uppercase block">
+                      <span className="text-2xs text-[#78787c] font-sans tracking-wider uppercase block">
                         {section.label}
                       </span>
                       <ul className="grid gap-2">
@@ -362,7 +355,7 @@ function MobileNav() {
                             <SheetClose asChild>
                               <Link
                                 href={item.href}
-                                className="text-sm text-zinc-400 hover:text-white transition-colors py-1.5 block"
+                                className="text-sm text-[#78787c] hover:text-[#f2f3f5] transition-colors py-1.5 block"
                               >
                                 {item.title}
                               </Link>
@@ -378,15 +371,15 @@ function MobileNav() {
           </Accordion>
 
           {/* Simple flat links */}
-          <div className="flex flex-col gap-4 pt-4 border-t border-zinc-800">
+          <div className="flex flex-col gap-4 pt-4 border-t border-white/[0.06]">
             <SignedOut>
               <SheetClose asChild>
-                <Link href="/sign-in" className="text-zinc-400 hover:text-white text-sm font-sans transition-colors py-2 block">
+                <Link href="/sign-in" className="text-[#78787c] hover:text-[#f2f3f5] text-sm font-sans transition-colors py-2 block">
                   Log In
                 </Link>
               </SheetClose>
               <SheetClose asChild>
-                <Link href="/sign-up" className="inline-flex justify-center bg-white hover:bg-zinc-200 text-black px-4 py-2 text-sm font-medium rounded transition-colors w-full">
+                <Link href="/sign-up" className="inline-flex justify-center bg-[rgba(255,255,255,0.815)] hover:bg-white text-[#18191A] px-4 py-2 text-sm font-medium rounded-full transition-colors w-full">
                   Get Started
                 </Link>
               </SheetClose>

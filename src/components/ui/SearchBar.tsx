@@ -63,10 +63,7 @@ export function SearchBar({ className = "", large = false }: { className?: strin
   return (
     <div className={`relative ${className}`}>
       <form onSubmit={handleSubmit}>
-        <div className={`relative flex items-center rounded-xl border border-zinc-800 bg-zinc-950 transition-all duration-200 ${focused ? "border-white " : "hover:border-zinc-700"}`}>
-          <svg className={`absolute left-4 text-zinc-400 ${large ? "w-5 h-5" : "w-4 h-4"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
+        <div className={`relative flex items-center rounded-full border border-white/[0.06] bg-[linear-gradient(137deg,rgba(17,18,20,0.75)_4.87%,rgba(12,13,15,0.9)_75.88%)] backdrop-blur-[5px] shadow-[inset_0_1px_1px_0_rgba(255,255,255,0.15)] transition-all duration-200 ${focused ? "border-white/20" : "hover:border-white/10"} ${large ? "p-2 pl-6" : "p-1 pl-4"}`}>
           <input
             ref={inputRef}
             type="text"
@@ -75,11 +72,14 @@ export function SearchBar({ className = "", large = false }: { className?: strin
             onFocus={() => setFocused(true)}
             onBlur={() => setTimeout(() => setFocused(false), 150)}
             placeholder={large ? "Search by ticker or company name (AAPL, Apple, BTC...)" : "Search stocks or crypto..."}
-            className={`w-full bg-transparent text-white placeholder-zinc-500 outline-none ${large ? "py-4 pl-12 pr-4 text-lg" : "py-2.5 pl-10 pr-4 text-sm"}`}
+            className={`w-full bg-transparent text-white placeholder-zinc-500 outline-none ${large ? "px-2 text-lg h-12" : "px-2 text-sm h-8"}`}
           />
           {loading && (
-            <div className="absolute right-4 w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            <div className={`border-2 border-zinc-400 border-t-transparent rounded-full animate-spin shrink-0 mx-3 ${large ? "w-5 h-5" : "w-4 h-4"}`} />
           )}
+          <button type="submit" className={`rounded-full bg-white flex items-center justify-center shrink-0 hover:bg-zinc-200 transition-colors text-black font-semibold font-sans ${large ? "px-8 h-12 text-base" : "px-4 h-8 text-xs"} ml-2`}>
+            Search
+          </button>
         </div>
       </form>
 

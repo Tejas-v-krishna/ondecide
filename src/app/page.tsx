@@ -11,6 +11,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import ProductDemo from "@/components/demo/ProductDemo";
+import { StockAsciiArt } from "@/components/ui/StockAsciiArt";
+import { InkGardenArt } from "@/components/ui/InkGardenArt";
 
 export const metadata: Metadata = {
   title: "OnDecide — Understand any investment",
@@ -78,7 +80,12 @@ export default function HomePage() {
     <div className="min-h-screen bg-black text-white">
 
       {/* ── 1. HERO ──────────────────────────────────────────── */}
-      <section className="relative overflow-hidden dot-grid min-h-[85vh] flex items-center justify-center">
+      <section className="relative overflow-hidden dot-grid min-h-screen flex items-center justify-center">
+        {/* Stock-market ASCII art + Ink Garden — hero feature background */}
+        <div className="absolute inset-0 pointer-events-none">
+          <StockAsciiArt opacity={0.10} fixed={false} />
+          <InkGardenArt opacity={0.10} fixed={false} />
+        </div>
         
         {/* Cinematic Background Lighting */}
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] mix-blend-screen animate-orb pointer-events-none" />
@@ -104,15 +111,17 @@ export default function HomePage() {
 
           {/* Sub-headline */}
           <FadeInStaggerItem direction="up">
-            <p className="text-lg sm:text-xl text-zinc-500 mb-12 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg sm:text-xl text-zinc-300 mb-12 max-w-2xl mx-auto leading-relaxed">
               OnDecide reads the news, the numbers, and the history — then explains what they mean, in plain English, before you decide.
             </p>
           </FadeInStaggerItem>
 
-          {/* Search */}
+          {/* Search & CTA */}
           <FadeInStaggerItem direction="up">
-            <div className="max-w-xl mx-auto mb-8">
-              <SearchBar large />
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-2xl mx-auto mb-8">
+              <div className="w-full sm:flex-1 relative z-20 shadow-[0_0_40px_-10px_rgba(255,255,255,0.05)] rounded-full">
+                <SearchBar large />
+              </div>
             </div>
           </FadeInStaggerItem>
 
@@ -123,7 +132,7 @@ export default function HomePage() {
                 <Link
                   key={p.ticker}
                   href={`/research/${p.ticker}`}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-sm border border-zinc-800 bg-black hover:bg-zinc-900 hover:border-zinc-700 transition-all text-xs group"
+                  className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-white/[0.06] bg-[linear-gradient(137deg,rgba(17,18,20,0.75)_4.87%,rgba(12,13,15,0.9)_75.88%)] backdrop-blur-[5px] shadow-[inset_0_1px_1px_0_rgba(255,255,255,0.15)] hover:border-white/10 transition-all text-xs group"
                 >
                   <span className="font-sans text-zinc-300 group-hover:text-white transition-colors">{p.ticker}</span>
                 </Link>

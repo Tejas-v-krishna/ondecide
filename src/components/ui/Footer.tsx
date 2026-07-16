@@ -72,7 +72,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="py-16 px-6 md:px-12 mt-24 border-t border-zinc-900 bg-black w-full">
+    <footer className="py-16 px-6 md:px-12 mt-24 border-t border-zinc-900 bg-transparent w-full relative">
       <motion.div
         className="w-full mx-auto"
         initial="hidden"
