@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, BookOpen, Clock, HelpCircle, Key, Layers, HelpCircle as Video } from "lucide-react";
+import { ArrowLeft, BookOpen, Clock, HelpCircle, Key, Layers, HelpCircle as Video } from "lucide-react";
 
 interface ResourceData {
   title: string;
@@ -105,7 +105,7 @@ const RESOURCES_MAP: Record<string, ResourceData> = {
     tagline: "Track new features, optimizations, and hotfixes.",
     description: "We are actively developing OnDecide. Review our version history and feature announcements, updated bi-weekly.",
     highlights: [
-      "v1.2.0: Integrated V7 aesthetic, Hedvig font, and page integrations.",
+      "v1.2.0: Refined light aesthetic, new type system, and page integrations.",
       "v1.1.0: Supabase watchlists and cryptocurrency support (BTC, ETH).",
       "v1.0.0: Core launch of OnDecide with Finnhub stock feeds."
     ],
@@ -148,34 +148,37 @@ export default function ResourceDetailPage({ params }: { params: { slug: string 
   const IconComponent = resource.icon;
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-16">
+    <div className="shell max-w-5xl py-16 lg:py-20">
       {/* Back Link */}
-      <Link href="/resources" className="inline-flex items-center gap-1 text-xs text-zinc-500 hover:text-white transition-colors mb-8 font-sans">
-        <ArrowRight className="w-3 h-3 rotate-180" /> Back to Resources Hub
+      <Link
+        href="/resources"
+        className="mb-8 inline-flex items-center gap-1.5 text-xs text-ink-500 transition-colors hover:text-ink"
+      >
+        <ArrowLeft className="h-3 w-3" /> Back to Resources Hub
       </Link>
 
       {/* Main Grid */}
-      <div className="grid md:grid-cols-[1.5fr_1fr] gap-12 items-start">
+      <div className="grid items-start gap-12 md:grid-cols-[1.5fr_1fr]">
         {/* Left Informational Content */}
         <div className="space-y-8">
           <div className="space-y-3">
-            <span className="text-2xs text-zinc-500 font-sans tracking-wider uppercase block">{resource.tag}</span>
-            <h1 className="text-4xl sm:text-5xl font-serif text-white">{resource.title}</h1>
-            <p className="text-zinc-400 text-lg leading-relaxed">{resource.tagline}</p>
+            <span className="block text-2xs uppercase tracking-wider text-brand-700">{resource.tag}</span>
+            <h1 className="text-display-sm font-medium text-ink">{resource.title}</h1>
+            <p className="text-lg leading-relaxed text-ink-500">{resource.tagline}</p>
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-lg font-serif text-white">Overview</h2>
-            <p className="text-zinc-400 text-sm leading-relaxed">{resource.description}</p>
+            <h2 className="text-lg font-medium text-ink">Overview</h2>
+            <p className="text-sm leading-relaxed text-ink-500">{resource.description}</p>
           </div>
 
-          <div className="border border-zinc-800 bg-zinc-950/40 rounded p-6 space-y-4">
-            <h3 className="text-sm font-sans font-semibold text-white">Platform Details</h3>
+          <div className="card-surface space-y-4 p-6">
+            <h3 className="text-sm font-medium text-ink">Platform Details</h3>
             <ul className="space-y-4">
               {resource.stepsOrDetails.map((step, idx) => (
                 <li key={idx} className="space-y-1">
-                  <span className="text-2xs text-zinc-500 font-sans tracking-wide uppercase block">{step.label}</span>
-                  <p className="text-xs text-zinc-400 leading-relaxed">{step.text}</p>
+                  <span className="block text-2xs uppercase tracking-wide text-ink-400">{step.label}</span>
+                  <p className="text-xs leading-relaxed text-ink-500">{step.text}</p>
                 </li>
               ))}
             </ul>
@@ -184,27 +187,27 @@ export default function ResourceDetailPage({ params }: { params: { slug: string 
 
         {/* Right Sidebar Details */}
         <div className="space-y-6">
-          <div className="border border-zinc-800 bg-zinc-950 rounded-lg p-6 flex flex-col items-center text-center space-y-4 min-h-[220px]">
-            <div className="w-12 h-12 rounded bg-zinc-900 border border-zinc-800 flex items-center justify-center">
-              <IconComponent className="w-6 h-6 text-white stroke-1" />
+          <div className="card-surface flex min-h-[220px] flex-col items-center space-y-4 p-6 text-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-line bg-surface-subtle">
+              <IconComponent className="h-6 w-6 text-brand-600" strokeWidth={1.5} />
             </div>
-            <h3 className="text-lg font-serif text-white">{resource.title}</h3>
-            <p className="text-xs text-zinc-500 max-w-[200px]">
+            <h3 className="text-lg font-medium text-ink">{resource.title}</h3>
+            <p className="max-w-[200px] text-xs text-ink-500">
               Ready to learn more? Visit the main resources portal.
             </p>
             <Link href={resource.ctaHref} className="w-full">
-              <Button className="w-full bg-zinc-100 hover:bg-white text-black text-xs font-semibold py-2.5 rounded transition-colors">
+              <Button className="w-full py-2.5 text-xs font-medium">
                 {resource.ctaText}
               </Button>
             </Link>
           </div>
 
-          <div className="border border-zinc-850 p-6 rounded space-y-4">
-            <h4 className="text-xs text-zinc-500 font-sans tracking-wider uppercase">Key Highlights</h4>
+          <div className="card-surface space-y-4 p-6">
+            <h4 className="text-xs uppercase tracking-wider text-ink-400">Key Highlights</h4>
             <ul className="space-y-2">
               {resource.highlights.map((h) => (
-                <li key={h} className="text-xs text-zinc-300 font-sans flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-white" />
+                <li key={h} className="flex items-center gap-2 text-xs text-ink-600">
+                  <div className="h-1.5 w-1.5 rounded-full bg-brand-500" />
                   {h}
                 </li>
               ))}

@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Briefcase, Mail, Newspaper, Users } from "lucide-react";
+import { ArrowLeft, Briefcase, Mail, Newspaper, Users } from "lucide-react";
 
 interface CompanyData {
   title: string;
@@ -86,51 +86,52 @@ export default function CompanyDetailPage({ params }: { params: { slug: string }
   const IconComponent = comp.icon;
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-16">
+    <div className="shell max-w-5xl py-16 lg:py-20">
       {/* Back Link */}
-      <Link href="/about" className="inline-flex items-center gap-1 text-xs text-zinc-500 hover:text-white transition-colors mb-8 font-sans">
-        <ArrowRight className="w-3 h-3 rotate-180" /> Back to About Us
+      <Link
+        href="/about"
+        className="mb-8 inline-flex items-center gap-1.5 text-xs text-ink-500 transition-colors hover:text-ink"
+      >
+        <ArrowLeft className="h-3 w-3" /> Back to About Us
       </Link>
 
       {/* Main Grid */}
-      <div className="grid md:grid-cols-[1.5fr_1fr] gap-12 items-start">
+      <div className="grid items-start gap-12 md:grid-cols-[1.5fr_1fr]">
         {/* Left Informational Content */}
         <div className="space-y-8">
           <div className="space-y-3">
-            <span className="text-2xs text-zinc-500 font-sans tracking-wider uppercase block">{comp.tag}</span>
-            <h1 className="text-4xl sm:text-5xl font-serif text-white">{comp.title}</h1>
-            <p className="text-zinc-400 text-lg leading-relaxed">{comp.tagline}</p>
+            <span className="block text-2xs uppercase tracking-wider text-brand-700">{comp.tag}</span>
+            <h1 className="text-display-sm font-medium text-ink">{comp.title}</h1>
+            <p className="text-lg leading-relaxed text-ink-500">{comp.tagline}</p>
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-lg font-serif text-white">Overview</h2>
-            <p className="text-zinc-400 text-sm leading-relaxed">{comp.description}</p>
+            <h2 className="text-lg font-medium text-ink">Overview</h2>
+            <p className="text-sm leading-relaxed text-ink-500">{comp.description}</p>
           </div>
         </div>
 
         {/* Right Sidebar Details */}
         <div className="space-y-6">
-          <div className="border border-zinc-800 bg-zinc-950 rounded-lg p-6 flex flex-col items-center text-center space-y-4 min-h-[220px]">
-            <div className="w-12 h-12 rounded bg-zinc-900 border border-zinc-800 flex items-center justify-center">
-              <IconComponent className="w-6 h-6 text-white stroke-1" />
+          <div className="card-surface flex min-h-[220px] flex-col items-center space-y-4 p-6 text-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-line bg-surface-subtle">
+              <IconComponent className="h-6 w-6 text-brand-600" strokeWidth={1.5} />
             </div>
-            <h3 className="text-lg font-serif text-white">{comp.title}</h3>
-            <p className="text-xs text-zinc-500 max-w-[200px]">
+            <h3 className="text-lg font-medium text-ink">{comp.title}</h3>
+            <p className="max-w-[200px] text-xs text-ink-500">
               Ready to take action? Link back to the company center.
             </p>
             <Link href={comp.ctaHref} className="w-full">
-              <Button className="w-full bg-zinc-100 hover:bg-white text-black text-xs font-semibold py-2.5 rounded transition-colors">
-                {comp.ctaText}
-              </Button>
+              <Button className="w-full py-2.5 text-xs font-medium">{comp.ctaText}</Button>
             </Link>
           </div>
 
-          <div className="border border-zinc-850 p-6 rounded space-y-4">
-            <h4 className="text-xs text-zinc-500 font-sans tracking-wider uppercase">Platform Details</h4>
+          <div className="card-surface space-y-4 p-6">
+            <h4 className="text-xs uppercase tracking-wider text-ink-400">Platform Details</h4>
             <ul className="space-y-2">
               {comp.highlights.map((h) => (
-                <li key={h} className="text-xs text-zinc-300 font-sans flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-white" />
+                <li key={h} className="flex items-center gap-2 text-xs text-ink-600">
+                  <div className="h-1.5 w-1.5 rounded-full bg-brand-500" />
                   {h}
                 </li>
               ))}

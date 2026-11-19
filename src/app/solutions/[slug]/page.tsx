@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, User, Users, Landmark, ShieldCheck, TrendingUp, Search } from "lucide-react";
+import { ArrowLeft, User, Users, Landmark, ShieldCheck, TrendingUp, Search } from "lucide-react";
 
 interface SolutionData {
   title: string;
@@ -142,33 +142,36 @@ export default function SolutionDetailPage({ params }: { params: { slug: string 
   const IconComponent = solution.icon;
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-16">
+    <div className="shell max-w-5xl py-16 lg:py-20">
       {/* Back Link */}
-      <Link href="/solutions" className="inline-flex items-center gap-1 text-xs text-zinc-500 hover:text-white transition-colors mb-8 font-sans">
-        <ArrowRight className="w-3 h-3 rotate-180" /> Back to Solutions Hub
+      <Link
+        href="/solutions"
+        className="mb-8 inline-flex items-center gap-1.5 text-xs text-ink-500 transition-colors hover:text-ink"
+      >
+        <ArrowLeft className="h-3 w-3" /> Back to Solutions Hub
       </Link>
 
       {/* Main Grid */}
-      <div className="grid md:grid-cols-[1.5fr_1fr] gap-12 items-start">
+      <div className="grid items-start gap-12 md:grid-cols-[1.5fr_1fr]">
         {/* Left Informational Content */}
         <div className="space-y-8">
           <div className="space-y-3">
-            <span className="text-2xs text-zinc-500 font-sans tracking-wider uppercase block">{solution.tag}</span>
-            <h1 className="text-4xl sm:text-5xl font-serif text-white">{solution.title}</h1>
-            <p className="text-zinc-400 text-lg leading-relaxed">{solution.tagline}</p>
+            <span className="block text-2xs uppercase tracking-wider text-brand-700">{solution.tag}</span>
+            <h1 className="text-display-sm font-medium text-ink">{solution.title}</h1>
+            <p className="text-lg leading-relaxed text-ink-500">{solution.tagline}</p>
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-lg font-serif text-white">Target Overview</h2>
-            <p className="text-zinc-400 text-sm leading-relaxed">{solution.description}</p>
+            <h2 className="text-lg font-medium text-ink">Target Overview</h2>
+            <p className="text-sm leading-relaxed text-ink-500">{solution.description}</p>
           </div>
 
-          <div className="border border-zinc-800 bg-zinc-950/40 rounded p-6 space-y-4">
-            <h3 className="text-sm font-sans font-semibold text-white">How OnDecide Solves This</h3>
+          <div className="card-surface space-y-4 p-6">
+            <h3 className="text-sm font-medium text-ink">How OnDecide Solves This</h3>
             <ul className="space-y-3">
               {solution.features.map((feat, idx) => (
-                <li key={idx} className="flex gap-3 text-xs text-zinc-400">
-                  <span className="text-zinc-600 font-sans">0{idx + 1}</span>
+                <li key={idx} className="flex gap-3 text-xs text-ink-500">
+                  <span className="text-brand-600">0{idx + 1}</span>
                   <span>{feat}</span>
                 </li>
               ))}
@@ -178,31 +181,31 @@ export default function SolutionDetailPage({ params }: { params: { slug: string 
 
         {/* Right Sidebar Details */}
         <div className="space-y-6">
-          <div className="border border-zinc-800 bg-zinc-950 rounded-lg p-6 flex flex-col items-center text-center space-y-4 min-h-[220px]">
-            <div className="w-12 h-12 rounded bg-zinc-900 border border-zinc-800 flex items-center justify-center">
-              <IconComponent className="w-6 h-6 text-white stroke-1" />
+          <div className="card-surface flex min-h-[220px] flex-col items-center space-y-4 p-6 text-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-line bg-surface-subtle">
+              <IconComponent className="h-6 w-6 text-brand-600" strokeWidth={1.5} />
             </div>
-            <h3 className="text-lg font-serif text-white">{solution.title}</h3>
-            <p className="text-xs text-zinc-500 max-w-[200px]">
+            <h3 className="text-lg font-medium text-ink">{solution.title}</h3>
+            <p className="max-w-[200px] text-xs text-ink-500">
               Unlock the features designed for {solution.title.toLowerCase()}.
             </p>
             <Link href={solution.ctaHref} className="w-full">
-              <Button className="w-full bg-zinc-100 hover:bg-white text-black text-xs font-semibold py-2.5 rounded transition-colors">
+              <Button className="w-full py-2.5 text-xs font-medium">
                 {solution.ctaText}
               </Button>
             </Link>
           </div>
 
-          <div className="border border-zinc-850 p-6 rounded space-y-4">
-            <h4 className="text-xs text-zinc-500 font-sans tracking-wider uppercase">Case Study</h4>
+          <div className="card-surface space-y-4 p-6">
+            <h4 className="text-xs uppercase tracking-wider text-ink-400">Case Study</h4>
             <div className="space-y-3 text-xs">
               <div>
-                <span className="text-zinc-500 font-sans block mb-1">Scenario</span>
-                <p className="text-zinc-300 leading-normal">{solution.caseStudy.problem}</p>
+                <span className="mb-1 block text-ink-400">Scenario</span>
+                <p className="leading-normal text-ink-600">{solution.caseStudy.problem}</p>
               </div>
-              <div className="pt-3 border-t border-zinc-900">
-                <span className="text-zinc-500 font-sans block mb-1">OnDecide Impact</span>
-                <p className="text-zinc-300 leading-normal">{solution.caseStudy.solution}</p>
+              <div className="border-t border-line pt-3">
+                <span className="mb-1 block text-ink-400">OnDecide Impact</span>
+                <p className="leading-normal text-ink-600">{solution.caseStudy.solution}</p>
               </div>
             </div>
           </div>
