@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Build output directory is overridable so the app can be built/served from a
+  // fresh folder when clearing a large stale .next cache is restricted.
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   images: {
     remotePatterns: [
       {
