@@ -4,10 +4,10 @@ import {
   ArrowRight,
   ArrowUpRight,
   Clock,
-  GitBranch,
+  GitFork,
   Layers,
   Search,
-  Users,
+  User,
   Zap,
 } from "lucide-react";
 
@@ -42,31 +42,31 @@ const PROBLEMS = [
     n: "01",
     icon: Layers,
     title: "Fragmented Data",
-    body: "Bouncing between 5+ platforms for technical analysis, news, sentiment, and fundamentals.",
+    body: "Bouncing between 5+ platforms for technical analysis, news, sentiment, and fundamentals",
   },
   {
     n: "02",
     icon: Clock,
     title: "Hours of Research",
-    body: "A single stock analysis takes 30+ minutes manually, and the verdict rarely justifies the time spent.",
+    body: "A single stock analysis takes 30+ minutes manually, verdict never justifies the time spend",
   },
   {
     n: "03",
-    icon: GitBranch,
+    icon: GitFork,
     title: "Conflicting Signals",
-    body: "Different analysis methods give contradictory signals, leaving no clear conviction to act on.",
+    body: "Different analysis methods gives contradictory signals, no clear conviction to act on.",
   },
   {
     n: "04",
-    icon: Users,
+    icon: User,
     title: "Expensive Expertise",
-    body: "Institutional research costs $10K+ a month; retail investors can't afford research-grade analysis.",
+    body: "Institutional research costs $10K+/month, retail investors can't afford research-grade analysis",
   },
   {
     n: "05",
     icon: Search,
     title: "Missed Connections",
-    body: "Hard to spot macro trends, sector correlations, and historical pattern repeats manually.",
+    body: "Hard to spot macro trends, sector correlations, and historical pattern repeats manually",
   },
   {
     n: "06",
@@ -230,38 +230,57 @@ export default function HomePage() {
       <CapabilityMarquee />
 
       {/* ── 4. The problem ─────────────────────────────── */}
-      <section className="bg-paper py-20 lg:py-28">
+      <section className="bg-paper py-20 lg:py-24">
         <div className="page-shell">
-          <h2 className="max-w-[18ch] text-display-sm font-medium leading-[1.05] text-ink">
+          <h2 className="h-section">
             The <span className="text-brand-600">Investment</span>
             <br />
             <span className="text-brand-600">Research</span> Problem
           </h2>
-          <p className="mt-6 max-w-[34rem] text-[14px] leading-relaxed text-ink-500">
+          <p className="mt-8 max-w-[42rem] text-[18px] leading-[1.55] text-ink-500">
             Investors waste hours pulling data from multiple sources, cross-referencing metrics, and
             synthesizing insights manually.{" "}
-            <span className="text-brand-600">OnDecide</span> solves this instantly.
+            <span className="text-brand-600">OnDecide</span> solves this instantly
           </p>
 
-          <div className="relative mt-16 grid grid-cols-1 gap-3 md:grid-cols-[1fr_200px_1fr]">
-            {/* hub */}
-            <div className="pointer-events-none absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 md:block">
-              <div className="relative flex h-[210px] w-[210px] items-center justify-center">
-                <div className="halo-blue absolute inset-0 rounded-full opacity-90" />
-                <div className="absolute inset-6 rounded-full border border-brand-200/80" />
-                <div className="absolute inset-12 rounded-full border border-brand-200/60" />
-                <LogoMark className="relative h-10 w-auto" />
-              </div>
+          {/* Mobile hub */}
+          <div className="relative mx-auto mt-14 flex h-[220px] w-[220px] items-center justify-center lg:hidden">
+            <div className="halo-blue absolute inset-0 rounded-full opacity-90" />
+            <div className="absolute inset-[26px] rounded-full border border-[#A4B7F5]" />
+            <LogoMark className="relative h-12 w-auto" />
+          </div>
+
+          <div className="mt-10 grid grid-cols-1 gap-y-10 lg:mt-[88px] lg:grid-cols-[minmax(0,1fr)_468px_minmax(0,1fr)] lg:grid-rows-[117px_117px_117px] lg:gap-x-0 lg:gap-y-[25px]">
+            {/* Hub + connectors (desktop only) */}
+            <div className="pointer-events-none relative hidden lg:col-start-2 lg:row-span-3 lg:row-start-1 lg:block">
+              <div className="absolute left-1/2 top-1/2 h-[440px] w-[440px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(124,153,255,0.85)_0%,rgba(150,175,255,0.55)_34%,rgba(196,210,255,0.3)_56%,rgba(226,233,255,0.1)_70%,transparent_76%)] blur-[2px]" />
+              <div className="absolute left-1/2 top-1/2 h-[274px] w-[274px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#A4B7F5]" />
+              <LogoMark className="absolute left-1/2 top-1/2 h-[88px] w-auto -translate-x-1/2 -translate-y-1/2" />
+              <svg
+                className="absolute inset-0 h-full w-full"
+                viewBox="0 0 468 401"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+                fill="none"
+                stroke="#A9B4CC"
+                strokeWidth="1"
+              >
+                <path d="M0 58C90 58 112 94 138 105" />
+                <path d="M0 200.5H97" />
+                <path d="M0 343C90 343 112 307 138 296" />
+                <path d="M468 58C378 58 356 94 330 105" />
+                <path d="M468 200.5H371" />
+                <path d="M468 343C378 343 356 307 330 296" />
+              </svg>
             </div>
 
-            {[0, 1, 2].map((row) => (
-              <div key={row} className="contents">
-                <ProblemCard problem={PROBLEMS[row]} />
-                <div className="relative hidden md:block" aria-hidden="true">
-                  <span className="absolute left-0 right-0 top-1/2 h-px bg-line" />
-                </div>
-                <ProblemCard problem={PROBLEMS[row + 3]} align="right" />
-              </div>
+            {PROBLEMS.map((problem, i) => (
+              <ProblemCard
+                key={problem.n}
+                problem={problem}
+                align={i > 2 ? "right" : "left"}
+                row={i > 2 ? i - 2 : i + 1}
+              />
             ))}
           </div>
         </div>
@@ -271,7 +290,7 @@ export default function HomePage() {
       <section className="border-y border-line bg-white py-20 lg:py-28">
         <div className="page-shell grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
           <div>
-            <h2 className="text-display-sm font-medium leading-[1.06] text-ink">
+            <h2 className="h-section">
               The <span className="text-brand-600">AI Investment Agent</span>
               <br />
               for Research
@@ -316,7 +335,7 @@ export default function HomePage() {
       {/* ── 6. Four feature cards ──────────────────────── */}
       <section className="bg-paper py-20 lg:py-28">
         <div className="page-shell">
-          <h2 className="max-w-[20ch] text-display-sm font-medium leading-[1.06] text-ink">
+          <h2 className="h-section max-w-[20ch]">
             Everything a Wall Street Analyst Does. Delivered in{" "}
             <span className="text-brand-600">60 Seconds.</span>
           </h2>
@@ -355,7 +374,7 @@ export default function HomePage() {
       {/* ── 7. How it works ────────────────────────────── */}
       <section className="border-y border-line bg-white py-20 lg:py-28">
         <div className="page-shell">
-          <h2 className="text-display-sm font-medium text-ink">How OnDecide Works</h2>
+          <h2 className="h-section">How OnDecide Works</h2>
         </div>
 
         <div className="mx-auto mt-14 w-full max-w-[1320px] px-4 lg:px-8">
@@ -397,7 +416,7 @@ export default function HomePage() {
       {/* ── 8. Testimonials ────────────────────────────── */}
       <section className="bg-white py-20 lg:py-28">
         <div className="page-shell">
-          <h2 className="text-display-sm font-medium leading-[1.06] text-ink">
+          <h2 className="h-section">
             <span className="text-brand-600">Build</span> for Retail &amp;
             <br />
             Pro Analysts
@@ -411,7 +430,7 @@ export default function HomePage() {
       {/* ── 9. Pricing ─────────────────────────────────── */}
       <section id="pricing" className="bg-paper py-20 lg:py-28">
         <div className="page-shell">
-          <h2 className="text-display-sm font-medium leading-[1.06] text-ink">
+          <h2 className="h-section">
             Simple Plans.
             <br />
             No <span className="text-brand-600">Hidden Fees</span>
@@ -478,7 +497,7 @@ export default function HomePage() {
         <StripeBand className="absolute inset-0 h-full w-full" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(78%_140%_at_6%_50%,rgba(255,255,255,0.94),rgba(255,255,255,0.4)_56%,transparent_80%)]" />
         <div className="page-shell relative py-20 lg:py-24">
-          <h2 className="max-w-[16ch] text-display-sm font-medium leading-[1.06] text-ink">
+          <h2 className="h-section max-w-[16ch]">
             Make smarter Decisions
             <br />
             in 60 Seconds.
@@ -498,26 +517,43 @@ export default function HomePage() {
 
 // ─── Sub-components ────────────────────────────────────────
 
+const CARD_ROWS = ["lg:row-start-1", "lg:row-start-2", "lg:row-start-3"];
+const CARD_COLS = { left: "lg:col-start-1", right: "lg:col-start-3" } as const;
+
 function ProblemCard({
   problem,
-  align = "left",
+  align,
+  row,
 }: {
   problem: (typeof PROBLEMS)[number];
-  align?: "left" | "right";
+  align: "left" | "right";
+  row: number;
 }) {
   const Icon = problem.icon;
   return (
-    <div className="relative h-full bg-[#E9EEFC] p-5 md:p-6">
-      <span
-        className={`absolute top-4 text-[10px] tracking-widest text-brand-600/60 ${
-          align === "right" ? "right-4" : "left-4"
-        }`}
-      >
-        {problem.n}
-      </span>
-      <Icon className="h-5 w-5 text-brand-600" strokeWidth={1.6} />
-      <h3 className="mt-3 text-[14px] font-medium text-ink">{problem.title}</h3>
-      <p className="mt-1.5 max-w-[30ch] text-[12px] leading-relaxed text-ink-600">{problem.body}</p>
+    <div className={`relative ${CARD_COLS[align]} ${CARD_ROWS[row - 1]}`}>
+      <div        className="relative flex h-full min-h-[104px] items-center gap-5 bg-gradient-to-br from-[#C8D4FF] to-[#CFDAFF] px-6 py-5 lg:min-h-[117px]">
+        <span
+          className={`absolute -top-[19px] text-[12px] tracking-[0.02em] text-brand-500 ${
+            align === "right" ? "right-0" : "left-0"
+          }`}
+        >
+          {problem.n}
+        </span>
+
+        <Icon className="h-12 w-12 flex-none text-brand-700" strokeWidth={1.25} />
+
+        <div className="min-w-0">
+          <h3 className="text-[20px] font-normal leading-tight text-ink">{problem.title}</h3>
+          <p className="mt-1.5 max-w-[33ch] text-[13px] leading-[1.45] text-[#5A688C]">{problem.body}</p>
+        </div>
+
+        <span
+          className={`absolute top-1/2 h-[5px] w-[5px] -translate-y-1/2 rounded-full bg-brand-500 ${
+            align === "right" ? "-left-[3px]" : "-right-[3px]"
+          }`}
+        />
+      </div>
     </div>
   );
 }
