@@ -1,21 +1,29 @@
 import type { Metadata } from "next";
-import { DM_Sans, Playfair_Display } from "next/font/google";
+import localFont from "next/font/local";
+import { Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Navbar } from "@/components/ui/Navbar";
 import { Footer } from "@/components/ui/Footer";
-import { StockAsciiArt } from "@/components/ui/StockAsciiArt";
-import { InkGardenArt } from "@/components/ui/InkGardenArt";
 
-const dmSans = DM_Sans({
-  subsets: ["latin"],
+const geist = localFont({
+  src: "./fonts/GeistVF.woff",
   variable: "--font-sans",
+  weight: "100 900",
   display: "swap",
 });
 
-const playfair = Playfair_Display({
+const geistMono = localFont({
+  src: "./fonts/GeistMonoVF.woff",
+  variable: "--font-mono",
+  weight: "100 900",
+  display: "swap",
+});
+
+const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
-  variable: "--font-serif",
+  weight: "400",
+  variable: "--font-display",
   display: "swap",
 });
 
@@ -42,10 +50,11 @@ export default function RootLayout({
   const clerkEnabled = !!clerkKey && !clerkKey.includes("placeholder");
 
   const tree = (
-    <html lang="en" className={`${dmSans.variable} ${playfair.variable}`}>
-      <body className="bg-black text-zinc-300 antialiased min-h-screen flex flex-col selection:bg-zinc-800 selection:text-white">
-        <StockAsciiArt opacity={0.15} />
-        <InkGardenArt opacity={0.15} />
+    <html
+      lang="en"
+      className={`${geist.variable} ${geistMono.variable} ${instrumentSerif.variable}`}
+    >
+      <body className="bg-paper text-ink-700 antialiased min-h-screen flex flex-col">
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />
