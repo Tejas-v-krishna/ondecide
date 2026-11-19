@@ -56,7 +56,7 @@ export function Footer() {
           <div className="grid gap-14 lg:grid-cols-[1.1fr_2.4fr]">
             {/* Brand + newsletter */}
             <div>
-              <LogoLockup markClassName="h-5" textClassName="text-[19px] font-semibold tracking-tight text-ink" />
+              <LogoLockup markClassName="h-6" textClassName="text-[19px] font-semibold tracking-tight text-ink" />
               <p className="mt-6 text-[15px] leading-snug text-ink-600">
                 Understand any investment.
                 <br />
