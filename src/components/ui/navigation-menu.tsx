@@ -76,14 +76,14 @@ function NavigationMenuTrigger({
 		<NavigationMenuPrimitive.Trigger
 			data-slot="navigation-menu-trigger"
 			className={cn(
-				'group hover:bg-zinc-900 hover:text-white focus:bg-zinc-900 focus:text-white data-[state=open]:hover:bg-zinc-900 data-[state=open]:text-white data-[state=open]:focus:bg-zinc-900 data-[state=open]:bg-zinc-900/50 focus-visible:ring-ring/50 inline-flex w-max items-center justify-center rounded-md px-4 py-1 text-sm font-medium transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 text-zinc-400',
+				'inline-flex w-max items-center justify-center gap-1 rounded-full px-3.5 py-2 text-sm font-medium text-ink-600 outline-none transition-colors hover:bg-surface-subtle hover:text-ink focus-visible:ring-2 focus-visible:ring-brand-500/30 data-[state=open]:bg-surface-subtle data-[state=open]:text-ink disabled:pointer-events-none disabled:opacity-50',
 				className,
 			)}
 			{...props}
 		>
 			{children}{' '}
 			<ChevronDownIcon
-				className="relative top-[1px] ml-1 size-3 transition duration-300 group-data-[state=open]:rotate-180"
+				className="relative top-[1px] size-3.5 transition duration-300 group-data-[state=open]:rotate-180"
 				aria-hidden="true"
 			/>
 		</NavigationMenuPrimitive.Trigger>
@@ -98,8 +98,8 @@ function NavigationMenuContent({
 		<NavigationMenuPrimitive.Content
 			data-slot="navigation-menu-content"
 			className={cn(
-				'data-[motion^=from-]:animate-in data-[motion^=to-]:animate-out data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 top-0 left-0 w-full md:absolute md:w-auto',
-				'group-data-[viewport=false]/navigation-menu:bg-black/80 group-data-[viewport=false]/navigation-menu:text-white group-data-[viewport=false]/navigation-menu:data-[state=open]:animate-in group-data-[viewport=false]/navigation-menu:data-[state=closed]:animate-out group-data-[viewport=false]/navigation-menu:data-[state=closed]:zoom-out-95 group-data-[viewport=false]/navigation-menu:data-[state=open]:zoom-in-95 group-data-[viewport=false]/navigation-menu:data-[state=open]:fade-in-0 group-data-[viewport=false]/navigation-menu:data-[state=closed]:fade-out-0 group-data-[viewport=false]/navigation-menu:top-full group-data-[viewport=false]/navigation-menu:mt-1.5 group-data-[viewport=false]/navigation-menu:overflow-hidden group-data-[viewport=false]/navigation-menu:rounded-md group-data-[viewport=false]/navigation-menu:border group-data-[viewport=false]/navigation-menu:border-zinc-800 group-data-[viewport=false]/navigation-menu:shadow group-data-[viewport=false]/navigation-menu:duration-300 **:data-[slot=navigation-menu-link]:focus:ring-0 **:data-[slot=navigation-menu-link]:focus:outline-none',
+				'top-0 left-0 w-full md:absolute md:w-auto',
+				'data-[state=open]:animate-[popIn_.2s_cubic-bezier(.22,1,.36,1)]',
 				className,
 			)}
 			{...props}
@@ -116,7 +116,7 @@ function NavigationMenuViewport({
 			<NavigationMenuPrimitive.Viewport
 				data-slot="navigation-menu-viewport"
 				className={cn(
-					'origin-top-center bg-black/95 border border-zinc-800 text-white data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-90 relative mt-1.5 h-[var(--radix-navigation-menu-viewport-height)] w-full overflow-hidden rounded-md shadow backdrop-blur-xl md:w-[var(--radix-navigation-menu-viewport-width)]',
+					'origin-top relative mt-2 h-[var(--radix-navigation-menu-viewport-height)] w-full overflow-hidden rounded-2xl border border-line bg-surface shadow-xl data-[state=open]:animate-[popIn_.2s_cubic-bezier(.22,1,.36,1)] md:w-[var(--radix-navigation-menu-viewport-width)]',
 					className,
 				)}
 				{...props}
@@ -133,7 +133,7 @@ function NavigationMenuLink({
 		<NavigationMenuPrimitive.Link
 			data-slot="navigation-menu-link"
 			className={cn(
-				"data-[active=true]:focus:bg-zinc-900 data-[active=true]:hover:bg-zinc-900 data-[active=true]:bg-zinc-900/50 data-[active=true]:text-white hover:bg-zinc-900 hover:text-white focus:bg-zinc-900 focus:text-white focus-visible:ring-ring/50 [&_svg:not([class*='text-'])]:text-zinc-400 flex flex-col justify-center gap-1 rounded-sm px-4 py-1 text-sm transition-all outline-none focus-visible:ring-[3px] focus-visible:outline-1 [&_svg:not([class*='size-'])]:size-4 text-zinc-400",
+				'flex flex-col justify-center gap-1 rounded-lg px-4 py-2 text-sm text-ink-600 outline-none transition-colors hover:bg-surface-subtle hover:text-ink data-[active=true]:bg-surface-subtle data-[active=true]:text-ink [&_svg:not([class*=size-])]:size-4',
 				className,
 			)}
 			{...props}
@@ -149,12 +149,12 @@ function NavigationMenuIndicator({
 		<NavigationMenuPrimitive.Indicator
 			data-slot="navigation-menu-indicator"
 			className={cn(
-				'data-[state=visible]:animate-in data-[state=hidden]:animate-out data-[state=hidden]:fade-out data-[state=visible]:fade-in top-full z-[1] flex h-1.5 items-end justify-center overflow-hidden',
+				'top-full z-[1] flex h-1.5 items-end justify-center overflow-hidden',
 				className,
 			)}
 			{...props}
 		>
-			<div className="bg-zinc-800 relative top-[60%] h-2 w-2 rotate-45 rounded-tl-sm shadow-md" />
+			<div className="relative top-[60%] h-2 w-2 rotate-45 rounded-tl-sm bg-line-strong shadow-sm" />
 		</NavigationMenuPrimitive.Indicator>
 	);
 }
@@ -168,17 +168,11 @@ function NavGridCard({
 	return (
 		<NavigationMenuPrimitive.Link asChild>
 			<GridCard {...props}>
-				{link.icon && (
-					<link.icon className="text-white/80 relative size-5" />
-				)}
+				{link.icon && <link.icon className="relative size-5 text-brand-600" />}
 				<div className="relative">
-					<span className="text-white/80 text-sm font-medium">
-						{link.title}
-					</span>
+					<span className="text-sm font-medium text-ink">{link.title}</span>
 					{link.description && (
-						<p className="text-zinc-500 mt-2 text-xs">
-							{link.description}
-						</p>
+						<p className="mt-2 text-xs text-ink-500">{link.description}</p>
 					)}
 				</div>
 			</GridCard>
@@ -220,21 +214,21 @@ function NavLargeItem({
 	return (
 		<NavigationMenuLink
 			className={cn(
-				'bg-black group relative flex flex-col justify-center border border-zinc-800 p-0',
+				'group relative flex flex-col justify-center border border-line bg-surface p-0',
 				className,
 			)}
 			{...props}
 		>
 			<div className="flex items-center justify-between px-5 py-4">
 				<div className="space-y-1">
-					<span className="text-sm leading-none font-medium text-white">{link.title}</span>
+					<span className="text-sm font-medium leading-none text-ink">{link.title}</span>
 					{link.description && (
-						<p className="text-zinc-500 line-clamp-1 text-xs">
+						<p className="line-clamp-1 text-xs text-ink-500">
 							{link.description}
 						</p>
 					)}
 				</div>
-				{link.icon && <link.icon className="text-zinc-400 size-6" />}
+				{link.icon && <link.icon className="size-6 text-ink-400" />}
 			</div>
 		</NavigationMenuLink>
 	);
@@ -250,21 +244,17 @@ function NavItemMobile({
 	return (
 		<a
 			className={cn(
-				"data-[active=true]:focus:bg-zinc-900 data-[active=true]:hover:bg-zinc-900 data-[active=true]:bg-zinc-900/50 data-[active=true]:text-white hover:bg-zinc-900 hover:text-white focus:bg-zinc-900 focus:text-white focus-visible:ring-ring/50 [&_svg:not([class*='text-'])]:text-zinc-400 group relative flex gap-1 gap-x-2 rounded-sm p-2 text-sm transition-all outline-none focus-visible:ring-[3px] focus-visible:outline-1 [&_svg:not([class*='size-'])]:size-4 text-zinc-400",
+				'group relative flex gap-x-2 rounded-lg p-2 text-sm text-ink-600 outline-none transition-colors hover:bg-surface-subtle hover:text-ink [&_svg:not([class*=size-])]:size-4',
 				className,
 			)}
 			{...props}
 		>
-			<div
-				className={cn(
-					'bg-zinc-900 flex size-10 items-center justify-center rounded border border-zinc-800',
-				)}
-			>
+			<div className="flex size-10 items-center justify-center rounded-lg border border-line bg-surface-subtle text-brand-600">
 				{item.icon && <item.icon />}
 			</div>
-			<div className={cn('flex h-10 flex-col justify-center')}>
-				<p className="text-sm">{item.title}</p>
-				<span className="text-zinc-500 line-clamp-1 text-xs leading-snug">
+			<div className="flex h-10 flex-col justify-center">
+				<p className="text-sm text-ink">{item.title}</p>
+				<span className="line-clamp-1 text-xs leading-snug text-ink-500">
 					{item.description}
 				</span>
 			</div>
