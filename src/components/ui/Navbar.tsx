@@ -3,9 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
-import { MenuIcon, XIcon, Play } from "lucide-react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
+import { MenuIcon, XIcon, ArrowUpRight } from "lucide-react";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import {
@@ -163,52 +161,52 @@ const COMPANY_MENU: MegaMenuConfig = {
   ],
   graphic: {
     tag: "Design",
-    title: "True-Black Design System",
+    title: "The OnDecide Design System",
     description: "Read more about our minimal, high-aesthetic design philosophy.",
   },
 };
 
 export function Navbar() {
   return (
-    <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] flex h-[56px] w-max items-center gap-8 border border-white/[0.06] bg-[linear-gradient(137deg,rgba(17,18,20,0.75)_4.87%,rgba(12,13,15,0.9)_75.88%)] px-6 backdrop-blur-[5px] rounded-2xl shadow-[inset_0_1px_1px_0_rgba(255,255,255,0.15)]">
-      {/* Left: Logo + Navigation */}
-      <div className="flex items-center gap-8">
-        <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 group">
-          <div className="h-6 w-6 rounded-md bg-white flex items-center justify-center shadow-[0_0_20px_-4px_rgba(255,255,255,0.4)] transition-transform group-hover:scale-105">
-            <span className="text-black text-xs font-bold font-sans">O</span>
-          </div>
-          <span className="font-sans text-xl tracking-tight text-white">
-            OnDecide
-          </span>
-        </Link>
-
-        {/* Center: Desktop Navigation */}
-        <DesktopMenu />
-      </div>
-
-      {/* Right: Auth / Buttons */}
-      <div className="flex items-center gap-3 flex-shrink-0">
-        <SignedIn>
-          <UserButton afterSignOutUrl="/" />
-        </SignedIn>
-        <SignedOut>
-          <Link
-            href="/sign-in"
-            className="text-sm text-[#78787c] hover:text-[#f2f3f5] transition-colors px-3 py-1.5 font-sans"
-          >
-            Log in
+    <header className="sticky top-0 z-[100] w-full border-b border-line bg-paper/80 backdrop-blur-xl">
+      <nav className="shell flex h-16 items-center justify-between gap-6">
+        {/* Left: Logo + Navigation */}
+        <div className="flex items-center gap-6">
+          <Link href="/" className="group flex flex-shrink-0 items-center gap-2.5">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-ink text-white transition-transform group-hover:scale-105">
+              <span className="font-sans text-sm font-semibold">O</span>
+            </div>
+            <span className="font-sans text-[19px] font-medium tracking-tight text-ink">
+              OnDecide
+            </span>
           </Link>
-          <Link href="/sign-up" className="hidden sm:block">
-            <Button variant="default" className="relative bg-[rgba(255,255,255,0.815)] hover:bg-white text-[#18191A] px-4 py-1.5 h-auto text-sm font-medium rounded-full">
-              Get started
-            </Button>
-          </Link>
-        </SignedOut>
 
-        {/* Mobile Navigation Trigger */}
-        <MobileNav />
-      </div>
-    </nav>
+          <DesktopMenu />
+        </div>
+
+        {/* Right: Auth / Buttons */}
+        <div className="flex flex-shrink-0 items-center gap-2">
+          <SignedIn>
+            <UserButton afterSignOutUrl="/" />
+          </SignedIn>
+          <SignedOut>
+            <Link
+              href="/sign-in"
+              className="hidden px-3 py-1.5 text-sm text-ink-600 transition-colors hover:text-ink sm:block"
+            >
+              Log in
+            </Link>
+            <Link href="/sign-up" className="hidden sm:block">
+              <Button variant="default" size="sm" className="h-9">
+                Get started
+              </Button>
+            </Link>
+          </SignedOut>
+
+          <MobileNav />
+        </div>
+      </nav>
+    </header>
   );
 }
 
@@ -216,15 +214,16 @@ function DesktopMenu() {
   const menus = [PRODUCT_MENU, SOLUTIONS_MENU, RESOURCES_MENU, COMPANY_MENU];
 
   return (
-    <NavigationMenu viewportClassName="border border-transparent rounded-2xl bg-transparent" className="hidden lg:block">
-      <NavigationMenuList className="gap-2">
+    <NavigationMenu
+      viewportClassName="border border-line rounded-2xl bg-surface"
+      className="hidden lg:block"
+    >
+      <NavigationMenuList className="gap-1">
         {menus.map((menu) => (
           <NavigationMenuItem key={menu.trigger}>
-            <NavigationMenuTrigger className="px-3 py-1.5 text-sm text-[#78787c] hover:text-[#f2f3f5] transition-colors">
-              {menu.trigger}
-            </NavigationMenuTrigger>
+            <NavigationMenuTrigger>{menu.trigger}</NavigationMenuTrigger>
             <NavigationMenuContent>
-              <GsapMegaMenuContent menu={menu} />
+              <MegaMenuContent menu={menu} />
             </NavigationMenuContent>
           </NavigationMenuItem>
         ))}
@@ -233,43 +232,24 @@ function DesktopMenu() {
   );
 }
 
-function GsapMegaMenuContent({ menu }: { menu: MegaMenuConfig }) {
-  const container = React.useRef<HTMLDivElement>(null);
-
-  useGSAP(
-    () => {
-      const items = gsap.utils.toArray('.gsap-stagger-item', container.current);
-      gsap.fromTo(
-        items,
-        { opacity: 0, y: 15 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.4,
-          stagger: 0.04,
-          ease: "power2.out",
-        }
-      );
-    },
-    { scope: container }
-  );
-
+function MegaMenuContent({ menu }: { menu: MegaMenuConfig }) {
   return (
-    <div
-      ref={container}
-      className="grid w-[800px] grid-cols-[1.2fr_1.2fr_1fr] bg-[linear-gradient(137deg,rgba(17,18,20,0.95),rgba(12,13,15,0.98))] border border-white/[0.06] rounded-2xl p-6 shadow-[inset_0_1px_1px_0_rgba(255,255,255,0.15)]"
-    >
+    <div className="grid w-[760px] grid-cols-[1fr_1fr_1.05fr] gap-2 rounded-2xl border border-line bg-surface p-5 shadow-xl">
       {/* Left Columns */}
-      {menu.sections.map((section) => (
-        <div key={section.label} className="space-y-4">
-          <span className="gsap-stagger-item text-2xs text-[#78787c] font-sans tracking-wider uppercase block opacity-0">
+      {menu.sections.map((section, si) => (
+        <div key={section.label} className="space-y-3">
+          <span className="block text-2xs font-medium uppercase tracking-wider text-ink-400">
             {section.label}
           </span>
-          <ul className="space-y-2">
-            {section.items.map((item) => (
-              <li key={item.title} className="gsap-stagger-item opacity-0">
+          <ul className="space-y-1">
+            {section.items.map((item, ii) => (
+              <li
+                key={item.title}
+                style={{ animationDelay: `${(si * 6 + ii) * 18}ms` }}
+                className="animate-[popIn_.35s_cubic-bezier(.22,1,.36,1)_both]"
+              >
                 <Link href={item.href} passHref legacyBehavior>
-                  <NavigationMenuLink className="text-sm text-[#78787c] hover:text-[#f2f3f5] transition-colors py-1 block w-full text-left">
+                  <NavigationMenuLink className="w-full py-1.5 text-left text-sm text-ink-600 hover:text-ink">
                     {item.title}
                   </NavigationMenuLink>
                 </Link>
@@ -280,25 +260,21 @@ function GsapMegaMenuContent({ menu }: { menu: MegaMenuConfig }) {
       ))}
 
       {/* Right Visual Card */}
-      <div className="gsap-stagger-item opacity-0 relative group/card bg-[#18191A] border border-white/[0.06] rounded-xl p-4 overflow-hidden flex flex-col justify-end min-h-[180px]">
-        {/* Subtle decorative mesh */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.03),transparent)] pointer-events-none" />
-
-        {/* Play icon overlay */}
-        <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#18191A] border border-white/[0.06] flex items-center justify-center group-hover/card:bg-white group-hover/card:border-white transition-all">
-          <Play className="w-3.5 h-3.5 text-[#78787c] fill-[#78787c] group-hover/card:text-black group-hover/card:fill-black transition-colors ml-0.5" />
+      <div className="relative flex min-h-[190px] flex-col justify-end overflow-hidden rounded-xl border border-line bg-gradient-to-br from-brand-50 to-surface-subtle p-4">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(11,143,96,0.10),transparent_60%)] pointer-events-none" />
+        <div className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full border border-line bg-surface text-ink-400">
+          <ArrowUpRight className="h-3.5 w-3.5" />
         </div>
-
-        <div className="space-y-1 relative z-10">
+        <div className="relative z-10 space-y-1">
           {menu.graphic.tag && (
-            <span className="text-2xs text-[#78787c] font-sans tracking-wider uppercase block">
+            <span className="block text-2xs font-medium uppercase tracking-wider text-brand-700">
               {menu.graphic.tag}
             </span>
           )}
-          <h4 className="text-sm font-sans text-[#f2f3f5] leading-tight">
+          <h4 className="text-sm font-medium leading-tight text-ink">
             {menu.graphic.title}
           </h4>
-          <p className="text-xs text-[#78787c] leading-normal line-clamp-2">
+          <p className="line-clamp-2 text-xs leading-normal text-ink-500">
             {menu.graphic.description}
           </p>
         </div>
@@ -313,49 +289,53 @@ function MobileNav() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button size="icon" variant="ghost" className="rounded-full lg:hidden text-zinc-400 hover:text-white">
+        <Button size="icon" variant="ghost" className="lg:hidden">
           <MenuIcon className="size-5" />
+          <span className="sr-only">Open menu</span>
         </Button>
       </SheetTrigger>
       <SheetContent
-        className="bg-black/95 border-l border-zinc-800 w-full max-w-sm gap-0 backdrop-blur-lg flex flex-col h-full"
+        side="right"
+        className="w-full max-w-sm gap-0 bg-surface"
         showClose={false}
       >
-        <div className="flex h-16 items-center justify-between border-b border-zinc-800 px-6">
+        <div className="flex h-16 items-center justify-between border-b border-line px-6">
           <div className="flex items-center gap-2.5">
-            <div className="h-6 w-6 rounded-md bg-white flex items-center justify-center shadow-[0_0_20px_-4px_rgba(255,255,255,0.4)]">
-              <span className="text-black text-xs font-bold font-sans">O</span>
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-ink text-white">
+              <span className="font-sans text-sm font-semibold">O</span>
             </div>
-            <span className="font-sans text-white text-xl tracking-tight">OnDecide</span>
+            <span className="font-sans text-[19px] font-medium tracking-tight text-ink">
+              OnDecide
+            </span>
           </div>
           <SheetClose asChild>
-            <Button size="icon" variant="ghost" className="rounded-full text-zinc-400 hover:text-white">
+            <Button size="icon" variant="ghost">
               <XIcon className="size-5" />
               <span className="sr-only">Close</span>
             </Button>
           </SheetClose>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
+        <div className="flex-1 space-y-6 overflow-y-auto px-6 py-6">
           <Accordion type="single" collapsible className="w-full">
             {menus.map((menu) => (
-              <AccordionItem key={menu.trigger} value={menu.trigger} className="border-white/[0.06]">
-                <AccordionTrigger className="font-sans text-[#f2f3f5] text-base hover:no-underline py-3">
+              <AccordionItem key={menu.trigger} value={menu.trigger} className="border-line">
+                <AccordionTrigger className="py-3 text-base text-ink hover:no-underline">
                   {menu.trigger}
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-2">
                   {menu.sections.map((section) => (
                     <div key={section.label} className="space-y-2">
-                      <span className="text-2xs text-[#78787c] font-sans tracking-wider uppercase block">
+                      <span className="block text-2xs font-medium uppercase tracking-wider text-ink-400">
                         {section.label}
                       </span>
-                      <ul className="grid gap-2">
+                      <ul className="grid gap-1">
                         {section.items.map((item) => (
                           <li key={item.title}>
                             <SheetClose asChild>
                               <Link
                                 href={item.href}
-                                className="text-sm text-[#78787c] hover:text-[#f2f3f5] transition-colors py-1.5 block"
+                                className="block py-1.5 text-sm text-ink-600 transition-colors hover:text-ink"
                               >
                                 {item.title}
                               </Link>
@@ -370,17 +350,22 @@ function MobileNav() {
             ))}
           </Accordion>
 
-          {/* Simple flat links */}
-          <div className="flex flex-col gap-4 pt-4 border-t border-white/[0.06]">
+          <div className="flex flex-col gap-3 border-t border-line pt-4">
             <SignedOut>
               <SheetClose asChild>
-                <Link href="/sign-in" className="text-[#78787c] hover:text-[#f2f3f5] text-sm font-sans transition-colors py-2 block">
-                  Log In
+                <Link
+                  href="/sign-in"
+                  className="block py-2 text-sm text-ink-600 transition-colors hover:text-ink"
+                >
+                  Log in
                 </Link>
               </SheetClose>
               <SheetClose asChild>
-                <Link href="/sign-up" className="inline-flex justify-center bg-[rgba(255,255,255,0.815)] hover:bg-white text-[#18191A] px-4 py-2 text-sm font-medium rounded-full transition-colors w-full">
-                  Get Started
+                <Link
+                  href="/sign-up"
+                  className="inline-flex w-full justify-center rounded-full bg-ink px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-ink-800"
+                >
+                  Get started
                 </Link>
               </SheetClose>
             </SignedOut>
