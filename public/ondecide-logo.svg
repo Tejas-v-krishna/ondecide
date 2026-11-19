@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 721 375" width="721" height="375" role="img" aria-label="OnDecide">
+  <title>OnDecide</title>
+  <defs>
+    <linearGradient id="od-ink" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1A1A1A"/>
+      <stop offset="0.45" stop-color="#000000"/>
+      <stop offset="1" stop-color="#1A1A1A"/>
+    </linearGradient>
+    <linearGradient id="od-blue" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#264BC0"/>
+      <stop offset="0.55" stop-color="#1F47AB"/>
+      <stop offset="1" stop-color="#2A50BE"/>
+    </linearGradient>
+  </defs>
+
+  <!-- D: two horizontal arms joined by a semicircular right side -->
+  <path d="M457 21 H533.5 A166.5 166.5 0 0 1 533.5 354 H457"
+        fill="none" stroke="url(#od-ink)" stroke-width="42" stroke-linecap="butt"/>
+
+  <!-- stem + handle -->
+  <rect x="420" y="0" width="10" height="375" rx="1" fill="#4B6BBB"/>
+  <rect x="392" y="59" width="63" height="255" rx="2" fill="url(#od-blue)"/>
+
+  <!-- O -->
+  <circle cx="187.5" cy="187.5" r="188" fill="url(#od-ink)"/>
+</svg>
