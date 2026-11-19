@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import { Plus, Check, X } from "lucide-react";
 
 interface AddToPortfolioProps {
   ticker: string;
@@ -14,7 +15,7 @@ interface AddToPortfolioProps {
 export function AddToPortfolio({ ticker, assetType, companyName, currentPrice }: AddToPortfolioProps) {
   const { isSignedIn } = useAuth();
   const router = useRouter();
-  
+
   const [isOpen, setIsOpen] = useState(false);
   const [quantity, setQuantity] = useState("");
   const [buyPrice, setBuyPrice] = useState(currentPrice.toString());
@@ -57,16 +58,16 @@ export function AddToPortfolio({ ticker, assetType, companyName, currentPrice }:
           assetType,
           companyName,
           quantity: Number(quantity),
-          averageBuyPrice: Number(buyPrice)
+          averageBuyPrice: Number(buyPrice),
         }),
       });
 
       if (!res.ok) throw new Error("Failed to save to portfolio");
-      
+
       setSaved(true);
       setIsOpen(false);
       router.refresh();
-      
+
       setTimeout(() => setSaved(false), 3000);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save");
@@ -80,75 +81,70 @@ export function AddToPortfolio({ ticker, assetType, companyName, currentPrice }:
       <button
         onClick={() => setIsOpen(true)}
         disabled={saved}
-        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
+        className={`flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
           saved
-            ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-            : "bg-zinc-950 text-zinc-300 hover:text-white border border-zinc-800 hover:border-zinc-700"
+            ? "border-brand-200 bg-brand-50 text-brand-700"
+            : "border-line bg-surface text-ink-600 hover:border-line-strong hover:text-ink"
         }`}
       >
         {saved ? (
           <>
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
+            <Check className="h-4 w-4" />
             In Portfolio
           </>
         ) : (
           <>
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
+            <Plus className="h-4 w-4" />
             Add to Portfolio
           </>
         )}
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/80 backdrop-blur-sm">
-          <div className="bg-black border border-zinc-800/60 rounded-xl p-6 max-w-sm w-full shadow-2xl relative">
-            <button 
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/30 p-4 backdrop-blur-sm">
+          <div className="relative w-full max-w-sm rounded-2xl border border-line bg-surface p-6 shadow-xl">
+            <button
               onClick={() => setIsOpen(false)}
-              className="absolute top-4 right-4 text-zinc-500 hover:text-zinc-300"
+              className="absolute right-4 top-4 rounded-full p-1 text-ink-400 transition-colors hover:bg-surface-subtle hover:text-ink"
+              aria-label="Close"
             >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <X className="h-5 w-5" />
             </button>
 
-            <h3 className="text-lg font-bold text-white mb-1">Add {ticker} to Portfolio</h3>
-            <p className="text-sm text-zinc-400 mb-6">Enter your holding details to track P&L.</p>
+            <h3 className="mb-1 text-lg font-medium text-ink">Add {ticker} to Portfolio</h3>
+            <p className="mb-6 text-sm text-ink-500">Enter your holding details to track P&amp;L.</p>
 
             <form onSubmit={handleSave} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1">Quantity</label>
+                <label className="mb-1.5 block text-sm font-medium text-ink">Quantity</label>
                 <input
                   type="number"
                   step="any"
                   value={quantity}
                   onChange={(e) => setQuantity(e.target.value)}
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full rounded-xl border border-line bg-surface px-3 py-2 text-ink transition-colors focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
                   placeholder="e.g. 10.5"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1">Average Buy Price ($)</label>
+                <label className="mb-1.5 block text-sm font-medium text-ink">Average Buy Price ($)</label>
                 <input
                   type="number"
                   step="any"
                   value={buyPrice}
                   onChange={(e) => setBuyPrice(e.target.value)}
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full rounded-xl border border-line bg-surface px-3 py-2 text-ink transition-colors focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
                   required
                 />
               </div>
 
-              {error && <div className="text-red-400 text-sm">{error}</div>}
+              {error && <div className="text-sm text-avoid">{error}</div>}
 
               <button
                 type="submit"
                 disabled={saving}
-                className="w-full bg-emerald-500 text-zinc-900 font-bold py-2.5 rounded-lg hover:bg-emerald-400 transition-colors disabled:opacity-50"
+                className="w-full rounded-full bg-brand-600 py-2.5 font-medium text-white transition-colors hover:bg-brand-700 disabled:opacity-50"
               >
                 {saving ? "Saving..." : "Save Holding"}
               </button>

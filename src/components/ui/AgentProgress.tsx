@@ -1,5 +1,7 @@
 "use client";
 
+import { Check } from "lucide-react";
+
 interface Step {
   node: string;
   message: string;
@@ -25,7 +27,8 @@ interface AgentProgressProps {
 export function AgentProgress({ completedNodes, currentMessage, ticker }: AgentProgressProps) {
   const steps = PIPELINE_STEPS.map((step) => {
     const isDone = completedNodes.includes(step.node);
-    const isActive = !isDone && completedNodes.length === PIPELINE_STEPS.findIndex(s => s.node === step.node);
+    const isActive =
+      !isDone && completedNodes.length === PIPELINE_STEPS.findIndex((s) => s.node === step.node);
     return {
       ...step,
       status: isDone ? "done" : isActive ? "active" : "pending",
@@ -35,77 +38,84 @@ export function AgentProgress({ completedNodes, currentMessage, ticker }: AgentP
   const progress = (completedNodes.length / PIPELINE_STEPS.length) * 100;
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
+    <div className="mx-auto w-full max-w-2xl">
       {/* Header */}
-      <div className="text-center mb-8">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 mb-4">
-          <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
-          <span className="text-sm text-zinc-300 font-medium">Researching {ticker}</span>
+      <div className="mb-8 text-center">
+        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1.5 shadow-sm">
+          <div className="h-2 w-2 animate-pulse rounded-full bg-brand-500" />
+          <span className="text-sm font-medium text-ink-600">Researching {ticker}</span>
         </div>
-        <div className="text-white font-serif text-xl min-h-[1.75rem] transition-all duration-300">
+        <div className="min-h-[1.75rem] text-xl text-ink transition-all duration-300">
           {currentMessage || "Starting research pipeline..."}
         </div>
       </div>
 
       {/* Progress bar */}
-      <div className="mb-6 h-1 bg-zinc-900 rounded-full overflow-hidden">
+      <div className="mb-6 h-1 overflow-hidden rounded-full bg-surface-muted">
         <div
-          className="h-full bg-white rounded-full transition-all duration-700 ease-out"
+          className="h-full rounded-full bg-brand-600 transition-all duration-700 ease-out"
           style={{ width: `${progress}%` }}
         />
       </div>
 
       {/* Steps */}
-      <div className="space-y-3">
+      <div className="space-y-2.5">
         {steps.map((step) => {
           const isParallel = ["financials", "news"].includes(step.node);
           return (
             <div
               key={step.node}
-              className={`flex items-center gap-3 p-3 rounded transition-all duration-300 ${
+              className={`flex items-center gap-3 rounded-xl border p-3 transition-all duration-300 ${
                 step.status === "done"
-                  ? "bg-zinc-900 border border-zinc-800/60"
+                  ? "border-line bg-surface"
                   : step.status === "active"
-                  ? "bg-black border border-zinc-700"
-                  : "opacity-40"
+                    ? "border-brand-200 bg-brand-50"
+                    : "border-transparent opacity-50"
               }`}
             >
               {/* Step indicator */}
-              <div className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center">
+              <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center">
                 {step.status === "done" ? (
-                  <svg className="w-4 h-4 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                  </svg>
+                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-brand-100">
+                    <Check className="h-3 w-3 text-brand-700" strokeWidth={3} />
+                  </div>
                 ) : step.status === "active" ? (
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-brand-600 border-t-transparent" />
                 ) : (
-                  <div className="w-2 h-2 rounded-full bg-zinc-700" />
+                  <div className="h-2 w-2 rounded-full bg-ink-300" />
                 )}
               </div>
 
               {/* Label */}
-              <span className={`text-sm flex-1 ${step.status === "done" ? "text-zinc-300" : step.status === "active" ? "text-white font-medium" : "text-zinc-600"}`}>
+              <span
+                className={`flex-1 text-sm ${
+                  step.status === "done"
+                    ? "text-ink-600"
+                    : step.status === "active"
+                      ? "font-medium text-ink"
+                      : "text-ink-400"
+                }`}
+              >
                 {step.label}
               </span>
 
-              {/* Parallel badge */}
               {isParallel && (
-                <span className="text-2xs text-zinc-600 bg-zinc-900 px-1.5 py-0.5 rounded font-sans">
+                <span className="rounded-md bg-surface-subtle px-1.5 py-0.5 text-2xs text-ink-500">
                   parallel
                 </span>
               )}
 
-              {/* Done tick */}
               {step.status === "done" && (
-                <span className="text-xs text-zinc-500">done</span>
+                <span className="text-xs text-ink-400">done</span>
               )}
             </div>
           );
         })}
       </div>
 
-      <p className="text-center text-xs text-zinc-600 mt-6">
-        This transparency into our research process is intentional — you deserve to see how the analysis is built.
+      <p className="mt-6 text-center text-xs text-ink-400">
+        This transparency into our research process is intentional — you deserve to see how the
+        analysis is built.
       </p>
     </div>
   );

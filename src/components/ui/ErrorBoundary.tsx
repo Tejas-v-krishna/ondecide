@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { AlertTriangle } from "lucide-react";
 
 interface Props {
   children: React.ReactNode;
@@ -31,9 +32,14 @@ export class ErrorBoundary extends React.Component<Props, State> {
     if (this.state.hasError) {
       if (this.props.fallback) return this.props.fallback;
       return (
-        <div className="rounded-xl border border-rose-500/20 bg-rose-500/5 px-5 py-4 text-sm text-rose-400">
-          <p className="font-medium mb-1">⚠️ {this.props.sectionName || "This section"} failed to render.</p>
-          <p className="text-rose-500/70 text-xs">The rest of the report is unaffected. You can try refreshing the page.</p>
+        <div className="rounded-xl border border-avoid/20 bg-avoid/5 px-5 py-4 text-sm text-avoid">
+          <p className="mb-1 flex items-center gap-2 font-medium">
+            <AlertTriangle className="h-4 w-4" />
+            {this.props.sectionName || "This section"} failed to render.
+          </p>
+          <p className="text-xs text-avoid/70">
+            The rest of the report is unaffected. You can try refreshing the page.
+          </p>
         </div>
       );
     }

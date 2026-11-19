@@ -20,7 +20,7 @@ export function GlossaryTooltip({ term, children, className = "" }: GlossaryTool
   return (
     <span className={`relative inline-block ${className}`}>
       <span
-        className="cursor-help border-b border-dotted border-zinc-600 hover:border-emerald-400 transition-colors"
+        className="cursor-help border-b border-dotted border-ink-400 transition-colors hover:border-brand-500"
         onMouseEnter={() => setVisible(true)}
         onMouseLeave={() => setVisible(false)}
         onClick={() => setVisible((v) => !v)}
@@ -29,12 +29,12 @@ export function GlossaryTooltip({ term, children, className = "" }: GlossaryTool
       </span>
 
       {visible && (
-        <span className="absolute z-50 left-0 top-full mt-2 w-72 rounded-lg border border-zinc-800 bg-zinc-950 p-3 shadow-xl animate-fade-in pointer-events-none">
-          <span className="block text-xs font-semibold text-emerald-400 mb-1">{entry.term}</span>
-          <span className="block text-sm text-zinc-100 leading-relaxed">{entry.definition}</span>
+        <span className="pointer-events-none absolute left-0 top-full z-50 mt-2 block w-72 animate-fade-in rounded-xl border border-line bg-surface p-3 shadow-xl">
+          <span className="mb-1 block text-xs font-medium text-brand-700">{entry.term}</span>
+          <span className="block text-sm leading-relaxed text-ink-600">{entry.definition}</span>
           {entry.example && (
-            <span className="block text-xs text-zinc-400 mt-2 pt-2 border-t border-zinc-800">
-              <span className="font-medium text-zinc-300">Example: </span>
+            <span className="mt-2 block border-t border-line pt-2 text-xs text-ink-500">
+              <span className="font-medium text-ink-600">Example: </span>
               {entry.example}
             </span>
           )}

@@ -53,17 +53,17 @@ export function SaveToWatchlist({ report, isSaved: initialSaved = false, onSaved
     <button
       onClick={handleToggle}
       disabled={loading}
-      className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium transition-all duration-200 ${
+      className={`flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-all duration-200 ${
         saved
-          ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20"
-          : "border-zinc-800 bg-zinc-950 text-zinc-400 hover:border-zinc-600 hover:text-zinc-100"
+          ? "border-brand-200 bg-brand-50 text-brand-700 hover:bg-brand-100"
+          : "border-line bg-surface text-ink-600 hover:border-line-strong hover:text-ink"
       }`}
     >
       {loading ? (
-        <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+        <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
       ) : (
         <svg
-          className="w-4 h-4"
+          className="h-4 w-4"
           fill={saved ? "currentColor" : "none"}
           viewBox="0 0 24 24"
           stroke="currentColor"

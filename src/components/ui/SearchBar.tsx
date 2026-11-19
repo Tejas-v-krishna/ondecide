@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { Search } from "lucide-react";
 
 interface SearchResult {
   symbol: string;
@@ -63,7 +64,14 @@ export function SearchBar({ className = "", large = false }: { className?: strin
   return (
     <div className={`relative ${className}`}>
       <form onSubmit={handleSubmit}>
-        <div className={`relative flex items-center rounded-full border border-white/[0.06] bg-[linear-gradient(137deg,rgba(17,18,20,0.75)_4.87%,rgba(12,13,15,0.9)_75.88%)] backdrop-blur-[5px] shadow-[inset_0_1px_1px_0_rgba(255,255,255,0.15)] transition-all duration-200 ${focused ? "border-white/20" : "hover:border-white/10"} ${large ? "p-2 pl-6" : "p-1 pl-4"}`}>
+        <div
+          className={`relative flex items-center rounded-full border bg-surface transition-all duration-200 ${
+            focused
+              ? "border-brand-500 shadow-[0_0_0_4px_rgba(11,143,96,0.10)]"
+              : "border-line shadow-sm hover:border-line-strong"
+          } ${large ? "py-1.5 pl-5 pr-1.5" : "py-1 pl-4 pr-1"}`}
+        >
+          <Search className={`shrink-0 text-ink-400 ${large ? "h-5 w-5" : "h-4 w-4"}`} />
           <input
             ref={inputRef}
             type="text"
@@ -72,36 +80,51 @@ export function SearchBar({ className = "", large = false }: { className?: strin
             onFocus={() => setFocused(true)}
             onBlur={() => setTimeout(() => setFocused(false), 150)}
             placeholder={large ? "Search by ticker or company name (AAPL, Apple, BTC...)" : "Search stocks or crypto..."}
-            className={`w-full bg-transparent text-white placeholder-zinc-500 outline-none ${large ? "px-2 text-lg h-12" : "px-2 text-sm h-8"}`}
+            className={`w-full bg-transparent text-ink placeholder:text-ink-400 outline-none ${
+              large ? "px-3 text-base h-11" : "px-2.5 text-sm h-8"
+            }`}
           />
           {loading && (
-            <div className={`border-2 border-zinc-400 border-t-transparent rounded-full animate-spin shrink-0 mx-3 ${large ? "w-5 h-5" : "w-4 h-4"}`} />
+            <div
+              className={`mx-3 shrink-0 animate-spin rounded-full border-2 border-ink-300 border-t-brand-600 ${
+                large ? "h-5 w-5" : "h-4 w-4"
+              }`}
+            />
           )}
-          <button type="submit" className={`rounded-full bg-white flex items-center justify-center shrink-0 hover:bg-zinc-200 transition-colors text-black font-semibold font-sans ${large ? "px-8 h-12 text-base" : "px-4 h-8 text-xs"} ml-2`}>
+          <button
+            type="submit"
+            className={`ml-2 shrink-0 rounded-full bg-ink font-medium text-white transition-colors hover:bg-ink-800 ${
+              large ? "h-11 px-7 text-sm" : "h-8 px-4 text-xs"
+            }`}
+          >
             Search
           </button>
         </div>
       </form>
 
       {showDropdown && (
-        <div className="absolute z-50 w-full mt-2 rounded-xl border border-zinc-800 bg-zinc-950 shadow-xl overflow-hidden">
+        <div className="absolute z-50 mt-2 w-full overflow-hidden rounded-2xl border border-line bg-surface shadow-xl">
           {results.length === 0 && (
-            <div className="px-4 py-2 text-xs text-zinc-500 uppercase tracking-wider">Popular</div>
+            <div className="px-4 py-2.5 text-2xs font-medium uppercase tracking-wider text-ink-400">
+              Popular
+            </div>
           )}
           {displayResults.map((r) => (
             <button
               key={r.symbol}
               onMouseDown={() => handleSelect(r.symbol)}
-              className="w-full flex items-center gap-3 px-4 py-3 hover:bg-zinc-900 transition-colors text-left"
+              className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-surface-subtle"
             >
-              <div className="w-8 h-8 rounded-lg bg-zinc-900 flex items-center justify-center text-xs font-sans font-bold text-white flex-shrink-0">
+              <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-surface-subtle text-xs font-semibold text-ink">
                 {r.symbol.slice(0, 2)}
               </div>
-              <div>
-                <div className="text-sm font-semibold text-white">{r.symbol}</div>
-                <div className="text-xs text-zinc-400 truncate">{r.description}</div>
+              <div className="min-w-0">
+                <div className="text-sm font-medium text-ink">{r.symbol}</div>
+                <div className="truncate text-xs text-ink-500">{r.description}</div>
               </div>
-              <span className="ml-auto text-2xs text-zinc-600 bg-zinc-900 px-2 py-0.5 rounded">{r.type}</span>
+              <span className="ml-auto rounded-md bg-surface-subtle px-2 py-0.5 text-2xs text-ink-500">
+                {r.type}
+              </span>
             </button>
           ))}
         </div>
