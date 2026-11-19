@@ -111,6 +111,19 @@
   }
 }
 
+/* Wide marketing container — the reference sits ~4% off each edge. */
+.page-shell {
+  width: 100%;
+  max-width: 1600px;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+@media (min-width: 1024px) {
+  .page-shell {
+    padding-inline: 3.5rem;
+  }
+}
+
 /* ─── Backgrounds ─────────────────────────────────────── */
 .grid-lines {
   background-image: linear-gradient(to right, rgba(31, 71, 171, 0.06) 1px, transparent 1px),
@@ -133,27 +146,50 @@
 .facet-panel {
   background-color: #1b44a6;
   background-image:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 38%, rgba(8, 22, 68, 0.35) 100%),
     repeating-linear-gradient(
       90deg,
-      #1d46a8 0px,
-      #1d46a8 9px,
-      #3560bc 9px,
-      #3560bc 15px,
-      #6f9fea 15px,
-      #6f9fea 19px,
-      #12358f 19px,
-      #12358f 29px,
-      #4e7bd6 29px,
-      #4e7bd6 35px,
-      #0b2d9a 35px,
-      #0b2d9a 47px,
-      #2a51b4 47px,
-      #2a51b4 53px,
-      #809ddb 53px,
-      #809ddb 56px
+      #2e5cbe 0%,
+      #2e5cbe 6%,
+      #1b44a6 6%,
+      #1b44a6 9%,
+      #6d9be6 9%,
+      #6d9be6 11.5%,
+      #123a97 11.5%,
+      #123a97 17%,
+      #3a67c4 17%,
+      #3a67c4 20%,
+      #0e2e86 20%,
+      #0e2e86 26%,
+      #2a55b6 26%,
+      #2a55b6 30%,
+      #7fa6ea 30%,
+      #7fa6ea 32%,
+      #1b44a6 32%,
+      #1b44a6 38%,
+      #0b2a7e 38%,
+      #0b2a7e 45%,
+      #3560bc 45%,
+      #3560bc 48%,
+      #1b44a6 48%,
+      #1b44a6 56%,
+      #5c86d6 56%,
+      #5c86d6 59%,
+      #12358f 59%,
+      #12358f 66%,
+      #2e5cbe 66%,
+      #2e5cbe 70%,
+      #0b2a7e 70%,
+      #0b2a7e 78%,
+      #3a67c4 78%,
+      #3a67c4 82%,
+      #1b44a6 82%,
+      #1b44a6 90%,
+      #0e2e86 90%,
+      #0e2e86 100%
     );
-  filter: blur(22px) saturate(112%);
-  transform: scale(1.14);
+  filter: saturate(104%);
+  transform: scale(1.02);
   transform-origin: center;
 }
 
