@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
+import { PageHeader } from "@/components/ui/PageHeader";
 
 const FAQS = [
   {
@@ -23,52 +24,60 @@ const FAQS = [
 ];
 
 const RELEASES = [
-  { version: "v1.2.0", date: "July 2026", desc: "Integrated Upstash IP rate limiting, custom Modal Escape-to-close features, React Error Boundaries for individual report cards, and a gorgeous true-black V7 Labs typography system." },
+  { version: "v1.2.0", date: "July 2026", desc: "Integrated Upstash IP rate limiting, custom Modal Escape-to-close features, React Error Boundaries for individual report cards, and a refined light-theme typography system." },
   { version: "v1.1.0", date: "June 2026", desc: "Wired up Supabase real-time watchlists, portfolio trackers, and added support for cryptocurrency tokens (BTC, ETH, SOL)." },
   { version: "v1.0.0", date: "May 2026", desc: "Official launch of OnDecide with core Finnhub stock feeds and Gemini AI report synthesis pipelines." },
+];
+
+const GUIDE_STEPS = [
+  { label: "Step 01 / Search", text: "Type any ticker symbol (e.g. `AAPL`, `BTC`, or `US 10 Year`) into the global search bar on the homepage." },
+  { label: "Step 02 / Track", text: "Save tickers to your Watchlist to monitor news sentiment shifts, or log transaction prices to your Portfolio." },
+  { label: "Step 03 / Analyze", text: "Read the modular financial reports covering Technical breakouts, SEC balances, and Insider sentiments." },
 ];
 
 export default function ResourcesPage() {
   const [activeTab, setActiveTab] = useState<"faq" | "updates" | "guide">("faq");
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-16">
-      {/* Page Header */}
-      <div className="mb-12 border-b border-zinc-800 pb-8">
-        <h1 className="text-5xl font-serif text-white mb-4">Resources & Support</h1>
-        <p className="text-zinc-400 text-lg max-w-2xl">
-          Get help using the platform, explore our changelog releases, or read our quantitative research methodology.
-        </p>
-      </div>
+    <div className="shell max-w-5xl py-16 lg:py-20">
+      <PageHeader
+        eyebrow="Resources"
+        title="Resources & Support"
+        description="Get help using the platform, explore our changelog releases, or read our quantitative research methodology."
+      />
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-zinc-800 pb-4 mb-12 overflow-x-auto">
+      <div className="mb-12 flex gap-2 overflow-x-auto border-b border-line pb-4">
         {(["faq", "updates", "guide"] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 rounded text-sm capitalize transition-colors whitespace-nowrap ${
+            className={`whitespace-nowrap rounded-full px-4 py-2 text-sm transition-colors ${
               activeTab === tab
-                ? "bg-zinc-900 text-white border border-zinc-800"
-                : "text-zinc-400 hover:text-zinc-200"
+                ? "bg-ink text-white"
+                : "text-ink-500 hover:bg-surface-subtle hover:text-ink"
             }`}
           >
-            {tab === "faq" ? "Frequently Asked Questions" : tab === "updates" ? "Changelog & Updates" : "Platform Guide"}
+            {tab === "faq"
+              ? "Frequently Asked Questions"
+              : tab === "updates"
+                ? "Changelog & Updates"
+                : "Platform Guide"}
           </button>
         ))}
       </div>
 
       {/* Tab Panels */}
       {activeTab === "faq" && (
-        <div className="space-y-6 max-w-3xl animate-fade-in">
-          <h2 className="text-3xl font-serif text-white mb-6">Frequently Asked Questions</h2>
+        <div className="max-w-3xl animate-fade-in space-y-6">
+          <h2 className="mb-6 text-3xl font-medium text-ink">Frequently Asked Questions</h2>
           <Accordion type="single" collapsible className="w-full">
             {FAQS.map((faq, idx) => (
-              <AccordionItem key={idx} value={`faq-${idx}`} className="border-zinc-850">
-                <AccordionTrigger className="text-sm font-medium text-white hover:no-underline py-4">
+              <AccordionItem key={idx} value={`faq-${idx}`}>
+                <AccordionTrigger className="py-4 text-sm font-medium text-ink hover:no-underline">
                   {faq.q}
                 </AccordionTrigger>
-                <AccordionContent className="text-zinc-400 text-xs leading-relaxed pb-4">
+                <AccordionContent className="pb-4 text-xs leading-relaxed text-ink-500">
                   {faq.a}
                 </AccordionContent>
               </AccordionItem>
@@ -78,20 +87,17 @@ export default function ResourcesPage() {
       )}
 
       {activeTab === "updates" && (
-        <div className="space-y-8 max-w-3xl animate-fade-in">
-          <h2 className="text-3xl font-serif text-white mb-6">Product Updates</h2>
+        <div className="max-w-3xl animate-fade-in space-y-8">
+          <h2 className="mb-6 text-3xl font-medium text-ink">Product Updates</h2>
           <div className="space-y-6">
             {RELEASES.map((rel) => (
-              <div key={rel.version} className="border-l border-zinc-800 pl-6 space-y-2 relative">
-                {/* Visual bullet marker */}
-                <div className="absolute w-2 h-2 rounded-full bg-white -left-[4.5px] top-1.5" />
+              <div key={rel.version} className="relative space-y-2 border-l border-line pl-6">
+                <div className="absolute -left-[4.5px] top-1.5 h-2 w-2 rounded-full bg-brand-600" />
                 <div className="flex items-center gap-3">
-                  <span className="text-sm font-sans font-semibold text-white">{rel.version}</span>
-                  <span className="text-2xs text-zinc-500 font-sans">{rel.date}</span>
+                  <span className="text-sm font-medium text-ink">{rel.version}</span>
+                  <span className="text-2xs text-ink-400">{rel.date}</span>
                 </div>
-                <p className="text-zinc-400 text-xs leading-relaxed">
-                  {rel.desc}
-                </p>
+                <p className="text-xs leading-relaxed text-ink-500">{rel.desc}</p>
               </div>
             ))}
           </div>
@@ -99,27 +105,15 @@ export default function ResourcesPage() {
       )}
 
       {activeTab === "guide" && (
-        <div className="space-y-8 animate-fade-in">
-          <h2 className="text-3xl font-serif text-white mb-4">Quick Start Guide</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="border border-zinc-800 bg-zinc-950 p-6 rounded space-y-4">
-              <span className="text-xs text-zinc-500 font-sans tracking-wide uppercase">Step 01 / Search</span>
-              <p className="text-zinc-400 text-xs leading-relaxed">
-                Type any ticker symbol (e.g. `AAPL`, `BTC`, or `US 10 Year`) into the global search bar on the homepage.
-              </p>
-            </div>
-            <div className="border border-zinc-800 bg-zinc-950 p-6 rounded space-y-4">
-              <span className="text-xs text-zinc-500 font-sans tracking-wide uppercase">Step 02 / Track</span>
-              <p className="text-zinc-400 text-xs leading-relaxed">
-                Save tickers to your Watchlist to monitor news sentiment shifts, or log transaction prices to your Portfolio.
-              </p>
-            </div>
-            <div className="border border-zinc-800 bg-zinc-950 p-6 rounded space-y-4">
-              <span className="text-xs text-zinc-500 font-sans tracking-wide uppercase">Step 03 / Analyze</span>
-              <p className="text-zinc-400 text-xs leading-relaxed">
-                Read the modular financial reports covering Technical breakouts, SEC balances, and Insider sentiments.
-              </p>
-            </div>
+        <div className="animate-fade-in space-y-8">
+          <h2 className="mb-4 text-3xl font-medium text-ink">Quick Start Guide</h2>
+          <div className="grid gap-6 md:grid-cols-3">
+            {GUIDE_STEPS.map((s) => (
+              <div key={s.label} className="card-surface space-y-4 p-6">
+                <span className="text-xs uppercase tracking-wide text-brand-700">{s.label}</span>
+                <p className="text-xs leading-relaxed text-ink-500">{s.text}</p>
+              </div>
+            ))}
           </div>
         </div>
       )}

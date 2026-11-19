@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { PageHeader } from "@/components/ui/PageHeader";
 
 const GLOSSARY_ITEMS = [
   {
@@ -45,43 +46,46 @@ export default function GlossaryPage() {
   const [search, setSearch] = useState("");
   const [filterCategory, setFilterCategory] = useState("all");
 
-  const categories = ["all", ...Array.from(new Set(GLOSSARY_ITEMS.map((item) => item.category.toLowerCase())))];
+  const categories = [
+    "all",
+    ...Array.from(new Set(GLOSSARY_ITEMS.map((item) => item.category.toLowerCase()))),
+  ];
 
   const filteredItems = GLOSSARY_ITEMS.filter((item) => {
-    const matchesSearch = item.term.toLowerCase().includes(search.toLowerCase()) || 
-                          item.definition.toLowerCase().includes(search.toLowerCase());
-    const matchesCategory = filterCategory === "all" || item.category.toLowerCase() === filterCategory;
+    const matchesSearch =
+      item.term.toLowerCase().includes(search.toLowerCase()) ||
+      item.definition.toLowerCase().includes(search.toLowerCase());
+    const matchesCategory =
+      filterCategory === "all" || item.category.toLowerCase() === filterCategory;
     return matchesSearch && matchesCategory;
   });
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-16">
-      {/* Page Header */}
-      <div className="mb-12 border-b border-zinc-800 pb-8">
-        <h1 className="text-5xl font-serif text-white mb-4">Financial Glossary</h1>
-        <p className="text-zinc-400 text-lg max-w-2xl">
-          Understand the exact quantitative ratios, valuation scores, and technical signals parsed inside OnDecide&apos;s AI Research reports.
-        </p>
-      </div>
+    <div className="shell max-w-5xl py-16 lg:py-20">
+      <PageHeader
+        eyebrow="Resources"
+        title="Financial Glossary"
+        description="Understand the exact quantitative ratios, valuation scores, and technical signals parsed inside OnDecide's AI Research reports."
+      />
 
       {/* Filters & Search */}
-      <div className="flex flex-col md:flex-row gap-4 mb-8">
+      <div className="mb-8 flex flex-col gap-4 md:flex-row">
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search glossary terms or definitions..."
-          className="flex-1 bg-zinc-950 border border-zinc-800 rounded px-4 py-2.5 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-700 font-sans"
+          className="flex-1 rounded-xl border border-line bg-surface px-4 py-2.5 text-sm text-ink placeholder:text-ink-400 focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
         />
-        <div className="flex gap-1 overflow-x-auto min-w-max">
+        <div className="flex min-w-max gap-1 overflow-x-auto">
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setFilterCategory(cat)}
-              className={`px-3 py-1.5 rounded text-xs capitalize transition-colors ${
+              className={`rounded-full px-3 py-1.5 text-xs capitalize transition-colors ${
                 filterCategory === cat
-                  ? "bg-zinc-900 text-white border border-zinc-800"
-                  : "text-zinc-500 hover:text-zinc-300"
+                  ? "bg-ink text-white"
+                  : "text-ink-500 hover:bg-surface-subtle hover:text-ink"
               }`}
             >
               {cat}
@@ -92,25 +96,25 @@ export default function GlossaryPage() {
 
       {/* Grid of Terms */}
       {filteredItems.length === 0 ? (
-        <div className="border border-zinc-800/60 bg-zinc-950/40 p-12 text-center rounded">
-          <p className="text-zinc-500 text-sm">No glossary terms found matching your filters.</p>
+        <div className="card-surface p-12 text-center">
+          <p className="text-sm text-ink-500">No glossary terms found matching your filters.</p>
         </div>
       ) : (
-        <div className="grid md:grid-cols-2 gap-6 animate-fade-in">
+        <div className="grid animate-fade-in gap-6 md:grid-cols-2">
           {filteredItems.map((item) => (
-            <div key={item.term} className="border border-zinc-800 bg-zinc-950/40 rounded p-6 space-y-4 flex flex-col justify-between">
+            <div key={item.term} className="card-surface flex flex-col justify-between space-y-4 p-6">
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-serif text-white">{item.term}</h2>
-                  <span className="text-2xs text-zinc-500 bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded font-sans tracking-wide uppercase">
+                  <h2 className="text-xl font-medium text-ink">{item.term}</h2>
+                  <span className="rounded-full border border-line bg-surface-subtle px-2 py-0.5 text-2xs uppercase tracking-wide text-ink-500">
                     {item.category}
                   </span>
                 </div>
-                <p className="text-zinc-400 text-xs leading-relaxed">{item.definition}</p>
+                <p className="text-xs leading-relaxed text-ink-500">{item.definition}</p>
               </div>
-              <div className="pt-4 border-t border-zinc-900 space-y-1">
-                <span className="text-2xs text-zinc-600 font-sans tracking-wider uppercase block">Formula</span>
-                <code className="text-2xs text-zinc-400 font-sans break-all block bg-zinc-950 p-2 border border-zinc-900 rounded">
+              <div className="space-y-1 border-t border-line pt-4">
+                <span className="block text-2xs uppercase tracking-wider text-ink-400">Formula</span>
+                <code className="block break-all rounded-lg border border-line bg-surface-subtle p-2 font-mono text-2xs text-ink-600">
                   {item.formula}
                 </code>
               </div>

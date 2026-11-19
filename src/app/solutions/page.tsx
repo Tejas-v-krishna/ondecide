@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { GlobeIcon, BarChart, ShieldAlert, Award } from "lucide-react";
 
 const AUDIENCES = [
@@ -55,89 +56,90 @@ const AUDIENCES = [
   },
 ];
 
+const USE_CASES = [
+  {
+    title: "Equity Screening",
+    desc: "Scan across standard US stocks, indices, and crypto markets to discover undervalued assets with solid technical metrics.",
+  },
+  {
+    title: "Portfolio Modeling",
+    desc: "Track holdings average buy prices and total invested capital dynamically with custom-tailored financial dashboards.",
+  },
+  {
+    title: "Macro Analysis",
+    desc: "Measure portfolio exposure against major central bank assets, interest rates, and global treasury yields.",
+  },
+];
+
 export default function SolutionsPage() {
   const [activeAudience, setActiveAudience] = useState(AUDIENCES[0]);
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-16">
-      {/* Page Header */}
-      <div className="mb-12 border-b border-zinc-800 pb-8">
-        <h1 className="text-5xl font-serif text-white mb-4">Investment Solutions</h1>
-        <p className="text-zinc-400 text-lg max-w-2xl">
-          OnDecide scales to meet the demands of any investor, from active retail day traders to quantitative capital allocators.
-        </p>
-      </div>
+    <div className="shell max-w-5xl py-16 lg:py-20">
+      <PageHeader
+        eyebrow="Solutions"
+        title="Investment Solutions"
+        description="OnDecide scales to meet the demands of any investor, from active retail day traders to quantitative capital allocators."
+      />
 
       {/* Selector Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-12">
+      <div className="mb-12 grid grid-cols-2 gap-3 md:grid-cols-4">
         {AUDIENCES.map((aud) => (
           <button
             key={aud.id}
             onClick={() => setActiveAudience(aud)}
-            className={`p-4 rounded border text-left transition-all ${
+            className={`rounded-xl border p-4 text-left transition-all ${
               activeAudience.id === aud.id
-                ? "bg-zinc-900 border-zinc-700 text-white"
-                : "bg-zinc-950/40 border-zinc-800/60 text-zinc-400 hover:border-zinc-800 hover:text-zinc-200"
+                ? "border-brand-200 bg-brand-50 text-ink"
+                : "border-line bg-surface text-ink-500 hover:border-line-strong hover:text-ink"
             }`}
           >
-            <span className="text-xs font-sans tracking-wide block mb-1">For</span>
-            <span className="text-sm font-serif font-medium">{aud.name}</span>
+            <span className="mb-1 block text-xs tracking-wide">For</span>
+            <span className="text-sm font-medium">{aud.name}</span>
           </button>
         ))}
       </div>
 
       {/* Active Tab Panel */}
-      <div className="border border-zinc-800 bg-zinc-950 rounded-lg p-8 grid md:grid-cols-[1.5fr_1fr] gap-8 items-center mb-16 animate-fade-in">
+      <div className="card-surface mb-16 grid animate-fade-in items-center gap-8 p-8 md:grid-cols-[1.5fr_1fr]">
         <div className="space-y-6">
           <div className="space-y-2">
-            <span className="text-xs text-zinc-500 font-sans tracking-wider uppercase block">Audience Focus</span>
-            <h2 className="text-3xl font-serif text-white">{activeAudience.title}</h2>
+            <span className="block text-xs uppercase tracking-wider text-ink-400">Audience Focus</span>
+            <h2 className="text-3xl font-medium text-ink">{activeAudience.title}</h2>
           </div>
-          <p className="text-zinc-400 text-sm leading-relaxed">{activeAudience.desc}</p>
-          
+          <p className="text-sm leading-relaxed text-ink-500">{activeAudience.desc}</p>
+
           <ul className="space-y-3">
             {activeAudience.features.map((feat, idx) => (
-              <li key={idx} className="flex gap-3 text-xs text-zinc-300">
-                <span className="text-zinc-600 font-sans">0{idx + 1}</span>
+              <li key={idx} className="flex gap-3 text-xs text-ink-600">
+                <span className="text-brand-600">0{idx + 1}</span>
                 <span>{feat}</span>
               </li>
             ))}
           </ul>
         </div>
-        <div className="border border-zinc-800 bg-black rounded p-8 flex flex-col justify-center items-center text-center space-y-4 min-h-[220px]">
-          <activeAudience.icon className="w-10 h-10 text-white stroke-1" />
-          <h3 className="text-lg font-serif text-white">{activeAudience.name} Suite</h3>
-          <p className="text-xs text-zinc-500 max-w-[180px]">
+        <div className="flex min-h-[220px] flex-col items-center justify-center space-y-4 rounded-2xl border border-line bg-surface-subtle p-8 text-center">
+          <activeAudience.icon className="h-10 w-10 text-brand-600" strokeWidth={1.5} />
+          <h3 className="text-lg font-medium text-ink">{activeAudience.name} Suite</h3>
+          <p className="max-w-[180px] text-xs text-ink-500">
             Ready to explore? Create an account to unlock advanced trackers.
           </p>
-          <Button variant="default" className="bg-zinc-100 hover:bg-white text-black text-xs font-medium py-1.5 px-4 h-auto rounded">
+          <Button size="sm" className="h-auto px-4 py-1.5 text-xs">
             Create Free Account
           </Button>
         </div>
       </div>
 
       {/* Use Cases Section */}
-      <div id="use-cases" className="border-t border-zinc-800 pt-16">
-        <h2 className="text-3xl font-serif text-white mb-8">Core Use Cases</h2>
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="border border-zinc-800/60 bg-zinc-950/40 p-6 rounded space-y-3">
-            <h3 className="text-lg font-serif text-white">Equity Screening</h3>
-            <p className="text-xs text-zinc-400 leading-relaxed">
-              Scan across standard US stocks, indices, and crypto markets to discover undervalued assets with solid technical metrics.
-            </p>
-          </div>
-          <div className="border border-zinc-800/60 bg-zinc-950/40 p-6 rounded space-y-3">
-            <h3 className="text-lg font-serif text-white">Portfolio Modeling</h3>
-            <p className="text-xs text-zinc-400 leading-relaxed">
-              Track holdings average buy prices and total invested capital dynamically with custom-tailored financial dashboards.
-            </p>
-          </div>
-          <div className="border border-zinc-800/60 bg-zinc-950/40 p-6 rounded space-y-3">
-            <h3 className="text-lg font-serif text-white">Macro Analysis</h3>
-            <p className="text-xs text-zinc-400 leading-relaxed">
-              Measure portfolio exposure against major central bank assets, interest rates, and global treasury yields.
-            </p>
-          </div>
+      <div id="use-cases" className="border-t border-line pt-16">
+        <h2 className="mb-8 text-3xl font-medium text-ink">Core Use Cases</h2>
+        <div className="grid gap-6 md:grid-cols-3">
+          {USE_CASES.map((uc) => (
+            <div key={uc.title} className="card-surface space-y-3 p-6">
+              <h3 className="text-lg font-medium text-ink">{uc.title}</h3>
+              <p className="text-xs leading-relaxed text-ink-500">{uc.desc}</p>
+            </div>
+          ))}
         </div>
       </div>
     </div>
