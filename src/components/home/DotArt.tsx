@@ -89,68 +89,118 @@ function ringField(cx: number, cy: number, rad: number, count: number, seed: num
 
 /* ── 1. Particle portrait ─────────────────────────────────── */
 
+/**
+ * Pixel-dithered head: grid-snapped squares with density driven by a seeded
+ * hash, a sparkline band across the eyes, and a faint globe behind.
+ */
 export function ParticleHead({ className = "" }: { className?: string }) {
-  const r = rng(7311);
-  const head: Dot[] = [];
-  for (let i = 0; i < 26000 && head.length < 1700; i++) {
-    const x = r() * 420;
-    const y = r() * 340;
-    const nx = (x - 210) / 68;
-    const ny = (y - 128) / 86;
-    const inHead = nx * nx + ny * ny < 1;
-    const inBrow = y > 176 && y < 232 && Math.abs(x - 210) < 74;
-    const sx = (x - 210) / 148;
-    const sy = (y - 262) / 88;
-    const inShoulder = y > 212 && sx * sx + sy * sy < 1;
-    if (!inHead && !inBrow && !inShoulder) continue;
-    const edge = 1 - Math.min(1, Math.abs(nx * nx + ny * ny - 0.74));
-    head.push([x, y, 0.45 + r() * 1.5, 0.32 + r() * 0.68 * (0.6 + edge * 0.6)]);
+  const r = rng(5317);
+  const cells: [number, number, number, number][] = []; // x, y, size, opacity
+  const STEP = 4;
+
+  const inside = (x: number, y: number) => {
+    const nx = (x - 280) / 96;
+    const ny = (y - 186) / 124;
+    const head = nx * nx + ny * ny < 1;
+    const jaw = y > 250 && y < 330 && Math.abs(x - 280) < 74 - (y - 250) * 0.35;
+    const neck = y >= 300 && y < 360 && Math.abs(x - 280) < 42;
+    const sx = (x - 280) / 200;
+    const sy = (y - 402) / 74;
+    const shoulders = y > 336 && sx * sx + sy * sy < 1;
+    return head || jaw || neck || shoulders;
+  };
+
+  for (let y = 62; y < 470; y += STEP) {
+    for (let x = 118; x < 448; x += STEP) {
+      if (!inside(x, y)) continue;
+      const n = r();
+      // face contour: brighter at the silhouette edge, sparser in the middle
+      const nx = (x - 280) / 96;
+      const ny = (y - 186) / 124;
+      const d = Math.min(1, Math.abs(Math.sqrt(nx * nx + ny * ny) - 0.82) * 2.4);
+      const shade = 0.35 + d * 0.65;
+      const keep = n < 0.42 + shade * 0.42;
+      if (!keep) continue;
+      const size = 1.8 + r() * 1.9;
+      cells.push([x - size / 2, y - size / 2, size, 0.14 + r() * 0.72 * shade]);
+    }
   }
 
-  // Rim pass — bright dots hugging the silhouette so the head reads clearly.
-  for (let i = 0; i < 340; i++) {
+  // Dissolving sparkle field around the head.
+  const sparkles: [number, number, number, number][] = [];
+  for (let i = 0; i < 620; i++) {
     const a = r() * Math.PI * 2;
-    head.push([
-      210 + Math.cos(a) * (66 + (r() - 0.5) * 5),
-      128 + Math.sin(a) * (84 + (r() - 0.5) * 5),
-      0.7 + r() * 1.4,
-      0.45 + r() * 0.55,
-    ]);
+    const rad = 96 + r() * 190;
+    const x = 280 + Math.cos(a) * rad * 1.25;
+    const y = 210 + Math.sin(a) * rad * 0.95;
+    if (x < 4 || x > 556 || y < 4 || y > 436) continue;
+    const size = 1 + r() * 3.2;
+    sparkles.push([x, y, size, 0.08 + r() * 0.5]);
   }
 
-  const glasses = [
-    ...lineField(166, 118, 246, 118, 26, 91, 1.2),
-    ...lineField(166, 148, 246, 148, 26, 92, 1.2),
-    ...lineField(166, 118, 166, 148, 12, 93, 1.2),
-    ...lineField(248, 118, 248, 148, 12, 94, 1.2),
-    ...lineField(186, 133, 228, 133, 14, 95, 1),
-  ];
+  // Sparkline band across the eyes.
+  const band = { x: 196, y: 198, w: 250, h: 40 };
+  const bars = Array.from({ length: 74 }).map((_, i) => {
+    const h = 3 + Math.abs(Math.sin(i * 0.7) * 14 + Math.sin(i * 0.23) * 9) + r() * 5;
+    return { x: band.x + 6 + i * 3.2, h, y: band.y + band.h / 2 - h / 2 };
+  });
 
   return (
-    <svg viewBox="0 0 420 340" className={className} fill="none" aria-hidden="true">
+    <svg viewBox="0 0 560 440" className={className} fill="none" aria-hidden="true">
       <defs>
-        <linearGradient id="ph-fade" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#fff" stopOpacity="0.95" />
-          <stop offset="100%" stopColor="#fff" stopOpacity="0.75" />
+        <linearGradient id="ph2-band" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.96" />
+          <stop offset="52%" stopColor="#EAF0FF" stopOpacity="0.92" />
+          <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.96" />
         </linearGradient>
-        <filter id="ph-blur" x="-10%" y="-40%" width="120%" height="180%">
-          <feGaussianBlur stdDeviation="7" />
+        <radialGradient id="ph2-glow" cx="50%" cy="45%" r="55%">
+          <stop offset="0%" stopColor="#7C99FF" stopOpacity="0.16" />
+          <stop offset="100%" stopColor="#7C99FF" stopOpacity="0" />
+        </radialGradient>
+        <filter id="ph2-soft" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="3" />
         </filter>
       </defs>
 
-      <Dots dots={head} color={INK} />
-      <Dots dots={glasses} color={INK} />
+      <rect x="0" y="0" width="560" height="440" fill="url(#ph2-glow)" />
 
-      {/* HUD framing around the face */}
-      <g stroke={LIGHT} strokeWidth="0.8" opacity="0.32">
-        <rect x="132" y="52" width="156" height="196" />
-        <path d="M132 84h10M132 216h10M278 84h10M278 216h10" />
-        <path d="M186 52v-8M234 52v-8M186 248v-8M234 248v-8" />
+      {/* faint globe + orbit guides */}
+      <g stroke={LIGHT} strokeWidth="0.7" opacity="0.35">
+        <circle cx="182" cy="152" r="52" />
+        <ellipse cx="182" cy="152" rx="52" ry="18" />
+        <ellipse cx="182" cy="152" rx="18" ry="52" />
+        <ellipse cx="300" cy="250" rx="228" ry="152" strokeDasharray="2 7" opacity="0.5" />
       </g>
-      <circle cx="210" cy="128" r="120" stroke={LIGHT} strokeWidth="0.6" opacity="0.16" />
 
-      {/* Soft scan band across the face */}
-      <rect x="0" y="152" width="420" height="52" fill="url(#ph-fade)" opacity="0.62" filter="url(#ph-blur)" />
+      <g fill={INK}>
+        {cells.map(([x, y, s, o], i) => (
+          <rect key={`c${i}`} x={x} y={y} width={s} height={s} opacity={o} />
+        ))}
+      </g>
+      <g fill={MID}>
+        {sparkles.map(([x, y, s, o], i) => (
+          <rect key={`s${i}`} x={x} y={y} width={s} height={s} opacity={o} />
+        ))}
+      </g>
+
+      {/* sparkline band */}
+      <g>
+        <rect
+          x={band.x}
+          y={band.y}
+          width={band.w}
+          height={band.h}
+          rx="2"
+          fill="url(#ph2-band)"
+          opacity="0.94"
+          filter="url(#ph2-soft)"
+        />
+        <g stroke="#2F6BD8" strokeWidth="1.4" strokeLinecap="round" opacity="0.55">
+          {bars.map((b, i) => (
+            <line key={i} x1={b.x} y1={b.y} x2={b.x} y2={b.y + b.h} />
+          ))}
+        </g>
+      </g>
     </svg>
   );
 }
