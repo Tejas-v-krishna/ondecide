@@ -3,9 +3,10 @@
 import React from "react";
 import Link from "next/link";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
-import { MenuIcon, XIcon, ArrowUpRight } from "lucide-react";
+import { Bell, MenuIcon, XIcon, ArrowUpRight } from "lucide-react";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { LogoLockup } from "@/components/ui/LogoMark";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -41,67 +42,63 @@ interface MegaMenuConfig {
   };
 }
 
-const PRODUCT_MENU: MegaMenuConfig = {
-  trigger: "Product",
+const RESEARCH_MENU: MegaMenuConfig = {
+  trigger: "Research",
   sections: [
     {
-      label: "Platform",
+      label: "By asset",
       items: [
-        { title: "Explore Assets", href: "/explore" },
-        { title: "Portfolio Tracker", href: "/portfolio" },
-        { title: "Watchlist Analyzer", href: "/watchlist" },
-        { title: "Live Market Data", href: "/explore" },
-        { title: "Glossary Hub", href: "/glossary" },
-        { title: "Agent Synthesizer", href: "/agents" },
+        { title: "US Equities", href: "/explore" },
+        { title: "International", href: "/explore" },
+        { title: "Crypto", href: "/explore" },
+        { title: "Watchlist", href: "/watchlist" },
       ],
     },
     {
-      label: "Skills",
+      label: "Method",
       items: [
-        { title: "Pull Financial Ratios", href: "/skills/financial-ratios" },
-        { title: "Read News Sentiment", href: "/skills/news-sentiment" },
-        { title: "Analyze Technical Signals", href: "/skills/technical-signals" },
-        { title: "Qualitative Synthesis", href: "/skills/qualitative-synthesis" },
-        { title: "Historical Pattern Search", href: "/skills/historical-patterns" },
-        { title: "Form Thesis", href: "/skills/form-thesis" },
+        { title: "Sample Report", href: "/research/AAPL" },
+        { title: "Research Methodology", href: "/resources/methodology" },
+        { title: "Financial Glossary", href: "/glossary" },
+        { title: "Trust Center", href: "/legal" },
       ],
     },
   ],
   graphic: {
     tag: "AI Agents",
-    title: "Introducing AI Investment Agents",
-    description: "How OnDecide synthesizes research-grade reports in under 60 seconds.",
+    title: "Seven agents, one report",
+    description: "How OnDecide synthesizes research-grade analysis in under 60 seconds.",
   },
 };
 
-const SOLUTIONS_MENU: MegaMenuConfig = {
-  trigger: "Solutions",
+const TOOLS_MENU: MegaMenuConfig = {
+  trigger: "Tools",
   sections: [
     {
-      label: "Audiences",
+      label: "Analyst skills",
       items: [
-        { title: "Retail Traders", href: "/solutions/retail-traders" },
-        { title: "Family Offices", href: "/solutions/family-offices" },
-        { title: "Wealth Advisors", href: "/solutions/wealth-advisors" },
-        { title: "Hedge Funds", href: "/solutions/hedge-funds" },
-        { title: "Quantitative Analysts", href: "/solutions/quant-analysts" },
+        { title: "Pull Financial Ratios", href: "/skills/financial-ratios" },
+        { title: "Read News Sentiment", href: "/skills/news-sentiment" },
+        { title: "Analyze Technical Signals", href: "/skills/technical-signals" },
+        { title: "Historical Patterns", href: "/skills/historical-patterns" },
+        { title: "Qualitative Synthesis", href: "/skills/qualitative-synthesis" },
+        { title: "Form Thesis", href: "/skills/form-thesis" },
       ],
     },
     {
-      label: "Use Cases",
+      label: "Workspace",
       items: [
-        { title: "Equity Screening", href: "/explore" },
-        { title: "Portfolio Modeling", href: "/portfolio" },
-        { title: "Technical Analysis", href: "/explore" },
-        { title: "Macro Indicators", href: "/explore" },
-        { title: "Due Diligence", href: "/solutions/due-diligence" },
+        { title: "Agent Synthesizer", href: "/agents" },
+        { title: "Portfolio Tracker", href: "/portfolio" },
+        { title: "Screener", href: "/explore" },
+        { title: "Saved Reports", href: "/watchlist" },
       ],
     },
   ],
   graphic: {
-    tag: "Thesis",
-    title: "Instant Thesis Generator",
-    description: "Build conviction on any trade using real-time agent chains.",
+    tag: "Workspace",
+    title: "Your research desk",
+    description: "Watchlists, portfolios and saved reports in one place.",
   },
 };
 
@@ -112,94 +109,62 @@ const RESOURCES_MENU: MegaMenuConfig = {
       label: "Learn",
       items: [
         { title: "Platform Guide", href: "/resources/platform-guide" },
-        { title: "Financial Glossary", href: "/glossary" },
-        { title: "Research Methodology", href: "/resources/methodology" },
+        { title: "Methodology", href: "/resources/methodology" },
         { title: "FAQ", href: "/resources/faq" },
-        { title: "Video Tutorials", href: "/resources/tutorials" },
+        { title: "Tutorials", href: "/resources/tutorials" },
       ],
     },
     {
-      label: "Updates & Security",
+      label: "Updates",
       items: [
         { title: "Changelog", href: "/resources/changelog" },
         { title: "API Partners", href: "/resources/partners" },
-        { title: "Trust Center", href: "/legal" },
-        { title: "Security Protocols", href: "/trust/privacy" },
-        { title: "Contact Support", href: "/company/contact" },
+        { title: "Security", href: "/trust/privacy" },
+        { title: "Contact", href: "/company/contact" },
       ],
     },
   ],
   graphic: {
     tag: "Knowledge Base",
-    title: "Financial Knowledge Hub",
+    title: "Financial knowledge hub",
     description: "Demystifying quantitative metrics and institutional-grade indicators.",
   },
 };
 
-const COMPANY_MENU: MegaMenuConfig = {
-  trigger: "Company",
-  sections: [
-    {
-      label: "Company",
-      items: [
-        { title: "About Us", href: "/about" },
-        { title: "Careers", href: "/company/careers" },
-        { title: "Press Kit", href: "/company/press" },
-        { title: "Meet the Team", href: "/company/team" },
-        { title: "Contact", href: "/company/contact" },
-      ],
-    },
-    {
-      label: "Trust",
-      items: [
-        { title: "Privacy Policy", href: "/trust/privacy" },
-        { title: "Terms of Service", href: "/trust/terms" },
-        { title: "Security Disclaimers", href: "/trust/disclaimers" },
-        { title: "Data Partners", href: "/trust/data-partners" },
-      ],
-    },
-  ],
-  graphic: {
-    tag: "Design",
-    title: "The OnDecide Design System",
-    description: "Read more about our minimal, high-aesthetic design philosophy.",
-  },
-};
+const LINK_ITEMS: MenuItem[] = [
+  { title: "Watchlist", href: "/watchlist" },
+  { title: "Market Data", href: "/explore" },
+  { title: "Agents", href: "/agents" },
+];
 
 export function Navbar() {
   return (
-    <header className="sticky top-0 z-[100] w-full border-b border-line bg-paper/80 backdrop-blur-xl">
-      <nav className="shell flex h-16 items-center justify-between gap-6">
-        {/* Left: Logo + Navigation */}
-        <div className="flex items-center gap-6">
-          <Link href="/" className="group flex flex-shrink-0 items-center gap-2.5">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-ink text-white transition-transform group-hover:scale-105">
-              <span className="font-sans text-sm font-semibold">O</span>
-            </div>
-            <span className="font-sans text-[19px] font-medium tracking-tight text-ink">
-              OnDecide
-            </span>
+    <header className="sticky top-0 z-[100] w-full border-b border-line bg-white/90 backdrop-blur-xl">
+      <nav className="shell flex h-16 items-center gap-8">
+        <LogoLockup />
+
+        <DesktopMenu />
+
+        {/* Right: utility icons */}
+        <div className="ml-auto flex flex-shrink-0 items-center gap-1.5">
+          <Link
+            href="/#pricing"
+            className="hidden h-8 w-8 items-center justify-center rounded-full text-ink-500 transition-colors hover:bg-surface-subtle hover:text-ink sm:flex"
+            aria-label="Notifications"
+          >
+            <Bell className="h-4 w-4" />
           </Link>
 
-          <DesktopMenu />
-        </div>
-
-        {/* Right: Auth / Buttons */}
-        <div className="flex flex-shrink-0 items-center gap-2">
           <SignedIn>
             <UserButton afterSignOutUrl="/" />
           </SignedIn>
           <SignedOut>
             <Link
               href="/sign-in"
-              className="hidden px-3 py-1.5 text-sm text-ink-600 transition-colors hover:text-ink sm:block"
+              aria-label="Sign in"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-brand-200 to-accent text-[11px] font-semibold text-brand-800 ring-1 ring-inset ring-brand-300 transition-transform hover:scale-105"
             >
-              Log in
-            </Link>
-            <Link href="/sign-up" className="hidden sm:block">
-              <Button variant="default" size="sm" className="h-9">
-                Get started
-              </Button>
+              OD
             </Link>
           </SignedOut>
 
@@ -211,20 +176,32 @@ export function Navbar() {
 }
 
 function DesktopMenu() {
-  const menus = [PRODUCT_MENU, SOLUTIONS_MENU, RESOURCES_MENU, COMPANY_MENU];
+  const menus = [RESEARCH_MENU, TOOLS_MENU, RESOURCES_MENU];
 
   return (
     <NavigationMenu
-      viewportClassName="border border-line rounded-2xl bg-surface"
-      className="hidden lg:block"
+      viewportClassName="border border-line rounded-[4px] bg-white"
+      className="hidden lg:flex"
     >
-      <NavigationMenuList className="gap-1">
+      <NavigationMenuList className="gap-0.5">
         {menus.map((menu) => (
           <NavigationMenuItem key={menu.trigger}>
-            <NavigationMenuTrigger>{menu.trigger}</NavigationMenuTrigger>
+            <NavigationMenuTrigger className="rounded-[3px] px-3 py-1.5 text-[13px] font-normal text-ink-700 hover:bg-transparent hover:text-brand-700 data-[state=open]:bg-transparent data-[state=open]:text-brand-700">
+              {menu.trigger}
+            </NavigationMenuTrigger>
             <NavigationMenuContent>
               <MegaMenuContent menu={menu} />
             </NavigationMenuContent>
+          </NavigationMenuItem>
+        ))}
+        {LINK_ITEMS.map((item) => (
+          <NavigationMenuItem key={item.title}>
+            <Link
+              href={item.href}
+              className="inline-flex items-center rounded-[3px] px-3 py-1.5 text-[13px] text-ink-700 transition-colors hover:text-brand-700"
+            >
+              {item.title}
+            </Link>
           </NavigationMenuItem>
         ))}
       </NavigationMenuList>
@@ -234,14 +211,13 @@ function DesktopMenu() {
 
 function MegaMenuContent({ menu }: { menu: MegaMenuConfig }) {
   return (
-    <div className="grid w-[760px] grid-cols-[1fr_1fr_1.05fr] gap-2 rounded-2xl border border-line bg-surface p-5 shadow-xl">
-      {/* Left Columns */}
+    <div className="grid w-[720px] grid-cols-[1fr_1fr_1.05fr] gap-2 rounded-[4px] border border-line bg-white p-4 shadow-xl">
       {menu.sections.map((section, si) => (
         <div key={section.label} className="space-y-3">
-          <span className="block text-2xs font-medium uppercase tracking-wider text-ink-400">
+          <span className="block text-3xs font-semibold uppercase tracking-[0.14em] text-ink-400">
             {section.label}
           </span>
-          <ul className="space-y-1">
+          <ul className="space-y-0.5">
             {section.items.map((item, ii) => (
               <li
                 key={item.title}
@@ -249,7 +225,7 @@ function MegaMenuContent({ menu }: { menu: MegaMenuConfig }) {
                 className="animate-[popIn_.35s_cubic-bezier(.22,1,.36,1)_both]"
               >
                 <Link href={item.href} passHref legacyBehavior>
-                  <NavigationMenuLink className="w-full py-1.5 text-left text-sm text-ink-600 hover:text-ink">
+                  <NavigationMenuLink className="w-full rounded-[3px] px-2 py-1.5 text-left text-[13px] text-ink-700 hover:bg-brand-50 hover:text-brand-700">
                     {item.title}
                   </NavigationMenuLink>
                 </Link>
@@ -259,22 +235,19 @@ function MegaMenuContent({ menu }: { menu: MegaMenuConfig }) {
         </div>
       ))}
 
-      {/* Right Visual Card */}
-      <div className="relative flex min-h-[190px] flex-col justify-end overflow-hidden rounded-xl border border-line bg-gradient-to-br from-brand-50 to-surface-subtle p-4">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(11,143,96,0.10),transparent_60%)] pointer-events-none" />
-        <div className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full border border-line bg-surface text-ink-400">
+      <div className="relative flex min-h-[180px] flex-col justify-end overflow-hidden rounded-[3px] bg-brand-50 p-4">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(31,71,171,0.14),transparent_62%)]" />
+        <div className="absolute right-4 top-4 flex h-7 w-7 items-center justify-center rounded-full border border-brand-200 bg-white text-brand-600">
           <ArrowUpRight className="h-3.5 w-3.5" />
         </div>
         <div className="relative z-10 space-y-1">
           {menu.graphic.tag && (
-            <span className="block text-2xs font-medium uppercase tracking-wider text-brand-700">
+            <span className="block text-3xs font-semibold uppercase tracking-[0.14em] text-brand-600">
               {menu.graphic.tag}
             </span>
           )}
-          <h4 className="text-sm font-medium leading-tight text-ink">
-            {menu.graphic.title}
-          </h4>
-          <p className="line-clamp-2 text-xs leading-normal text-ink-500">
+          <h4 className="text-[13px] font-medium leading-tight text-ink">{menu.graphic.title}</h4>
+          <p className="line-clamp-2 text-[11.5px] leading-normal text-ink-500">
             {menu.graphic.description}
           </p>
         </div>
@@ -284,30 +257,19 @@ function MegaMenuContent({ menu }: { menu: MegaMenuConfig }) {
 }
 
 function MobileNav() {
-  const menus = [PRODUCT_MENU, SOLUTIONS_MENU, RESOURCES_MENU, COMPANY_MENU];
+  const menus = [RESEARCH_MENU, TOOLS_MENU, RESOURCES_MENU];
 
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button size="icon" variant="ghost" className="lg:hidden">
+        <Button size="icon" variant="ghost" className="rounded-[3px] lg:hidden">
           <MenuIcon className="size-5" />
           <span className="sr-only">Open menu</span>
         </Button>
       </SheetTrigger>
-      <SheetContent
-        side="right"
-        className="w-full max-w-sm gap-0 bg-surface"
-        showClose={false}
-      >
+      <SheetContent side="right" className="w-full max-w-sm gap-0 bg-white" showClose={false}>
         <div className="flex h-16 items-center justify-between border-b border-line px-6">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-ink text-white">
-              <span className="font-sans text-sm font-semibold">O</span>
-            </div>
-            <span className="font-sans text-[19px] font-medium tracking-tight text-ink">
-              OnDecide
-            </span>
-          </div>
+          <LogoLockup />
           <SheetClose asChild>
             <Button size="icon" variant="ghost">
               <XIcon className="size-5" />
@@ -320,13 +282,13 @@ function MobileNav() {
           <Accordion type="single" collapsible className="w-full">
             {menus.map((menu) => (
               <AccordionItem key={menu.trigger} value={menu.trigger} className="border-line">
-                <AccordionTrigger className="py-3 text-base text-ink hover:no-underline">
+                <AccordionTrigger className="py-3 text-[15px] text-ink hover:no-underline">
                   {menu.trigger}
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-2">
                   {menu.sections.map((section) => (
                     <div key={section.label} className="space-y-2">
-                      <span className="block text-2xs font-medium uppercase tracking-wider text-ink-400">
+                      <span className="block text-3xs font-semibold uppercase tracking-[0.14em] text-ink-400">
                         {section.label}
                       </span>
                       <ul className="grid gap-1">
@@ -335,7 +297,7 @@ function MobileNav() {
                             <SheetClose asChild>
                               <Link
                                 href={item.href}
-                                className="block py-1.5 text-sm text-ink-600 transition-colors hover:text-ink"
+                                className="block py-1.5 text-[13.5px] text-ink-600 transition-colors hover:text-brand-700"
                               >
                                 {item.title}
                               </Link>
@@ -350,22 +312,32 @@ function MobileNav() {
             ))}
           </Accordion>
 
+          <div className="space-y-1 border-t border-line pt-4">
+            {LINK_ITEMS.map((item) => (
+              <SheetClose asChild key={item.title}>
+                <Link
+                  href={item.href}
+                  className="block py-2 text-[15px] text-ink-700 transition-colors hover:text-brand-700"
+                >
+                  {item.title}
+                </Link>
+              </SheetClose>
+            ))}
+          </div>
+
           <div className="flex flex-col gap-3 border-t border-line pt-4">
             <SignedOut>
               <SheetClose asChild>
                 <Link
                   href="/sign-in"
-                  className="block py-2 text-sm text-ink-600 transition-colors hover:text-ink"
+                  className="block py-2 text-[13.5px] text-ink-600 transition-colors hover:text-ink"
                 >
                   Log in
                 </Link>
               </SheetClose>
               <SheetClose asChild>
-                <Link
-                  href="/sign-up"
-                  className="inline-flex w-full justify-center rounded-full bg-ink px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-ink-800"
-                >
-                  Get started
+                <Link href="/sign-up" className="btn-cobalt w-full">
+                  Start Researching Free
                 </Link>
               </SheetClose>
             </SignedOut>
