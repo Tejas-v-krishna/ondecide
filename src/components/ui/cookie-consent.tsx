@@ -86,20 +86,18 @@ function CookieConsent({
   const [mounted, setMounted] = React.useState(false);
   const [showBanner, setShowBanner] = React.useState(false);
   const [showCustomizeDialog, setShowCustomizeDialog] = React.useState(false);
-  
-  // Simple boolean array - index matches category index
-  const [preferences, setPreferences] = React.useState<boolean[]>(() => 
-    categories.map(cat => !!cat.isEssential)
+
+  const [preferences, setPreferences] = React.useState<boolean[]>(() =>
+    categories.map((cat) => !!cat.isEssential)
   );
 
-  // Check if consent was already given
   React.useEffect(() => {
     setMounted(true);
-    
+
     try {
       const consentGiven = localStorage.getItem(CONSENT_KEY) === "true";
       const storedPrefs = localStorage.getItem(STORAGE_KEY);
-      
+
       if (consentGiven && storedPrefs) {
         const parsedPrefs = JSON.parse(storedPrefs) as boolean[];
         if (Array.isArray(parsedPrefs) && parsedPrefs.length === categories.length) {
@@ -108,8 +106,7 @@ function CookieConsent({
           return;
         }
       }
-      
-      // No valid consent found, show banner
+
       setShowBanner(true);
     } catch (error) {
       console.error("Error reading cookie preferences:", error);
@@ -124,7 +121,7 @@ function CookieConsent({
     } catch (error) {
       console.error("Error saving cookie preferences:", error);
     }
-    
+
     setShowBanner(false);
     setShowCustomizeDialog(false);
     onAccept?.(prefs);
@@ -137,7 +134,7 @@ function CookieConsent({
   }, [categories, savePreferences]);
 
   const handleRejectAll = React.useCallback(() => {
-    const essentialOnly = categories.map(cat => !!cat.isEssential);
+    const essentialOnly = categories.map((cat) => !!cat.isEssential);
     setPreferences(essentialOnly);
     savePreferences(essentialOnly);
     onDecline?.();
@@ -148,9 +145,9 @@ function CookieConsent({
   }, [preferences, savePreferences]);
 
   const handleToggle = React.useCallback((index: number, checked: boolean) => {
-    if (categories[index]?.isEssential) return; // Can't toggle essential cookies
-    
-    setPreferences(prev => {
+    if (categories[index]?.isEssential) return;
+
+    setPreferences((prev) => {
       const newPrefs = [...prev];
       newPrefs[index] = checked;
       return newPrefs;
@@ -168,7 +165,7 @@ function CookieConsent({
         cookiePolicyUrl={cookiePolicyUrl}
         className={className}
       />
-      
+
       <CookieCustomizeDialog
         open={showCustomizeDialog}
         onOpenChange={setShowCustomizeDialog}
@@ -208,41 +205,41 @@ function CookieBanner({
           initial={{ opacity: 0, y: 100 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 100 }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           className={cn(
-            "fixed bottom-0 left-0 right-0 sm:left-4 sm:bottom-4 z-50 w-full sm:max-w-md",
+            "fixed bottom-0 left-0 right-0 z-50 w-full sm:bottom-4 sm:left-4 sm:max-w-md",
             className
           )}
         >
-          <div className="m-3 bg-zinc-950/95 border border-zinc-800 rounded-xl shadow-2xl overflow-hidden font-sans">
+          <div className="m-3 overflow-hidden rounded-2xl border border-line bg-surface font-sans shadow-xl">
             <div className="flex items-center gap-3 p-6 pb-4">
-              <div className="bg-zinc-900 border border-zinc-800 p-2 rounded-lg">
-                <CookieIcon className="h-5 w-5 text-white" />
+              <div className="rounded-lg border border-line bg-surface-subtle p-2">
+                <CookieIcon className="h-5 w-5 text-ink" />
               </div>
-              <h2 className="text-lg font-serif font-semibold text-white">Cookie Preferences</h2>
+              <h2 className="text-lg font-medium text-ink">Cookie Preferences</h2>
             </div>
             <div className="px-6 pb-6">
-              <p className="text-sm text-zinc-400 leading-relaxed mb-4">
+              <p className="mb-4 text-sm leading-relaxed text-ink-500">
                 We use cookies to enhance your experience, personalize content, and analyze traffic.
               </p>
               <Link
                 href={cookiePolicyUrl}
-                className="text-xs inline-flex items-center text-zinc-400 hover:text-white transition-colors group font-medium"
+                className="group inline-flex items-center text-xs font-medium text-ink-500 transition-colors hover:text-ink"
               >
                 Cookie Policy
-                <ChevronRight className="h-3 w-3 ml-1 transition-transform group-hover:translate-x-0.5" />
+                <ChevronRight className="ml-1 h-3 w-3 transition-transform group-hover:translate-x-0.5" />
               </Link>
             </div>
-            <div className="p-4 flex flex-col sm:flex-row gap-3 border-t border-zinc-800/80 bg-zinc-900/10">
+            <div className="flex flex-col gap-3 border-t border-line bg-surface-subtle/50 p-4 sm:flex-row">
               <button
                 onClick={onAcceptAll}
-                className="w-full sm:flex-1 h-9 rounded-lg text-sm font-medium bg-white text-black hover:bg-zinc-200 transition-colors cursor-pointer"
+                className="h-9 w-full cursor-pointer rounded-full bg-ink text-sm font-medium text-white transition-colors hover:bg-ink-800 sm:flex-1"
               >
                 Accept All
               </button>
               <button
                 onClick={onCustomize}
-                className="w-full sm:flex-1 h-9 rounded-lg text-sm font-medium border border-zinc-800 bg-black hover:bg-zinc-900 text-zinc-300 hover:text-white transition-colors cursor-pointer"
+                className="h-9 w-full cursor-pointer rounded-full border border-line bg-surface text-sm font-medium text-ink-600 transition-colors hover:bg-surface-subtle hover:text-ink sm:flex-1"
               >
                 Customize
               </button>
@@ -275,14 +272,14 @@ function CookieCustomizeDialog({
 }: CookieCustomizeDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-zinc-950/95 border border-zinc-800 z-[200] sm:max-w-[500px] p-0 gap-0 shadow-2xl font-sans text-white">
-        <DialogHeader className="p-6 pb-4 border-b border-zinc-800/80">
-          <DialogTitle className="text-xl font-serif font-semibold text-white">Manage Cookies</DialogTitle>
-          <DialogDescription className="text-zinc-400 text-sm mt-1">
+      <DialogContent className="z-[200] gap-0 p-0 sm:max-w-[500px]">
+        <DialogHeader className="border-b border-line p-6 pb-4">
+          <DialogTitle className="text-xl font-medium text-ink">Manage Cookies</DialogTitle>
+          <DialogDescription className="mt-1 text-sm text-ink-500">
             Customize your cookie preferences below.
           </DialogDescription>
         </DialogHeader>
-        <div className="px-6 py-6 space-y-4 max-h-[calc(100vh-250px)] overflow-y-auto bg-zinc-950">
+        <div className="max-h-[calc(100vh-250px)] space-y-4 overflow-y-auto px-6 py-6">
           {categories.map((category, index) => (
             <motion.div
               key={category.id}
@@ -290,34 +287,38 @@ function CookieCustomizeDialog({
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.2, delay: index * 0.05 }}
               className={cn(
-                "p-4 border rounded-xl transition-all duration-200",
-                preferences[index] 
-                  ? "border-zinc-700 bg-zinc-900/30 shadow-sm" 
-                  : "border-zinc-800 bg-black hover:border-zinc-700"
+                "rounded-xl border p-4 transition-all duration-200",
+                preferences[index]
+                  ? "border-brand-200 bg-brand-50/50"
+                  : "border-line bg-surface hover:border-line-strong"
               )}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className={cn(
-                    "p-2 rounded-lg transition-colors border",
-                    preferences[index] ? "bg-zinc-900 border-zinc-800 text-white" : "bg-zinc-900/50 border-transparent text-zinc-500"
-                  )}>
+                  <div
+                    className={cn(
+                      "rounded-lg border p-2 transition-colors",
+                      preferences[index]
+                        ? "border-brand-200 bg-surface text-brand-700"
+                        : "border-transparent bg-surface-subtle text-ink-400"
+                    )}
+                  >
                     {category.icon || <CookieIcon className="h-4 w-4" />}
                   </div>
                   <Label
                     htmlFor={`cookie-${index}`}
-                    className="font-semibold text-base cursor-pointer text-white flex items-center"
+                    className="flex cursor-pointer items-center text-base font-medium text-ink"
                   >
                     {category.name}
                     {category.isEssential && (
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-semibold bg-zinc-800 border border-zinc-700 text-zinc-300">
+                            <span className="ml-2 inline-flex items-center rounded-full border border-line bg-surface-subtle px-2 py-0.5 text-2xs font-medium text-ink-500">
                               Required
                             </span>
                           </TooltipTrigger>
-                          <TooltipContent className="bg-zinc-900 border border-zinc-800 text-zinc-300">
+                          <TooltipContent>
                             <p className="text-xs">These cookies cannot be disabled.</p>
                           </TooltipContent>
                         </Tooltip>
@@ -332,23 +333,23 @@ function CookieCustomizeDialog({
                   disabled={category.isEssential}
                 />
               </div>
-              <p className="text-sm mt-3 text-zinc-400 leading-relaxed">
+              <p className="mt-3 text-sm leading-relaxed text-ink-500">
                 {category.description}
               </p>
             </motion.div>
           ))}
         </div>
-        <DialogFooter className="p-6 border-t border-zinc-800/80 bg-zinc-900/10">
-          <div className="flex w-full flex-col-reverse sm:flex-row sm:justify-end gap-3">
-            <button 
-              onClick={onRejectAll} 
-              className="w-full sm:w-[120px] h-9 rounded-lg text-sm font-medium border border-zinc-800 bg-black hover:bg-zinc-900 text-zinc-300 hover:text-white transition-colors cursor-pointer"
+        <DialogFooter className="border-t border-line bg-surface-subtle/50 p-6">
+          <div className="flex w-full flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <button
+              onClick={onRejectAll}
+              className="h-9 w-full cursor-pointer rounded-full border border-line bg-surface text-sm font-medium text-ink-600 transition-colors hover:bg-surface-subtle hover:text-ink sm:w-[120px]"
             >
               Reject All
             </button>
-            <button 
-              onClick={onSave} 
-              className="w-full sm:w-[140px] h-9 rounded-lg text-sm font-medium bg-white text-black hover:bg-zinc-200 transition-colors cursor-pointer"
+            <button
+              onClick={onSave}
+              className="h-9 w-full cursor-pointer rounded-full bg-ink text-sm font-medium text-white transition-colors hover:bg-ink-800 sm:w-[150px]"
             >
               Save Preferences
             </button>

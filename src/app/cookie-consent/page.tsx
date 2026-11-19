@@ -2,7 +2,7 @@ import DemoMain from "@/components/ui/demo";
 
 export default function CookieConsentPage() {
   return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center">
+    <div className="flex min-h-screen items-center justify-center bg-paper text-ink">
       <DemoMain />
     </div>
   );
