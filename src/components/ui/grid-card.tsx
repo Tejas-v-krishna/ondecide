@@ -10,7 +10,7 @@ export function GridCard({
 	return (
 		<div
 			className={cn(
-				'group bg-zinc-950 relative isolate z-0 flex h-full flex-col justify-between overflow-hidden rounded-sm border border-zinc-800 px-5 py-4 transition-colors duration-75',
+				'group relative isolate z-0 flex h-full flex-col justify-between overflow-hidden rounded-xl border border-line bg-surface px-5 py-4 transition-colors duration-150 hover:border-line-strong',
 				className,
 			)}
 			{...props}
@@ -23,15 +23,9 @@ export function GridCard({
 						x={0}
 						y={0}
 						squares={getRandomPattern(5)}
-						className="fill-zinc-800/50 stroke-zinc-900 absolute inset-0 size-full translate-y-2 transition-transform duration-150 ease-out group-hover:translate-y-0"
+						className="fill-brand-500/[0.06] stroke-line absolute inset-0 size-full translate-y-2 transition-transform duration-150 ease-out group-hover:translate-y-0"
 					/>
 				</div>
-				<div
-					className={cn(
-						'absolute -inset-[10%] opacity-0 blur-[50px] transition-opacity duration-150 group-hover:opacity-[0.03]',
-						'bg-[conic-gradient(#ffffff_0deg,#ffffff_117deg,#a1a1aa_180deg,#e4e4e7_240deg,#ffffff_360deg)]',
-					)}
-				/>
 			</div>
 			<div className="relative z-10 flex h-full flex-col justify-between">
 				{children}
@@ -43,7 +37,7 @@ export function GridCard({
 function getRandomPattern(length?: number): [x: number, y: number][] {
 	length = length ?? 5;
 	return Array.from({ length }, () => [
-		Math.floor(Math.random() * 4) + 7, // random x between 7 and 10
-		Math.floor(Math.random() * 6) + 1, // random y between 1 and 6
+		Math.floor(Math.random() * 4) + 7,
+		Math.floor(Math.random() * 6) + 1,
 	]);
 }

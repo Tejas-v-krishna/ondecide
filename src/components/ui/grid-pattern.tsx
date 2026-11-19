@@ -29,7 +29,7 @@ function GridPattern({
     <svg
       aria-hidden="true"
       className={cn(
-        "pointer-events-none absolute inset-0 h-full w-full fill-zinc-400/10 stroke-zinc-800",
+        "pointer-events-none absolute inset-0 h-full w-full fill-ink-900/[0.03] stroke-line",
         className,
       )}
       {...props}
