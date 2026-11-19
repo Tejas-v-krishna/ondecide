@@ -51,7 +51,7 @@ export function Footer() {
 
   return (
     <footer className="relative mt-24 overflow-hidden bg-paper">
-      <div className="mx-auto w-full max-w-[1320px] px-4 lg:px-8">
+      <div className="mx-auto w-full max-w-[1600px] px-4 lg:px-14">
         <div className="bg-white px-6 py-12 lg:px-14 lg:py-16">
           <div className="grid gap-14 lg:grid-cols-[1.1fr_2.4fr]">
             {/* Brand + newsletter */}
