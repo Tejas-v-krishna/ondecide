@@ -1,375 +1,544 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SearchBar } from "@/components/ui/SearchBar";
-import { Database, BrainCircuit, Activity, ArrowUpRight } from "lucide-react";
-import { BentoGrid } from "@/components/ui/BentoGrid";
-import { FadeIn, StaggerContainer, FadeInStaggerItem } from "@/components/ui/FadeIn";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import ProductDemo from "@/components/demo/ProductDemo";
+  ArrowRight,
+  ArrowUpRight,
+  Clock,
+  GitBranch,
+  Layers,
+  Search,
+  Users,
+  Zap,
+} from "lucide-react";
+
+import { HeroSearch } from "@/components/home/HeroSearch";
+import { CapabilityMarquee } from "@/components/home/CapabilityMarquee";
+import { Testimonials } from "@/components/home/Testimonials";
+import { StripeBand } from "@/components/home/StripeBand";
+import {
+  CompassArt,
+  ConstellationArt,
+  ContourArt,
+  CycleArt,
+  GlassStack,
+  HubArt,
+  OrbitalArt,
+  ParticleHead,
+  PrismArt,
+  RadialArt,
+} from "@/components/home/DotArt";
+import { LogoMark } from "@/components/ui/LogoMark";
 
 export const metadata: Metadata = {
-  title: "OnDecide — Understand any investment",
+  title: "OnDecide — From Ticker to Thesis in Seconds",
   description:
-    "OnDecide reads the news, the numbers, and the history — then explains what they mean, in plain English, before you decide.",
+    "Pull technical ratios, read market sentiment, analyze patterns, and form theses in one platform. Powered by AI agents that do the synthesis research you'd do by hand.",
 };
 
 // ─── Data ──────────────────────────────────────────────────
 
-const POPULAR = [
-  { ticker: "AAPL", name: "Apple" },
-  { ticker: "NVDA", name: "Nvidia" },
-  { ticker: "BTC", name: "Bitcoin" },
-  { ticker: "RELIANCE.NS", name: "Reliance" },
-  { ticker: "ETH", name: "Ethereum" },
+const PROBLEMS = [
+  {
+    n: "01",
+    icon: Layers,
+    title: "Fragmented Data",
+    body: "Bouncing between 5+ platforms for technical analysis, news, sentiment, and fundamentals.",
+  },
+  {
+    n: "02",
+    icon: Clock,
+    title: "Hours of Research",
+    body: "A single stock analysis takes 30+ minutes manually, and the verdict rarely justifies the time spent.",
+  },
+  {
+    n: "03",
+    icon: GitBranch,
+    title: "Conflicting Signals",
+    body: "Different analysis methods give contradictory signals, leaving no clear conviction to act on.",
+  },
+  {
+    n: "04",
+    icon: Users,
+    title: "Expensive Expertise",
+    body: "Institutional research costs $10K+ a month; retail investors can't afford research-grade analysis.",
+  },
+  {
+    n: "05",
+    icon: Search,
+    title: "Missed Connections",
+    body: "Hard to spot macro trends, sector correlations, and historical pattern repeats manually.",
+  },
+  {
+    n: "06",
+    icon: Zap,
+    title: "Slow to Act",
+    body: "By the time you've manually synthesized research, the opportunity has moved or vanished.",
+  },
 ];
 
-const ASSET_CLASSES = [
+const FEATURES = [
   {
-    icon: "📈",
-    name: "Stocks",
-    tag: "live",
-    desc: "Full financials, live price data, recent news synthesized into plain language, qualitative read on management and competitive position, and a reasoned Invest/Hold/Avoid call.",
-    example: "AAPL · TSLA · RELIANCE.NS",
+    tab: "Automated Pipeline",
+    n: "01",
+    title: "7 Parallel AI Agents",
+    body: "Prices, balance sheets, and news in seconds.",
+    art: ConstellationArt,
   },
   {
-    icon: "₿",
-    name: "Crypto",
-    tag: "live",
-    desc: "Same depth of research, adapted for on-chain and market metrics where traditional financials don't apply.",
-    example: "BTC · ETH · SOL",
+    tab: "No Jargon",
+    n: "02",
+    title: "Plain-Language Breakdown",
+    body: "Complex financial ratios, in clear insights.",
+    art: ContourArt,
   },
   {
-    icon: "🧭",
-    name: "Explore: ETFs, Mutual Funds, Bonds",
-    tag: "guided",
-    desc: "Not ready to research these directly yet — so instead of a broken half-feature, we'll teach you what they are and point you to the best free tools that already do this well.",
-    example: "Curated directory, updated regularly",
+    tab: "Cycle Analog",
+    n: "03",
+    title: "Historical Pattern Match",
+    body: "Current setups vs. past market cycles.",
+    art: CycleArt,
+  },
+  {
+    tab: "Decision Engine",
+    n: "04",
+    title: "Invest / Hold / Avoid",
+    body: "Clear ratings with confidence scores.",
+    art: RadialArt,
   },
 ];
 
 const STEPS = [
   {
-    icon: Database,
-    title: "1. Deep Ingestion",
-    desc: "We ingest 10+ years of SEC filings, earnings call transcripts, and live market data. No metric is left unchecked.",
+    title: "Search Any Asset",
+    body: "Type any US stock, international ticker, or crypto.",
+    side: "left" as const,
+    art: OrbitalArt,
   },
   {
-    icon: Activity,
-    title: "2. Context Synthesis",
-    desc: "Our agents read today's news and macro sentiment, giving qualitative context to the raw quantitative data.",
+    title: "AI Nodes Launch",
+    body: "Agents pull prices, filings, news, and market history.",
+    side: "right" as const,
+    art: HubArt,
   },
   {
-    icon: BrainCircuit,
-    title: "3. Thesis Generation",
-    desc: "We compare the current setup to historical patterns to generate a final Invest, Hold, or Avoid thesis.",
+    title: "Plain English Synthesis",
+    body: "Complex metrics translate into clear, readable insights.",
+    side: "left" as const,
+    art: PrismArt,
+  },
+  {
+    title: "Get Actionable Verdict",
+    body: "Receive an Invest / Hold / Avoid rating with a conviction score.",
+    side: "right" as const,
+    art: CompassArt,
   },
 ];
 
-const AGENTS = [
-  { name: "Company Resolution Agent", dot: "bg-brand-500" },
-  { name: "Financial Ingestion Agent", dot: "bg-blue-500" },
-  { name: "Real-Time News Agent", dot: "bg-violet-500" },
-  { name: "Qualitative Factors Agent", dot: "bg-amber-500" },
-  { name: "Pattern Matching Agent", dot: "bg-rose-400" },
-  { name: "Report Synthesis Agent", dot: "bg-cyan-500" },
-  { name: "Thesis Formulation Agent", dot: "bg-fuchsia-500" },
+const PLANS = [
+  {
+    name: "Basic",
+    tagline: "Essential AI research for individual investors.",
+    features: [
+      "5 AI Research Reports / month",
+      "Full US Stock coverage",
+      "Fundamental Scorecards & Key Metrics",
+      "News Sentiment Synthesis",
+      "Watchlist Tracking (up to 10 assets)",
+    ],
+    price: "$0",
+    priceNote: "Free forever. No card required.",
+    priceExtra: "Annual option — $15 / month (billed annually)",
+    cta: "Get Basic",
+    href: "/sign-up",
+    variant: "basic" as const,
+  },
+  {
+    name: "Pro",
+    tagline: "For analysts who want the full pipeline.",
+    features: [
+      "Unlimited AI Research Reports",
+      "US + International Equities + Crypto",
+      "7-Agent Parallel Analysis Pipeline",
+      "Historical Pattern & Cycle Matching",
+      "Export Publication-Ready PDF Reports",
+      "Portfolio Tracker & Price Action Alerts",
+    ],
+    price: "$49",
+    priceNote: "per month, billed monthly",
+    priceExtra: "Annual option — $39 / month · $468 / year",
+    save: "Save $120 / year",
+    cta: "Get Pro",
+    href: "/sign-up",
+    variant: "pro" as const,
+  },
 ];
 
-const FAQS = [
-  {
-    question: "Is this financial advice?",
-    answer:
-      "No, OnDecide provides independent, AI-driven investment research and analysis to help you make your own decisions. We synthesize public data, news, and history into plain language, but we are not financial advisors.",
-  },
-  {
-    question: "How fresh is the data?",
-    answer:
-      "We pull live pricing and real-time news the moment you request a report. Our agents synthesize the absolute latest information alongside 10+ years of historical SEC filings.",
-  },
-  {
-    question: "Can I use this for Day Trading?",
-    answer:
-      "OnDecide is built for fundamental investors, swing traders, and value seekers. While we process live data, our insights focus on macro trends, company health, and longer-term thesis building rather than minute-by-minute scalping.",
-  },
-  {
-    question: "Which markets do you cover?",
-    answer:
-      "We currently cover all major US equities (NYSE, NASDAQ), top Indian equities (NSE), and top cryptocurrencies by market cap.",
-  },
-];
-
-// ─── Main Component ────────────────────────────────────────
+// ─── Page ──────────────────────────────────────────────────
 
 export default function HomePage() {
   return (
     <div className="bg-paper text-ink">
-
-      {/* ── 1. HERO ──────────────────────────────────────────── */}
-      <section className="hero-wash relative overflow-hidden border-b border-line">
-        <div className="pointer-events-none absolute inset-0 grid-lines opacity-60 [mask-image:radial-gradient(70%_60%_at_50%_0%,#000,transparent)]" />
-
-        <StaggerContainer
-          className="shell relative z-10 flex min-h-[88vh] flex-col items-center justify-center py-24 text-center"
-          delayChildren={0.05}
-          staggerChildren={0.12}
-        >
-          {/* Badge */}
-          <FadeInStaggerItem direction="up">
-            <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-line bg-surface/80 px-3.5 py-1.5 text-xs font-medium uppercase tracking-wider text-ink-500 shadow-sm backdrop-blur">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-brand-500" />
-              AI research, not a screener
+      {/* ── 1. Hero ─────────────────────────────────────── */}
+      <section className="border-b border-line">
+        <div className="grid lg:grid-cols-[57.5%_42.5%]">
+          <div className="relative min-h-[280px] overflow-hidden bg-[#1b44a6] lg:min-h-[372px]">
+            <div className="pointer-events-none absolute inset-0 facet-panel" />
+            <div className="pointer-events-none absolute inset-0 facet-haze" />
+            <div className="relative flex h-full flex-col justify-center px-6 py-14 sm:px-10 lg:px-14">
+              <h1 className="text-[clamp(2.4rem,3.9vw,3.9rem)] font-normal leading-[1.04] tracking-[-0.03em] text-white">
+                From Ticker to Thesis
+                <br />
+                in Seconds
+              </h1>
             </div>
-          </FadeInStaggerItem>
-
-          {/* Headline */}
-          <FadeInStaggerItem direction="up">
-            <h1 className="text-display mx-auto max-w-4xl text-balance font-medium text-ink">
-              Understand any investment.
-              <br />
-              <span className="display-serif italic text-ink-400">Not just its score.</span>
-            </h1>
-          </FadeInStaggerItem>
-
-          {/* Sub-headline */}
-          <FadeInStaggerItem direction="up">
-            <p className="mx-auto mb-12 mt-6 max-w-2xl text-pretty text-lg leading-relaxed text-ink-500 sm:text-xl">
-              OnDecide reads the news, the numbers, and the history — then explains what they mean,
-              in plain English, before you decide.
-            </p>
-          </FadeInStaggerItem>
-
-          {/* Search */}
-          <FadeInStaggerItem direction="up" className="w-full">
-            <div className="mx-auto mb-8 flex max-w-2xl flex-col items-center justify-center gap-4">
-              <div className="relative z-20 w-full">
-                <SearchBar large />
-              </div>
-            </div>
-          </FadeInStaggerItem>
-
-          {/* Popular tickers */}
-          <FadeInStaggerItem direction="up">
-            <div className="flex flex-wrap items-center justify-center gap-2">
-              <span className="mr-1 text-xs text-ink-400">Try</span>
-              {POPULAR.map((p) => (
-                <Link
-                  key={p.ticker}
-                  href={`/research/${p.ticker}`}
-                  className="group inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-4 py-1.5 text-xs text-ink-600 shadow-sm transition-all hover:-translate-y-0.5 hover:border-line-strong hover:text-ink"
-                >
-                  <span className="font-medium">{p.ticker}</span>
-                  <span className="text-ink-400">{p.name}</span>
-                </Link>
-              ))}
-            </div>
-          </FadeInStaggerItem>
-        </StaggerContainer>
-      </section>
-
-      {/* ── 2. BENTO GRID ──────────────── */}
-      <section className="border-b border-line bg-paper py-20 lg:py-28">
-        <div className="shell relative z-10">
-          <div className="mb-14 text-center">
-            <FadeIn direction="up">
-              <span className="mb-4 inline-block text-2xs font-medium uppercase tracking-widest text-brand-700">
-                The pipeline
-              </span>
-              <h2 className="text-display-sm mx-auto max-w-2xl font-medium text-ink">
-                Seven agents. One coherent report.
-              </h2>
-              <p className="mx-auto mt-4 max-w-xl text-base text-ink-500 sm:text-lg">
-                Most tools give you a number. OnDecide shows its reasoning — because a decision you
-                don&apos;t understand isn&apos;t really your decision.
-              </p>
-            </FadeIn>
           </div>
 
-          <BentoGrid />
-        </div>
-      </section>
-
-      {/* ── 3. ASSET CLASS GRID ───────────────────────────────── */}
-      <section className="border-b border-line bg-surface py-20 lg:py-28">
-        <div className="shell">
-          <FadeIn direction="up" className="mb-16 text-center">
-            <h2 className="text-display-sm mx-auto max-w-3xl font-medium text-balance text-ink">
-              Two asset classes, done properly.
-              <br className="hidden sm:block" /> Everything else, pointed in the right direction.
-            </h2>
-            <p className="mx-auto mt-4 max-w-xl text-lg text-ink-500">
-              We&apos;d rather give you a real analyst&apos;s depth on stocks and crypto than a
-              shallow score on everything.
+          <div className="flex flex-col justify-center bg-[#F7F7F9] px-6 py-12 sm:px-10 lg:px-14">
+            <p className="max-w-[30rem] text-[15.5px] leading-[1.55] text-ink-500">
+              Pull technical ratios, read market sentiment, analyze patterns, and form theses, all in
+              one platform. Powered by AI agents that synthesize research so you don&apos;t have to.
             </p>
-          </FadeIn>
-
-          <StaggerContainer className="grid grid-cols-1 gap-6 md:grid-cols-3" staggerChildren={0.12}>
-            {ASSET_CLASSES.map((asset) => (
-              <FadeInStaggerItem
-                key={asset.name}
-                className="group relative flex flex-col rounded-2xl border border-line bg-paper p-8 transition-colors hover:border-line-strong"
+            <div className="mt-8 flex flex-wrap items-center gap-5">
+              <Link href="/sign-up" className="btn-cobalt">
+                Start Researching
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+              <Link
+                href="/demo"
+                className="text-[13.5px] text-ink-700 underline-offset-4 transition-colors hover:text-brand-700 hover:underline"
               >
-                <div className="absolute right-6 top-6 rounded-full border border-line bg-surface px-2.5 py-0.5 text-2xs font-medium uppercase tracking-widest text-ink-400">
-                  {asset.tag}
-                </div>
-                <div className="mb-6 text-2xl opacity-70 transition-opacity group-hover:opacity-100">
-                  {asset.icon}
-                </div>
-                <h3 className="mb-3 text-xl font-medium text-ink">{asset.name}</h3>
-                <p className="mb-6 text-sm leading-relaxed text-ink-500">{asset.desc}</p>
-                <p className="mt-auto text-xs text-ink-400">{asset.example}</p>
-              </FadeInStaggerItem>
-            ))}
-          </StaggerContainer>
+                View Demo
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* ── 4. HOW IT WORKS ────────────────────────────────────── */}
-      <section className="relative overflow-hidden border-b border-line bg-paper py-20 lg:py-28">
-        <div className="pointer-events-none absolute inset-0 dot-grid opacity-40" />
-        <div className="shell relative z-10">
-          <FadeIn direction="up" className="mb-16 text-center">
-            <h2 className="text-display-sm font-medium text-ink">How OnDecide works</h2>
-            <p className="mx-auto mt-4 max-w-xl text-lg text-ink-500">
-              A transparent, repeatable methodology for generating high-conviction research.
-            </p>
-          </FadeIn>
-
-          <StaggerContainer className="grid gap-6 md:grid-cols-3" staggerChildren={0.12}>
-            {STEPS.map((step) => (
-              <FadeInStaggerItem
-                key={step.title}
-                className="card-surface p-8"
-              >
-                <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl border border-line bg-surface-subtle">
-                  <step.icon className="h-6 w-6 text-ink-600" />
-                </div>
-                <h3 className="mb-3 text-xl font-medium text-ink">{step.title}</h3>
-                <p className="text-sm leading-relaxed text-ink-500">{step.desc}</p>
-              </FadeInStaggerItem>
-            ))}
-          </StaggerContainer>
+      {/* ── 2. Search + portrait ────────────────────────── */}
+      <section className="border-b border-line bg-white">
+        <div className="shell grid items-center gap-6 py-10 lg:grid-cols-2 lg:gap-10 lg:py-0">
+          <div className="lg:py-12">
+            <HeroSearch />
+          </div>
+          <div className="relative h-[300px] w-full lg:h-[352px]">
+            <ParticleHead className="absolute inset-0 h-full w-full" />
+          </div>
         </div>
       </section>
 
-      {/* ── 5. ANATOMY OF A REPORT ─────────────────────────────── */}
-      <section className="border-b border-line bg-surface py-20 lg:py-28">
+      {/* ── 3. Capability strip ─────────────────────────── */}
+      <CapabilityMarquee />
+
+      {/* ── 4. The problem ─────────────────────────────── */}
+      <section className="bg-paper py-20 lg:py-28">
         <div className="shell">
-          <div className="grid items-center gap-16 lg:grid-cols-2">
-            {/* Left Column */}
-            <FadeIn direction="left" className="lg:order-1">
-              <span className="mb-4 inline-block text-2xs font-medium uppercase tracking-widest text-brand-700">
-                Anatomy of a report
-              </span>
-              <h2 className="text-display-sm mb-6 font-medium leading-[1.1] text-ink">
-                Synthesize complex data into a clear investment thesis
-              </h2>
-              <p className="mb-8 text-lg leading-relaxed text-ink-500">
-                Automate document-heavy financial research with unmatched precision. Cut down manual
-                reading workloads, identify valuation risks, and unlock faster reviews with
-                plain-English insights.
-              </p>
-
-              <div className="mb-10">
-                <Link
-                  href="/sign-up"
-                  className="group inline-flex items-center gap-1.5 text-sm font-medium text-brand-700 transition-colors hover:text-brand-800"
-                >
-                  Explore the analyst pipeline
-                  <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                </Link>
-              </div>
-
-              <div>
-                <div className="mb-4 text-[11px] font-medium uppercase tracking-widest text-ink-400">
-                  Active analyst agents
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {AGENTS.map((a) => (
-                    <span
-                      key={a.name}
-                      className="inline-flex items-center gap-2 rounded-full border border-line bg-surface-subtle px-3 py-1.5 text-xs text-ink-600"
-                    >
-                      <span className={`h-2 w-2 rounded-full ${a.dot}`} />
-                      {a.name}
-                    </span>
-                  ))}
-                  <span className="self-center pl-1 text-xs font-medium text-ink-400">
-                    +12 more
-                  </span>
-                </div>
-              </div>
-            </FadeIn>
-
-            {/* Right Column: Dynamic Animation */}
-            <FadeIn direction="right" className="lg:order-2">
-              <div className="relative h-[500px] w-full overflow-hidden rounded-2xl border border-line bg-surface-subtle shadow-lg sm:h-[550px]">
-                <ProductDemo className="h-full w-full" />
-              </div>
-            </FadeIn>
-          </div>
-
-          {/* Bottom Statistics Row */}
-          <div className="mt-20 grid grid-cols-1 gap-8 border-t border-line pt-16 md:grid-cols-3">
-            {[
-              { value: "10x", label: "Faster due diligence reviews compared to manual parsing." },
-              { value: "99%", label: "Coverage across global listed equities and major digital assets." },
-              { value: "100%", label: "Jargon-free qualitative synthesis written in plain English." },
-            ].map((s) => (
-              <div key={s.value}>
-                <div className="mb-2 font-display text-4xl text-ink">{s.value}</div>
-                <div className="text-sm leading-relaxed text-ink-500">{s.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── 6. FAQ ───────────────────────────────────────────── */}
-      <section className="border-b border-line bg-paper py-20 lg:py-28">
-        <div className="shell max-w-3xl">
-          <FadeIn direction="up" className="mb-12 text-center">
-            <h2 className="text-display-sm mb-4 font-medium text-ink">Frequently asked questions</h2>
-            <p className="text-lg text-ink-500">
-              Everything you need to know about how OnDecide operates.
-            </p>
-          </FadeIn>
-          <FadeIn direction="up" delay={0.15}>
-            <Accordion type="single" collapsible className="w-full">
-              {FAQS.map((faq, i) => (
-                <AccordionItem key={i} value={`item-${i}`}>
-                  <AccordionTrigger className="py-4 text-left text-lg text-ink">
-                    {faq.question}
-                  </AccordionTrigger>
-                  <AccordionContent className="pb-4 text-base leading-relaxed text-ink-500">
-                    {faq.answer}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </FadeIn>
-        </div>
-      </section>
-
-      {/* ── 7. FINAL CTA ─────────────────────────────────────── */}
-      <section className="hero-wash border-b border-line bg-surface">
-        <FadeIn direction="up" className="shell max-w-3xl py-28 text-center">
-          <h2 className="text-display-sm mb-6 font-medium text-balance text-ink">
-            Stop guessing what the numbers mean.
+          <h2 className="max-w-[18ch] text-display-sm font-medium leading-[1.05] text-ink">
+            The <span className="text-brand-600">Investment</span>
+            <br />
+            <span className="text-brand-600">Research</span> Problem
           </h2>
-          <p className="mx-auto mb-12 max-w-xl text-lg text-ink-500">
-            Free to start. No card required. Your first report is under a minute away.
+          <p className="mt-6 max-w-[34rem] text-[14px] leading-relaxed text-ink-500">
+            Investors waste hours pulling data from multiple sources, cross-referencing metrics, and
+            synthesizing insights manually.{" "}
+            <span className="text-brand-600">OnDecide</span> solves this instantly.
           </p>
-          <div className="mx-auto mb-6 max-w-md">
-            <SearchBar large />
+
+          <div className="relative mt-16 grid grid-cols-1 gap-3 md:grid-cols-[1fr_200px_1fr]">
+            {/* hub */}
+            <div className="pointer-events-none absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 md:block">
+              <div className="relative flex h-[210px] w-[210px] items-center justify-center">
+                <div className="halo-blue absolute inset-0 rounded-full opacity-90" />
+                <div className="absolute inset-6 rounded-full border border-brand-200/80" />
+                <div className="absolute inset-12 rounded-full border border-brand-200/60" />
+                <LogoMark className="relative h-10 w-auto" />
+              </div>
+            </div>
+
+            {[0, 1, 2].map((row) => (
+              <div key={row} className="contents">
+                <ProblemCard problem={PROBLEMS[row]} />
+                <div className="relative hidden md:block" aria-hidden="true">
+                  <span className="absolute left-0 right-0 top-1/2 h-px bg-line" />
+                </div>
+                <ProblemCard problem={PROBLEMS[row + 3]} align="right" />
+              </div>
+            ))}
           </div>
-          <p className="text-xs text-ink-400">Research your first stock today.</p>
-        </FadeIn>
+        </div>
       </section>
+
+      {/* ── 5. The agent ───────────────────────────────── */}
+      <section className="border-y border-line bg-white py-20 lg:py-28">
+        <div className="shell grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
+          <div>
+            <h2 className="text-display-sm font-medium leading-[1.06] text-ink">
+              The <span className="text-brand-600">AI Investment Agent</span>
+              <br />
+              for Research
+            </h2>
+            <p className="mt-5 max-w-[26rem] text-[14.5px] leading-relaxed text-ink-500">
+              Delegate research to an AI agent. Get institutional-grade analysis in seconds.
+            </p>
+            <Link href="/agents" className="btn-cobalt mt-7">
+              See Analyst in Action
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+
+            <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-3">
+              {[
+                {
+                  t: "Verdicts in Seconds",
+                  d: "AI synthesizes research instantly.",
+                },
+                {
+                  t: "Research-Grade Analysis",
+                  d: "Technical, sentiment, and pattern data.",
+                },
+                {
+                  t: "Clear Thesis",
+                  d: "Every verdict is backed by reasoning.",
+                },
+              ].map((b) => (
+                <div key={b.t}>
+                  <h3 className="text-[13px] font-medium text-ink">{b.t}</h3>
+                  <p className="mt-1.5 text-[12px] leading-relaxed text-ink-500">{b.d}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="relative h-[320px] w-full lg:h-[420px]">
+            <GlassStack className="absolute inset-0 h-full w-full" />
+          </div>
+        </div>
+      </section>
+
+      {/* ── 6. Four feature cards ──────────────────────── */}
+      <section className="bg-paper py-20 lg:py-28">
+        <div className="shell">
+          <h2 className="max-w-[20ch] text-display-sm font-medium leading-[1.06] text-ink">
+            Everything a Wall Street Analyst Does. Delivered in{" "}
+            <span className="text-brand-600">60 Seconds.</span>
+          </h2>
+          <p className="mt-5 max-w-[38rem] text-[14px] leading-relaxed text-ink-500">
+            OnDecide runs 7 parallel AI agents to analyze fundamentals, market cycles, news, and
+            moats, explained in plain English.
+          </p>
+
+          <div className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-3">
+            {FEATURES.map((f) => {
+              const Art = f.art;
+              return (
+                <article key={f.title} className="flex flex-col bg-brand-600 text-white">
+                  <div className="relative m-2 mb-0 border border-brand-700/40 bg-[#FBFBFD]">
+                    <div className="relative h-[168px] overflow-hidden">
+                      <Art className="absolute inset-0 h-full w-full" />
+                    </div>
+                    <span className="absolute bottom-0 right-0 border-l border-t border-brand-700/40 bg-brand-600 px-2.5 py-1.5 text-[9.5px] font-medium leading-none tracking-wide text-white">
+                      {f.tab}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-1 flex-col p-4 pt-5">
+                    <span className="text-[10px] tracking-widest text-brand-100/70">{f.n}</span>
+                    <h3 className="mt-1.5 text-[15px] font-medium leading-tight">{f.title}</h3>
+                    <p className="mt-2 text-[12px] leading-relaxed text-brand-100/85">{f.body}</p>
+                    <div className="hairline mt-auto pt-5" />
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 7. How it works ────────────────────────────── */}
+      <section className="border-y border-line bg-white py-20 lg:py-28">
+        <div className="shell">
+          <h2 className="text-display-sm font-medium text-ink">How OnDecide Works</h2>
+        </div>
+
+        <div className="mx-auto mt-14 w-full max-w-[1320px] px-4 lg:px-8">
+          <div className="border-t border-line">
+            {STEPS.map((step, i) => {
+              const Art = step.art;
+              return (
+                <div key={step.title} className="grid border-b border-line md:grid-cols-3">
+                  <div
+                    className={`order-2 px-7 py-8 md:order-none ${
+                      step.side === "left"
+                        ? "md:border-r md:border-line md:bg-gradient-to-br md:from-white md:to-[#E9EEFF]"
+                        : "hidden md:block md:border-r md:border-line"
+                    }`}
+                  >
+                    {step.side === "left" && <StepCopy step={step} index={i} />}
+                  </div>
+
+                  <div className="relative order-1 h-[180px] border-b border-line md:order-none md:h-[220px] md:border-b-0 md:border-r">
+                    <Art className="absolute inset-0 h-full w-full" />
+                  </div>
+
+                  <div
+                    className={`order-3 px-7 py-8 ${
+                      step.side === "right"
+                        ? "md:bg-gradient-to-bl md:from-white md:to-[#E9EEFF]"
+                        : "hidden md:block"
+                    }`}
+                  >
+                    {step.side === "right" && <StepCopy step={step} index={i} />}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 8. Testimonials ────────────────────────────── */}
+      <section className="bg-white py-20 lg:py-28">
+        <div className="shell">
+          <h2 className="text-display-sm font-medium leading-[1.06] text-ink">
+            <span className="text-brand-600">Build</span> for Retail &amp;
+            <br />
+            Pro Analysts
+          </h2>
+          <div className="mt-12">
+            <Testimonials />
+          </div>
+        </div>
+      </section>
+
+      {/* ── 9. Pricing ─────────────────────────────────── */}
+      <section id="pricing" className="bg-paper py-20 lg:py-28">
+        <div className="shell">
+          <h2 className="text-display-sm font-medium leading-[1.06] text-ink">
+            Simple Plans.
+            <br />
+            No <span className="text-brand-600">Hidden Fees</span>
+          </h2>
+          <p className="mt-5 max-w-[30rem] text-[14px] leading-relaxed text-ink-500">
+            Institutional-grade investment research, priced for every investor.
+          </p>
+
+          <div className="mt-14 grid grid-cols-1 gap-4 md:grid-cols-2">
+            {PLANS.map((plan) => (
+              <div
+                key={plan.name}
+                className={`flex flex-col p-7 sm:p-9 ${
+                  plan.variant === "pro"
+                    ? "bg-gradient-to-br from-[#DCE3F7] via-[#C6D1EE] to-[#A9B8E4]"
+                    : "bg-[#F1F1F2]"
+                }`}
+              >
+                <h3 className="text-[17px] font-medium text-ink">{plan.name}</h3>
+                <p className="mt-1.5 text-[12.5px] text-ink-600">{plan.tagline}</p>
+
+                <ul className="mt-7 space-y-2.5">
+                  {plan.features.map((f) => (
+                    <li key={f} className="flex gap-2.5 text-[13px] leading-snug text-ink-700">
+                      <span aria-hidden="true" className="text-brand-700">
+                        •
+                      </span>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-auto flex items-end justify-between gap-6 pt-12">
+                  <div>
+                    <div className="text-[44px] font-medium leading-none tracking-tight text-ink">
+                      {plan.price}
+                    </div>
+                    <p className="mt-2 text-[11.5px] text-ink-600">{plan.priceNote}</p>
+                    <p className="mt-1 text-[11.5px] text-brand-700">{plan.priceExtra}</p>
+                    {plan.save && (
+                      <p className="mt-1 text-[11.5px] font-medium text-brand-700">{plan.save}</p>
+                    )}
+                  </div>
+                  <Link
+                    href={plan.href}
+                    className={`inline-flex flex-none items-center gap-2 rounded-[2px] px-4 py-2.5 text-[12.5px] font-medium transition-colors ${
+                      plan.variant === "pro"
+                        ? "bg-white/80 text-brand-800 hover:bg-white"
+                        : "bg-[#D6DFFA] text-brand-800 hover:bg-[#C8D4F8]"
+                    }`}
+                  >
+                    {plan.cta}
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 10. Closing CTA ────────────────────────────── */}
+      <section className="relative overflow-hidden bg-paper py-8">
+        <StripeBand className="absolute inset-0 h-full w-full" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(78%_140%_at_6%_50%,rgba(255,255,255,0.94),rgba(255,255,255,0.4)_56%,transparent_80%)]" />
+        <div className="shell relative py-20 lg:py-24">
+          <h2 className="max-w-[16ch] text-display-sm font-medium leading-[1.06] text-ink">
+            Make smarter Decisions
+            <br />
+            in 60 Seconds.
+          </h2>
+          <p className="mt-5 max-w-[26rem] text-[13.5px] font-medium leading-relaxed text-ink-800">
+            7 AI agents ready to analyze your next stock or crypto ticker.
+          </p>
+          <Link href="/sign-up" className="btn-light mt-8">
+            Start Researching Free
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+// ─── Sub-components ────────────────────────────────────────
+
+function ProblemCard({
+  problem,
+  align = "left",
+}: {
+  problem: (typeof PROBLEMS)[number];
+  align?: "left" | "right";
+}) {
+  const Icon = problem.icon;
+  return (
+    <div className="relative h-full bg-[#E9EEFC] p-5 md:p-6">
+      <span
+        className={`absolute top-4 text-[10px] tracking-widest text-brand-600/60 ${
+          align === "right" ? "right-4" : "left-4"
+        }`}
+      >
+        {problem.n}
+      </span>
+      <Icon className="h-5 w-5 text-brand-600" strokeWidth={1.6} />
+      <h3 className="mt-3 text-[14px] font-medium text-ink">{problem.title}</h3>
+      <p className="mt-1.5 max-w-[30ch] text-[12px] leading-relaxed text-ink-600">{problem.body}</p>
+    </div>
+  );
+}
+
+function StepCopy({ step, index }: { step: (typeof STEPS)[number]; index: number }) {
+  return (
+    <div className="max-w-[24ch]">
+      <span className="text-[10px] tracking-widest text-brand-600/60">
+        {String(index + 1).padStart(2, "0")}
+      </span>
+      <h3 className="mt-3 text-[19px] font-medium leading-tight text-ink">{step.title}</h3>
+      <p className="mt-2 text-[12.5px] leading-relaxed text-ink-600">{step.body}</p>
+      {index === 0 && (
+        <Link
+          href="/explore"
+          className="mt-4 inline-flex items-center gap-1 text-[12px] text-brand-700 transition-colors hover:text-brand-800"
+        >
+          Try a ticker
+          <ArrowUpRight className="h-3 w-3" />
+        </Link>
+      )}
     </div>
   );
 }
