@@ -3,12 +3,14 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
+import { Lock, ClipboardList } from "lucide-react";
+import { PageHeader } from "@/components/ui/PageHeader";
 import type { WatchlistItem } from "@/types";
 
 function PriceChange({ price }: { price?: number }) {
-  // Fix: use explicit null/undefined check so price=0 renders correctly
-  if (price === undefined || price === null) return <span className="text-zinc-600 font-sans text-sm">—</span>;
-  return <span className="font-sans text-sm text-zinc-100">${price.toFixed(2)}</span>;
+  if (price === undefined || price === null)
+    return <span className="font-mono text-sm text-ink-400">—</span>;
+  return <span className="font-mono text-sm text-ink">{price.toFixed(2)}</span>;
 }
 
 export default function WatchlistPage() {
@@ -31,9 +33,10 @@ export default function WatchlistPage() {
     setDeleting(ticker);
     setDeleteError(null);
     try {
-      const res = await fetch(`/api/watchlist?ticker=${encodeURIComponent(ticker)}`, { method: "DELETE" });
+      const res = await fetch(`/api/watchlist?ticker=${encodeURIComponent(ticker)}`, {
+        method: "DELETE",
+      });
       if (!res.ok) throw new Error("Failed to remove from watchlist");
-      // Only remove from UI state after confirmed success
       setItems((prev) => prev.filter((i) => i.ticker !== ticker));
     } catch {
       setDeleteError(`Failed to remove ${ticker}. Please try again.`);
@@ -44,11 +47,11 @@ export default function WatchlistPage() {
 
   if (!isLoaded || loading) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-12">
-        <div className="h-8 w-48 skeleton mb-8" />
+      <div className="shell max-w-4xl py-12">
+        <div className="skeleton mb-8 h-8 w-48" />
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-20 skeleton rounded-xl" />
+            <div key={i} className="skeleton h-20 rounded-xl" />
           ))}
         </div>
       </div>
@@ -57,11 +60,18 @@ export default function WatchlistPage() {
 
   if (!isSignedIn) {
     return (
-      <div className="max-w-xl mx-auto px-4 py-20 text-center">
-        <div className="text-4xl mb-4">🔒</div>
-        <h2 className="text-xl font-serif text-white mb-2">Sign in to view your watchlist</h2>
-        <p className="text-zinc-400 mb-6">Save research reports and track companies you&apos;re watching.</p>
-        <Link href="/sign-in" className="inline-flex px-5 py-2.5 rounded-lg bg-white text-black font-medium hover:bg-zinc-200 transition-colors">
+      <div className="shell max-w-xl py-20 text-center">
+        <div className="mb-4 flex justify-center">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-line bg-surface-subtle">
+            <Lock className="h-6 w-6 text-ink-500" />
+          </div>
+        </div>
+        <h2 className="mb-2 text-xl font-medium text-ink">Sign in to view your watchlist</h2>
+        <p className="mb-6 text-ink-500">Save research reports and track companies you&apos;re watching.</p>
+        <Link
+          href="/sign-in"
+          className="inline-flex rounded-full bg-ink px-5 py-2.5 font-medium text-white transition-colors hover:bg-ink-800"
+        >
           Sign in
         </Link>
       </div>
@@ -69,75 +79,88 @@ export default function WatchlistPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-serif text-white">Watchlist</h1>
-          <p className="text-zinc-500 text-sm mt-1">{items.length} {items.length === 1 ? "company" : "companies"} saved</p>
+    <div className="shell max-w-4xl py-16 lg:py-20">
+      <PageHeader eyebrow="Platform" title="Watchlist">
+        <div className="mt-4 flex items-center justify-between">
+          <p className="text-sm text-ink-500">
+            {items.length} {items.length === 1 ? "company" : "companies"} saved
+          </p>
+          <Link href="/" className="text-sm text-ink-600 transition-colors hover:text-ink">
+            + Add research
+          </Link>
         </div>
-        <Link href="/" className="text-sm text-zinc-300 hover:text-white transition-colors">
-          + Add research
-        </Link>
-      </div>
+      </PageHeader>
 
       {deleteError && (
-        <div className="mb-4 px-4 py-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400 text-sm">
+        <div className="mb-4 rounded-xl border border-avoid/20 bg-avoid/10 px-4 py-3 text-sm text-avoid">
           {deleteError}
         </div>
       )}
 
       {items.length === 0 ? (
-        <div className="text-center py-20 border border-dashed border-zinc-800/60 rounded-xl">
-          <div className="text-4xl mb-4">📋</div>
-          <h3 className="text-lg font-serif text-zinc-300 mb-2">No companies saved yet</h3>
-          <p className="text-zinc-500 mb-6">Search for a stock or crypto and save it to your watchlist.</p>
-          <Link href="/" className="inline-flex px-4 py-2 rounded-lg bg-zinc-100 border border-zinc-300 text-black text-sm hover:bg-white transition-colors">
+        <div className="rounded-2xl border border-dashed border-line py-20 text-center">
+          <div className="mb-4 flex justify-center">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-line bg-surface-subtle">
+              <ClipboardList className="h-6 w-6 text-ink-400" />
+            </div>
+          </div>
+          <h3 className="mb-2 text-lg font-medium text-ink">No companies saved yet</h3>
+          <p className="mb-6 text-ink-500">Search for a stock or crypto and save it to your watchlist.</p>
+          <Link
+            href="/"
+            className="inline-flex rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-ink-800"
+          >
             Start researching
           </Link>
         </div>
       ) : (
         <div className="space-y-3">
           {items.map((item) => (
-            <div key={item.id} className="flex items-center gap-4 px-5 py-4 rounded-xl border border-zinc-800/60 bg-zinc-950 hover:border-zinc-800 transition-all">
+            <div
+              key={item.id}
+              className="card-surface flex items-center gap-4 p-5 transition-all hover:border-line-strong"
+            >
               {/* Ticker badge */}
-              <div className="w-12 h-12 rounded border border-zinc-800 bg-black flex items-center justify-center flex-shrink-0">
-                <span className="font-sans font-bold text-white text-sm">{item.ticker.slice(0, 3)}</span>
+              <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg border border-line bg-surface-subtle">
+                <span className="font-mono text-sm font-semibold text-ink">{item.ticker.slice(0, 3)}</span>
               </div>
 
               {/* Info */}
-              <div className="flex-1 min-w-0">
+              <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="font-serif text-white">{item.companyName || item.ticker}</span>
-                  <span className="font-sans text-xs text-zinc-500 bg-zinc-900 px-1.5 py-0.5 rounded">{item.ticker}</span>
+                  <span className="font-medium text-ink">{item.companyName || item.ticker}</span>
+                  <span className="rounded-md bg-surface-subtle px-1.5 py-0.5 font-mono text-xs text-ink-500">
+                    {item.ticker}
+                  </span>
                   {item.assetType === "crypto" && (
-                    <span className="text-xs text-amber-400 bg-amber-400/10 px-1.5 py-0.5 rounded">Crypto</span>
+                    <span className="rounded-md bg-hold/10 px-1.5 py-0.5 text-xs text-hold">Crypto</span>
                   )}
                 </div>
-                <div className="flex items-center gap-3 mt-0.5">
-                  {item.sector && <span className="text-xs text-zinc-500">{item.sector}</span>}
-                  <span className="text-xs text-zinc-600">
+                <div className="mt-0.5 flex items-center gap-3">
+                  {item.sector && <span className="text-xs text-ink-500">{item.sector}</span>}
+                  <span className="text-xs text-ink-400">
                     Saved {new Date(item.createdAt).toLocaleDateString()}
                   </span>
                 </div>
               </div>
 
               {/* Price */}
-              <div className="text-right flex-shrink-0">
+              <div className="flex-shrink-0 text-right">
                 <PriceChange price={item.currentPrice} />
               </div>
 
-              {/* Actions — always visible (was hover-only, broken on mobile) */}
-              <div className="flex items-center gap-2 flex-shrink-0">
+              {/* Actions */}
+              <div className="flex flex-shrink-0 items-center gap-2">
                 <Link
                   href={`/research/${item.ticker}`}
-                  className="px-3 py-1.5 rounded bg-zinc-100 border border-zinc-300 text-black text-xs hover:bg-white transition-colors whitespace-nowrap"
+                  className="whitespace-nowrap rounded-full bg-ink px-3.5 py-1.5 text-xs font-medium text-white transition-colors hover:bg-ink-800"
                 >
                   View report
                 </Link>
                 <button
                   onClick={() => handleDelete(item.ticker)}
                   disabled={deleting === item.ticker}
-                  className="px-2 py-1.5 rounded text-zinc-600 hover:text-white hover:bg-zinc-800 transition-colors text-xs disabled:opacity-50"
+                  className="rounded-full px-2.5 py-1.5 text-xs text-ink-500 transition-colors hover:bg-avoid/10 hover:text-avoid disabled:opacity-50"
                 >
                   {deleting === item.ticker ? "..." : "Remove"}
                 </button>

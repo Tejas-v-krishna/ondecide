@@ -24,16 +24,16 @@ export function ReportNav() {
   };
 
   return (
-    <nav className="sticky top-16 z-30 -mx-4 sm:-mx-6 px-4 sm:px-6 py-2 border-b border-zinc-800/60 bg-black/80 backdrop-blur-sm overflow-x-auto">
-      <div className="flex gap-1 min-w-max">
+    <nav className="overflow-x-auto">
+      <div className="flex min-w-max gap-1">
         {SECTIONS.map((section) => (
           <button
             key={section.id}
             onClick={() => scrollTo(section.id)}
-            className={`px-3 py-1.5 text-sm rounded-lg whitespace-nowrap transition-colors ${
+            className={`whitespace-nowrap rounded-full px-3 py-1.5 text-sm transition-colors ${
               active === section.id
-                ? "text-white bg-white/10"
-                : "text-zinc-500 hover:text-zinc-300"
+                ? "bg-ink text-white"
+                : "text-ink-500 hover:bg-surface-subtle hover:text-ink"
             }`}
           >
             {section.label}

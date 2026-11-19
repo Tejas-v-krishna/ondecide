@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Trash2 } from "lucide-react";
+import { PageHeader } from "@/components/ui/PageHeader";
 
-const formatCurrency = (val: number) => 
+const formatCurrency = (val: number) =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(val);
 
 interface PortfolioItem {
@@ -18,9 +20,6 @@ interface PortfolioItem {
 export default function PortfolioPage() {
   const [items, setItems] = useState<PortfolioItem[]>([]);
   const [loading, setLoading] = useState(true);
-
-  // We will need live prices to calculate P&L. For now, we will just display holdings.
-  // In the next step, we will wire up the Finnhub websocket or API for live P&L.
 
   useEffect(() => {
     fetchPortfolio();
@@ -48,7 +47,7 @@ export default function PortfolioPage() {
       await fetch(`/api/portfolio?ticker=${ticker}`, { method: "DELETE" });
     } catch (err) {
       console.error(err);
-      fetchPortfolio(); // Revert on failure
+      fetchPortfolio();
     }
   }
 
@@ -56,46 +55,47 @@ export default function PortfolioPage() {
 
   if (loading) {
     return (
-      <div className="max-w-5xl mx-auto px-4 py-12 text-center">
-        <div className="animate-pulse flex flex-col items-center gap-4">
-          <div className="h-8 w-48 bg-zinc-900 rounded"></div>
-          <div className="h-64 w-full bg-zinc-900/50 rounded-xl mt-8"></div>
+      <div className="shell max-w-5xl py-12">
+        <div className="flex animate-pulse flex-col items-center gap-4">
+          <div className="h-8 w-48 rounded bg-surface-muted" />
+          <div className="mt-8 h-64 w-full rounded-xl bg-surface-muted" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-10">
-      <div className="flex items-center justify-between mb-10">
-        <div>
-          <h1 className="text-4xl font-serif text-white">My Portfolio</h1>
-          <p className="text-zinc-400 mt-2">Track your holdings and P&L (Live pricing coming shortly)</p>
+    <div className="shell max-w-5xl py-16 lg:py-20">
+      <PageHeader
+        eyebrow="Platform"
+        title="My Portfolio"
+        description="Track your holdings and P&L (Live pricing coming shortly)."
+      >
+        <div className="mt-6">
+          <div className="text-sm font-medium uppercase tracking-wider text-ink-400">Total Invested</div>
+          <div className="mt-1 font-mono text-3xl font-semibold text-ink">{formatCurrency(totalInvested)}</div>
         </div>
-        <div className="text-right">
-          <div className="text-sm text-zinc-500 uppercase tracking-wider font-semibold">Total Invested</div>
-          <div className="text-3xl font-bold text-white mt-1">{formatCurrency(totalInvested)}</div>
-        </div>
-      </div>
+      </PageHeader>
 
       {items.length === 0 ? (
-        <div className="bg-zinc-950 border border-zinc-800/60 rounded-xl p-12 text-center">
-          <h2 className="text-xl font-serif text-zinc-300 mb-2">Your portfolio is empty</h2>
-          <p className="text-zinc-400 mb-6 max-w-md mx-auto">
-            Search for stocks or crypto, read the AI research report, and add them to your portfolio to track your performance.
+        <div className="card-surface p-12 text-center">
+          <h2 className="mb-2 text-xl font-medium text-ink">Your portfolio is empty</h2>
+          <p className="mx-auto mb-6 max-w-md text-ink-500">
+            Search for stocks or crypto, read the AI research report, and add them to your portfolio to
+            track your performance.
           </p>
           <Link
             href="/"
-            className="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-zinc-100 text-black font-medium hover:bg-white transition-colors"
+            className="inline-flex items-center justify-center rounded-full bg-ink px-6 py-3 font-medium text-white transition-colors hover:bg-ink-800"
           >
             Explore Assets
           </Link>
         </div>
       ) : (
-        <div className="bg-zinc-950 border border-zinc-800/60 rounded-xl overflow-hidden">
+        <div className="card-surface overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="bg-black/50 text-zinc-400 uppercase text-xs font-semibold tracking-wider border-b border-zinc-800/60">
+              <thead className="border-b border-line bg-surface-subtle text-xs font-medium uppercase tracking-wider text-ink-400">
                 <tr>
                   <th className="px-6 py-4">Asset</th>
                   <th className="px-6 py-4 text-right">Quantity</th>
@@ -104,36 +104,36 @@ export default function PortfolioPage() {
                   <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-800/60">
+              <tbody className="divide-y divide-line">
                 {items.map((item) => (
-                  <tr key={item.id} className="hover:bg-zinc-900/20 transition-colors">
+                  <tr key={item.id} className="transition-colors hover:bg-surface-subtle/60">
                     <td className="px-6 py-4">
-                      <Link href={`/research/${item.ticker}`} className="flex items-center gap-3 group">
-                        <div className="bg-zinc-900 w-10 h-10 rounded flex items-center justify-center font-bold text-zinc-300 group-hover:text-white transition-colors">
+                      <Link href={`/research/${item.ticker}`} className="group flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-surface-subtle font-mono font-semibold text-ink-500 transition-colors group-hover:text-ink">
                           {item.ticker.slice(0, 2)}
                         </div>
                         <div>
-                          <div className="font-serif text-zinc-100 group-hover:text-white transition-colors">
+                          <div className="font-medium text-ink transition-colors group-hover:text-brand-700">
                             {item.ticker}
                           </div>
-                          <div className="text-xs text-zinc-500">{item.company_name || item.asset_type}</div>
+                          <div className="text-xs text-ink-500">{item.company_name || item.asset_type}</div>
                         </div>
                       </Link>
                     </td>
-                    <td className="px-6 py-4 text-right font-medium text-zinc-300">{item.quantity}</td>
-                    <td className="px-6 py-4 text-right font-medium text-zinc-300">{formatCurrency(item.average_buy_price)}</td>
-                    <td className="px-6 py-4 text-right font-medium text-zinc-100">
+                    <td className="px-6 py-4 text-right font-medium text-ink-600">{item.quantity}</td>
+                    <td className="px-6 py-4 text-right font-mono font-medium text-ink-600">
+                      {formatCurrency(item.average_buy_price)}
+                    </td>
+                    <td className="px-6 py-4 text-right font-mono font-medium text-ink">
                       {formatCurrency(item.quantity * item.average_buy_price)}
                     </td>
                     <td className="px-6 py-4 text-right">
                       <button
                         onClick={() => removeItem(item.ticker)}
-                        className="text-zinc-500 hover:text-red-400 transition-colors p-2"
+                        className="rounded-lg p-2 text-ink-400 transition-colors hover:bg-avoid/10 hover:text-avoid"
                         title="Remove from portfolio"
                       >
-                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
+                        <Trash2 className="h-4 w-4" />
                       </button>
                     </td>
                   </tr>

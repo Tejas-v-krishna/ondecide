@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import { Download, Search as SearchIcon, AlertTriangle } from "lucide-react";
 import { AgentProgress } from "@/components/ui/AgentProgress";
 import { SaveToWatchlist } from "@/components/ui/SaveToWatchlist";
 import { AddToPortfolio } from "@/components/ui/AddToPortfolio";
@@ -99,12 +100,19 @@ export function ResearchPageClient({ ticker }: ResearchPageClientProps) {
 
   if (phase === "error") {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-20 text-center">
-        <div className="text-4xl mb-4">⚠️</div>
-        <h2 className="text-xl font-bold text-white mb-2">Research failed</h2>
-        <p className="text-zinc-400 mb-6">{errorMsg}</p>
-        <a href="/" className="inline-flex px-4 py-2 rounded-lg bg-emerald-500 text-white text-sm font-medium hover:bg-emerald-600 transition-colors">
-          ← Search again
+      <div className="shell max-w-2xl py-20 text-center">
+        <div className="mb-4 flex justify-center">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-avoid/20 bg-avoid/10">
+            <AlertTriangle className="h-6 w-6 text-avoid" />
+          </div>
+        </div>
+        <h2 className="mb-2 text-xl font-medium text-ink">Research failed</h2>
+        <p className="mb-6 text-ink-500">{errorMsg}</p>
+        <a
+          href="/"
+          className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-ink-800"
+        >
+          <SearchIcon className="h-4 w-4" /> Search again
         </a>
       </div>
     );
@@ -112,7 +120,7 @@ export function ResearchPageClient({ ticker }: ResearchPageClientProps) {
 
   if (phase === "loading") {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-20">
+      <div className="shell max-w-2xl py-20">
         <AgentProgress
           completedNodes={completedNodes}
           currentMessage={currentMessage}
@@ -125,21 +133,21 @@ export function ResearchPageClient({ ticker }: ResearchPageClientProps) {
   if (!report) return null;
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      {/* Top Action Bar (matches home page style) */}
-      <div className="border-b border-zinc-800/60 bg-black sticky top-0 z-50 print:hidden">
-        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="bg-paper text-ink">
+      {/* Top Action Bar */}
+      <div className="sticky top-16 z-40 border-b border-line bg-paper/80 backdrop-blur-xl print:hidden">
+        <div className="mx-auto flex max-w-[1400px] flex-col justify-between gap-4 px-4 py-3 sm:px-6 lg:flex-row lg:items-center">
           <ReportNav />
           <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={() => window.print()}
-              className="px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-lg text-sm font-medium hover:bg-zinc-800 transition-colors flex items-center gap-2"
+              className="flex items-center gap-2 rounded-full border border-line bg-surface px-4 py-2 text-sm font-medium text-ink-600 transition-colors hover:border-line-strong hover:text-ink"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <Download className="h-4 w-4" />
               Download PDF
             </button>
             <SaveToWatchlist report={report} />
-            <AddToPortfolio 
+            <AddToPortfolio
               ticker={report.ticker}
               assetType={report.assetType}
               companyName={report.companySnapshot.name}
@@ -149,24 +157,23 @@ export function ResearchPageClient({ ticker }: ResearchPageClientProps) {
         </div>
       </div>
 
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-8">
+      <div className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6">
         {/* Bento Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-px bg-zinc-800/50 p-px">
-          
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
           {/* Row 1: Snapshot (4) & Decision (8) */}
-          <div id="snapshot" className="col-span-1 lg:col-span-4 bg-black p-6 md:p-8 hover:bg-zinc-950/30 transition-colors scroll-mt-32">
+          <div id="snapshot" className="report-section card-surface col-span-1 p-6 md:p-8 lg:col-span-4">
             <ErrorBoundary sectionName="Company Overview">
               <CompanySnapshotSection data={report.companySnapshot} />
             </ErrorBoundary>
           </div>
-          <div id="decision" className="col-span-1 lg:col-span-8 bg-black p-6 md:p-8 hover:bg-zinc-950/30 transition-colors scroll-mt-32">
+          <div id="decision" className="report-section card-surface col-span-1 p-6 md:p-8 lg:col-span-8">
             <ErrorBoundary sectionName="Investment Thesis">
               <DecisionSection data={report.decision} />
             </ErrorBoundary>
           </div>
 
           {/* Row 2: Live Data (8) & Scorecard/Stats (4) */}
-          <div id="market" className="col-span-1 lg:col-span-8 bg-black p-6 md:p-8 hover:bg-zinc-950/30 transition-colors scroll-mt-32">
+          <div id="market" className="report-section card-surface col-span-1 p-6 md:p-8 lg:col-span-8">
             <ErrorBoundary sectionName="Price Chart">
               <LiveMarketDataSection
                 data={report.liveMarketData}
@@ -175,25 +182,28 @@ export function ResearchPageClient({ ticker }: ResearchPageClientProps) {
               />
             </ErrorBoundary>
           </div>
-          <div id="scorecard" className="col-span-1 lg:col-span-4 bg-black p-6 md:p-8 hover:bg-zinc-950/30 transition-colors flex flex-col gap-10 scroll-mt-32">
+          <div
+            id="scorecard"
+            className="report-section card-surface col-span-1 flex flex-col gap-10 p-6 md:p-8 lg:col-span-4"
+          >
             <ErrorBoundary sectionName="Fundamental Scorecard">
               <ScorecardSection data={report.scorecard} />
             </ErrorBoundary>
 
             {/* Market Statistics Card */}
             <div>
-              <h3 className="font-serif text-xl text-white mb-6">Market Statistics</h3>
-              <div className="divide-y divide-zinc-800/40">
+              <h3 className="mb-6 text-xl font-medium text-ink">Market Statistics</h3>
+              <div className="divide-y divide-line">
                 {report.liveMarketData.keyStats.map((stat) => (
-                  <div key={stat.label} className="py-3 flex justify-between items-center text-sm gap-4">
-                    <span className="text-zinc-500 shrink-0 text-xs tracking-widest uppercase font-sans">
+                  <div key={stat.label} className="flex items-center justify-between gap-4 py-3 text-sm">
+                    <span className="shrink-0 text-xs uppercase tracking-widest text-ink-400">
                       {stat.glossaryTerm ? (
                         <GlossaryTooltip term={stat.glossaryTerm}>{stat.label}</GlossaryTooltip>
                       ) : (
                         stat.label
                       )}
                     </span>
-                    <span className="font-sans font-medium text-zinc-200 text-right">{stat.value}</span>
+                    <span className="text-right font-mono font-medium text-ink-600">{stat.value}</span>
                   </div>
                 ))}
               </div>
@@ -201,51 +211,62 @@ export function ResearchPageClient({ ticker }: ResearchPageClientProps) {
           </div>
 
           {/* Row 3: Insights (4, 4, 4) */}
-          <div id="qualitative" className="col-span-1 lg:col-span-4 bg-black p-6 md:p-8 hover:bg-zinc-950/30 transition-colors space-y-10 scroll-mt-32">
+          <div id="qualitative" className="report-section card-surface col-span-1 space-y-10 p-6 md:p-8 lg:col-span-4">
             <ErrorBoundary sectionName="Moat & Management">
               <QualitativeReadSection data={report.qualitativeRead} />
             </ErrorBoundary>
-            <hr className="border-zinc-800/40" />
+            <hr className="border-line" />
             <ErrorBoundary sectionName="Historical Parallels">
               <HistoricalPatternSection data={report.historicalPattern} />
             </ErrorBoundary>
           </div>
 
-          <div id="news" className="col-span-1 lg:col-span-4 bg-black p-6 md:p-8 hover:bg-zinc-950/30 transition-colors space-y-10 scroll-mt-32">
+          <div id="news" className="report-section card-surface col-span-1 space-y-10 p-6 md:p-8 lg:col-span-4">
             <ErrorBoundary sectionName="News Analysis">
               <NewsAnalysisSection data={report.newsAnalysis} />
             </ErrorBoundary>
-            <hr className="border-zinc-800/40" />
+            <hr className="border-line" />
             <ErrorBoundary sectionName="Earnings NLP">
-              <EarningsCallAnalysisSection data={report.earningsCallAnalysis || { managementTone: "No Data", keyRisks: [], forwardGuidance: "No forward guidance available.", summary: "Earnings call transcript not available." }} />
+              <EarningsCallAnalysisSection
+                data={
+                  report.earningsCallAnalysis || {
+                    managementTone: "No Data",
+                    keyRisks: [],
+                    forwardGuidance: "No forward guidance available.",
+                    summary: "Earnings call transcript not available.",
+                  }
+                }
+              />
             </ErrorBoundary>
           </div>
 
-          <div id="technical" className="col-span-1 lg:col-span-4 bg-black p-6 md:p-8 hover:bg-zinc-950/30 transition-colors space-y-10 scroll-mt-32">
+          <div id="technical" className="report-section card-surface col-span-1 space-y-10 p-6 md:p-8 lg:col-span-4">
             <ErrorBoundary sectionName="Technical Analysis">
               <TechnicalSignalSection data={report.technicalSignal} />
             </ErrorBoundary>
-            <hr className="border-zinc-800/40" />
+            <hr className="border-line" />
             <ErrorBoundary sectionName="Competitor Matrix">
               {report.competitorMatrix ? (
                 <CompetitorMatrixSection matrix={report.competitorMatrix} />
               ) : (
-                <div className="text-zinc-500 text-xs border border-dashed border-zinc-800 p-4 text-center uppercase tracking-wider font-sans">
+                <div className="rounded-xl border border-dashed border-line p-4 text-center text-xs uppercase tracking-wider text-ink-400">
                   No competitor comparison available for this asset class.
                 </div>
               )}
             </ErrorBoundary>
-            <hr className="border-zinc-800/40" />
+            <hr className="border-line" />
             <ErrorBoundary sectionName="Insider Sentiment">
-              <InsiderSentimentSection data={report.insiderSentiment || { trend: "No Data", netBuyingScore: 0, summary: "No data available." }} />
+              <InsiderSentimentSection
+                data={report.insiderSentiment || { trend: "No Data", netBuyingScore: 0, summary: "No data available." }}
+              />
             </ErrorBoundary>
           </div>
-
         </div>
 
         {/* Footer Note */}
-        <p className="text-center text-xs font-sans text-zinc-600 mt-16 mb-8 tracking-widest uppercase">
-          REPORT GENERATED {new Date(report.generatedAt).toLocaleString()} · ONDECIDE USES FINNHUB, TAVILY, AND AI ANALYSIS
+        <p className="mb-8 mt-16 text-center text-xs uppercase tracking-widest text-ink-400">
+          Report generated {new Date(report.generatedAt).toLocaleString()} · OnDecide uses Finnhub,
+          Tavily, and AI analysis
         </p>
       </div>
     </div>

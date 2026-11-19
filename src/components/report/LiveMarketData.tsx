@@ -25,36 +25,35 @@ export function LiveMarketDataSection({ data, ticker }: LiveMarketDataProps) {
         width: chartRef.current.clientWidth,
         height: 260,
         layout: {
-          background: { type: ColorType.Solid, color: "#111827" },
-          textColor: "#94a3b8",
+          background: { type: ColorType.Solid, color: "#ffffff" },
+          textColor: "#64748b",
         },
         grid: {
-          vertLines: { color: "#1e293b" },
-          horzLines: { color: "#1e293b" },
+          vertLines: { color: "#f0efe8" },
+          horzLines: { color: "#f0efe8" },
         },
         crosshair: {
           mode: 1,
         },
         rightPriceScale: {
-          borderColor: "#1e293b",
+          borderColor: "#e6e4dd",
         },
         timeScale: {
-          borderColor: "#1e293b",
+          borderColor: "#e6e4dd",
           timeVisible: true,
         },
       });
 
       // lightweight-charts v5 API
       const lineSeries = chart.addSeries(LineSeries, {
-        color: "#10b981",
+        color: "#0b8f60",
         lineWidth: 2,
         crosshairMarkerVisible: true,
         crosshairMarkerRadius: 4,
-        crosshairMarkerBorderColor: "#10b981",
-        crosshairMarkerBackgroundColor: "#10b981",
+        crosshairMarkerBorderColor: "#ffffff",
+        crosshairMarkerBackgroundColor: "#0b8f60",
       });
 
-      // lightweight-charts v5 requires UTCTimestamp (branded number)
       const chartData = data.candles
         .filter((c) => c.close > 0)
         .map((c) => ({ time: c.time as import("lightweight-charts").UTCTimestamp, value: c.close }))
@@ -85,17 +84,17 @@ export function LiveMarketDataSection({ data, ticker }: LiveMarketDataProps) {
 
   return (
     <div className="flex flex-col overflow-hidden">
-      <div className="pb-4 mb-4 border-b border-zinc-800/40">
-        <h2 className="font-serif text-lg font-semibold text-white">Live Market Data</h2>
-        <p className="text-sm text-zinc-500 mt-0.5">1-year price history · {ticker}</p>
+      <div className="mb-4 border-b border-line pb-4">
+        <h2 className="text-lg font-medium text-ink">Live Market Data</h2>
+        <p className="mt-0.5 text-sm text-ink-500">1-year price history · {ticker}</p>
       </div>
 
       {/* Chart */}
       <div className="pt-4">
         {data.candles.length > 0 ? (
-          <div ref={chartRef} className="w-full rounded-lg overflow-hidden" />
+          <div ref={chartRef} className="w-full overflow-hidden rounded-xl" />
         ) : (
-          <div className="h-[260px] flex items-center justify-center text-zinc-500 bg-black rounded-lg">
+          <div className="flex h-[260px] items-center justify-center rounded-xl bg-surface-subtle text-ink-500">
             Price chart data unavailable
           </div>
         )}
