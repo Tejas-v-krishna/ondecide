@@ -181,11 +181,11 @@ export default function HomePage() {
       {/* ── 1. Hero ─────────────────────────────────────── */}
       <section className="border-b border-line">
         <div className="grid lg:grid-cols-[57.5%_42.5%]">
-          <div className="relative min-h-[280px] overflow-hidden bg-[#1b44a6] lg:min-h-[372px]">
+          <div className="relative min-h-[240px] overflow-hidden bg-[#1b44a6] lg:min-h-[292px]">
             <div className="pointer-events-none absolute inset-0 facet-panel" />
             <div className="pointer-events-none absolute inset-0 facet-haze" />
-            <div className="relative flex h-full flex-col justify-center px-6 py-14 sm:px-10 lg:px-14">
-              <h1 className="text-[clamp(2.4rem,3.9vw,3.9rem)] font-normal leading-[1.04] tracking-[-0.03em] text-white">
+            <div className="relative flex h-full flex-col justify-center px-6 py-12 sm:px-10 lg:px-14">
+              <h1 className="text-[clamp(2.3rem,4.6vw,4.2rem)] font-normal leading-[1.07] tracking-[-0.025em] text-white">
                 From Ticker to Thesis
                 <br />
                 in Seconds
@@ -193,8 +193,8 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="flex flex-col justify-center bg-[#F7F7F9] px-6 py-12 sm:px-10 lg:px-14">
-            <p className="max-w-[30rem] text-[15.5px] leading-[1.55] text-ink-500">
+          <div className="flex flex-col justify-center bg-[#F8F8F9] px-6 py-12 sm:px-10 lg:pl-16 lg:pr-14">
+            <p className="max-w-[24rem] text-[17px] leading-[1.5] text-ink-500">
               Pull technical ratios, read market sentiment, analyze patterns, and form theses, all in
               one platform. Powered by AI agents that synthesize research so you don&apos;t have to.
             </p>
@@ -216,11 +216,11 @@ export default function HomePage() {
 
       {/* ── 2. Search + portrait ────────────────────────── */}
       <section className="border-b border-line bg-white">
-        <div className="shell grid items-center gap-6 py-10 lg:grid-cols-2 lg:gap-10 lg:py-0">
-          <div className="lg:py-12">
+        <div className="page-shell grid items-center gap-8 py-10 lg:grid-cols-[minmax(0,460px)_minmax(0,1fr)] lg:gap-12 lg:py-8">
+          <div className="lg:py-10">
             <HeroSearch />
           </div>
-          <div className="relative h-[300px] w-full lg:h-[352px]">
+          <div className="relative h-[320px] w-full lg:h-[470px]">
             <ParticleHead className="absolute inset-0 h-full w-full" />
           </div>
         </div>
@@ -231,7 +231,7 @@ export default function HomePage() {
 
       {/* ── 4. The problem ─────────────────────────────── */}
       <section className="bg-paper py-20 lg:py-28">
-        <div className="shell">
+        <div className="page-shell">
           <h2 className="max-w-[18ch] text-display-sm font-medium leading-[1.05] text-ink">
             The <span className="text-brand-600">Investment</span>
             <br />
@@ -269,7 +269,7 @@ export default function HomePage() {
 
       {/* ── 5. The agent ───────────────────────────────── */}
       <section className="border-y border-line bg-white py-20 lg:py-28">
-        <div className="shell grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
+        <div className="page-shell grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
           <div>
             <h2 className="text-display-sm font-medium leading-[1.06] text-ink">
               The <span className="text-brand-600">AI Investment Agent</span>
@@ -315,7 +315,7 @@ export default function HomePage() {
 
       {/* ── 6. Four feature cards ──────────────────────── */}
       <section className="bg-paper py-20 lg:py-28">
-        <div className="shell">
+        <div className="page-shell">
           <h2 className="max-w-[20ch] text-display-sm font-medium leading-[1.06] text-ink">
             Everything a Wall Street Analyst Does. Delivered in{" "}
             <span className="text-brand-600">60 Seconds.</span>
@@ -354,7 +354,7 @@ export default function HomePage() {
 
       {/* ── 7. How it works ────────────────────────────── */}
       <section className="border-y border-line bg-white py-20 lg:py-28">
-        <div className="shell">
+        <div className="page-shell">
           <h2 className="text-display-sm font-medium text-ink">How OnDecide Works</h2>
         </div>
 
@@ -396,7 +396,7 @@ export default function HomePage() {
 
       {/* ── 8. Testimonials ────────────────────────────── */}
       <section className="bg-white py-20 lg:py-28">
-        <div className="shell">
+        <div className="page-shell">
           <h2 className="text-display-sm font-medium leading-[1.06] text-ink">
             <span className="text-brand-600">Build</span> for Retail &amp;
             <br />
@@ -410,7 +410,7 @@ export default function HomePage() {
 
       {/* ── 9. Pricing ─────────────────────────────────── */}
       <section id="pricing" className="bg-paper py-20 lg:py-28">
-        <div className="shell">
+        <div className="page-shell">
           <h2 className="text-display-sm font-medium leading-[1.06] text-ink">
             Simple Plans.
             <br />
@@ -477,7 +477,7 @@ export default function HomePage() {
       <section className="relative overflow-hidden bg-paper py-8">
         <StripeBand className="absolute inset-0 h-full w-full" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(78%_140%_at_6%_50%,rgba(255,255,255,0.94),rgba(255,255,255,0.4)_56%,transparent_80%)]" />
-        <div className="shell relative py-20 lg:py-24">
+        <div className="page-shell relative py-20 lg:py-24">
           <h2 className="max-w-[16ch] text-display-sm font-medium leading-[1.06] text-ink">
             Make smarter Decisions
             <br />
