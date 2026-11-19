@@ -140,7 +140,8 @@ const LINK_ITEMS: MenuItem[] = [
 export function Navbar() {
   return (
     <header className="sticky top-0 z-[100] w-full border-b border-line bg-white/90 backdrop-blur-xl">
-      <nav className="shell flex h-16 items-center gap-8">
+      <nav className="page-shell flex h-16 items-center gap-10">
+        {/* nav rail spreads across the bar in the reference */}
         <LogoLockup />
 
         <DesktopMenu />
@@ -181,9 +182,9 @@ function DesktopMenu() {
   return (
     <NavigationMenu
       viewportClassName="border border-line rounded-[4px] bg-white"
-      className="hidden lg:flex"
+      className="hidden lg:flex lg:max-w-none lg:flex-1 lg:justify-center"
     >
-      <NavigationMenuList className="gap-0.5">
+      <NavigationMenuList className="gap-0.5 lg:gap-8 xl:gap-[86px]">
         {menus.map((menu) => (
           <NavigationMenuItem key={menu.trigger}>
             <NavigationMenuTrigger className="rounded-[3px] px-3 py-1.5 text-[13px] font-normal text-ink-700 hover:bg-transparent hover:text-brand-700 data-[state=open]:bg-transparent data-[state=open]:text-brand-700">
